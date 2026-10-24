@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#09090f">
+
+  <title>CINEVERSE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #09090f;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 25px 20px;
+      background: linear-gradient(
+        135deg,
+        #17102d,
+        #09090f
+      );
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: bold;
+      color: #a78bfa;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .hero {
+      margin: 20px;
+      padding: 30px 20px;
+      border-radius: 20px;
+      background: linear-gradient(
+        135deg,
+        #50249a,
+        #17102d
+      );
+    }
+
+    .hero h1 {
+      font-size: 25px;
+      margin-top: 0;
+    }
+
+    .hero p {
+      color: #ddd;
+      line-height: 1.8;
+    }
+
+    .button {
+      background: #a78bfa;
+      color: #09090f;
+      padding: 13px 20px;
+      border-radius: 12px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .section {
+      padding: 10px 20px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 15px;
+    }
+
+    .card {
+      min-width: 140px;
+      height: 200px;
+      border-radius: 15px;
+      background: linear-gradient(
+        145deg,
+        #272044,
+        #131321
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 15px;
+      color: #c4b5fd;
+      font-weight: bold;
+    }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #151520;
+      display: flex;
+      justify-content: space-around;
+      padding: 17px 5px;
+      border-top: 1px solid #29293d;
+    }
+
+    nav span {
+      color: #bbb;
+      font-size: 12px;
+    }
+
+    main {
+      padding-bottom: 85px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">CINEVERSE ✦</div>
+  <div class="subtitle">
+    عالمك الشخصي للأفلام والمسلسلات
+  </div>
+</header>
+
+<main>
+
+  <div class="hero">
+    <h1>اكتشف عالم السينما 🎬</h1>
+
+    <p>
+      أفلام، مسلسلات، اقتراحات ذكية
+      وإصدارات جديدة في مكان واحد.
+    </p>
+
+    <button class="button" onclick="welcome()">
+      ابدأ الاستكشاف
+    </button>
+  </div>
+
+  <div class="section">
+    <h2>🔥 الأكثر رواجاً</h2>
+
+    <div class="cards">
+      <div class="card">🎬 أفلام رائجة</div>
+      <div class="card">📺 مسلسلات رائجة</div>
+      <div class="card">⭐ الأعلى تقييماً</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>✨ مختارة لك</h2>
+
+    <div class="cards">
+      <div class="card">💎 Hidden Gems</div>
+      <div class="card">🧠 اقتراحات ذكية</div>
+      <div class="card">🎲 Surprise Me</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📅 قريباً</h2>
+
+    <div class="cards">
+      <div class="card">🎥 أفلام قادمة</div>
+      <div class="card">📺 مواسم جديدة</div>
+    </div>
+  </div>
+
+</main>
+
+<nav>
+  <span>🏠 الرئيسية</span>
+  <span>🔍 البحث</span>
+  <span>❤️ مكتبتي</span>
+  <span>📅 القادم</span>
+  <span>⚙️ الإعدادات</span>
+</nav>
+
+<script>
+  function welcome() {
+    alert("مرحباً بك في CINEVERSE 🎬");
+  }
+</script>
+
+</body>
+</html>
