@@ -576,4 +576,574 @@ const sections=[
 ["upcoming","upcoming","movie"]
 ];
 
+await Promise.all(sections.map(async ([id,endpoint,type])=>{
+document.getElementById(id).innerHTML=
+`<div class="loading">${tr("جاري التحميل...","Loading...")}</div>`;
+
+try{
+const data=await api(endpoint);
+cache[id]=(data.results||[]).filter(x=>
+type||x.media_type==="movie"||x.media_type==="tv"
+);
+renderCards(id,cache[id],type);
+
+if(id==="upcoming"){
+renderCards("upcomingGrid",cache[id],"movie");
+}
+}catch(e){
+document.getElementById(id).innerHTML=
+`<div class="empty">${tr("تعذر تحميل البيانات","Failed to load")}</div>`;
+}
+}));
+}
+
+function showView(id,el){
+currentView=id;
+
+document.querySelectorAll(".view").forEach(v=>{
+v.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+
+document.querySelectorAll(".nav-item").forEach(n=>{
+n.classList.remove("active");
+});
+
+if(el)el.classList.add("active");
+
+document.getElementById("mainHeader").style.display=
+id==="detail"?"none":"block";
+
+document.getElementById("bottomNav").style.display=
+id==="detail"?"none":"flex";
+
+document.body.style.paddingBottom=
+id==="detail"?"0":"85px";
+
+if(id==="library")renderLibrary();
+
+window.scrollTo(0,0);
+}
+
+function goBack(){
+showView(previousView);
+const navMap={
+home:0,
+searchView:1,
+library:2,
+upcomingView:3
+};
+const index=navMap[previousView]??0;
+document.querySelectorAll(".nav-item")[index]?.classList.add("active");
+}
+
+function handleSearch(q){
+clearTimeout(searchTimer);
+const version=++searchVersion;
+
+if(!q.trim()){
+showView("home",document.querySelectorAll(".nav-item")[0]);
+return;
+}
+
+showView("searchView",document.querySelectorAll(".nav-item")[1]);
+
+document.getElementById("searchResults").innerHTML=
+tr("جاري البحث...","Searching...");
+
+searchTimer=setTimeout(async ()=>{
+try{
+const data=await api("search",{query:q.trim()});
+if(version!==searchVersion)return;
+const results=(data.results||[]).filter(x=>
+x.media_type==="movie"||x.media_type==="tv"
+);
+renderCards("searchResults",results);
+}catch{
+if(version!==searchVersion)return;
+document.getElementById("searchResults").textContent=
+tr("حدث خطأ أثناء البحث","Search failed");
+}
+},450);
+}
+
+async function openDetail(type,id){
+if(type!=="movie"&&type!=="tv")return;
+
+const version=++detailVersion;
+seasonVersion++;
+
+if(currentView!=="detail")previousView=currentView;
+
+showView("detail");
+
+current=null;
+
+document.getElementById("detailTitle").textContent=
+tr("جاري التحميل...","Loading...");
+document.getElementById("detailMeta").textContent="";
+document.getElementById("detailOverview").textContent="";
+document.getElementById("detailGenres").innerHTML="";
+document.getElementById("detailImage").removeAttribute("src");
+document.getElementById("providers").innerHTML="";
+document.getElementById("similar").innerHTML="";
+document.getElementById("episodesList").innerHTML="";
+document.getElementById("overallProgress").innerHTML="";
+document.getElementById("seasonProgress").innerHTML="";
+document.getElementById("seasonsSection").classList.add("hidden");
+document.getElementById("favButton").disabled=true;
+
+try{
+const d=await api("details",{type,id});
+if(version!==detailVersion)return;
+
+current={...d,media_type:type};
+
+document.getElementById("favButton").disabled=false;
+
+document.getElementById("detailTitle").textContent=
+d.title||d.name||"";
+
+const year=(d.release_date||d.first_air_date||"").slice(0,4);
+
+document.getElementById("detailMeta").textContent=
+`⭐ ${Number(d.vote_average||0).toFixed(1)} · ${year} · ${
+type==="movie"?
+(d.runtime?d.runtime+" min":"Movie"):
+(d.number_of_seasons||0)+" Seasons"
+}`;
+
+document.getElementById("detailOverview").textContent=
+d.overview||tr("القصة غير متوفرة حالياً","Overview unavailable");
+
+const picture=d.backdrop_path?
+BACKDROP+d.backdrop_path:
+(d.poster_path?IMG+d.poster_path:"");
+
+if(picture)document.getElementById("detailImage").src=picture;
+
+document.getElementById("detailGenres").innerHTML=
+(d.genres||[]).map(g=>
+`<span class="tag">${escapeHTML(g.name)}</span>`
+).join("");
+
+updateFavButton();
+
+if(type==="tv")setupSeasons(d);
+
+loadProviders(type,id,version);
+loadSimilar(type,id,version);
+
+}catch(e){
+if(version!==detailVersion)return;
+document.getElementById("detailTitle").textContent=
+tr("تعذر تحميل التفاصيل","Failed to load details");
+}
+}
+
+function updateFavButton(){
+if(!current)return;
+const exists=favorites.some(x=>
+x.id===current.id&&x.media_type===current.media_type
+);
+document.getElementById("favButton").textContent=
+exists?
+tr("💔 إزالة من المفضلة","💔 Remove Favorite"):
+tr("❤️ إضافة للمفضلة","❤️ Add Favorite");
+}
+
+function toggleFavorite(){
+if(!current)return;
+
+const index=favorites.findIndex(x=>
+x.id===current.id&&x.media_type===current.media_type
+);
+
+if(index>=0){
+favorites.splice(index,1);
+}else{
+favorites.unshift({
+id:current.id,
+media_type:current.media_type,
+title:current.title,
+name:current.name,
+poster_path:current.poster_path,
+vote_average:current.vote_average,
+release_date:current.release_date,
+first_air_date:current.first_air_date
+});
+}
+
+save();
+updateFavButton();
+renderLibrary();
+}
+
+function renderLibrary(){
+renderCards("libraryGrid",favorites);
+}
+
+async function loadProviders(type,id,version){
+try{
+const d=await api("providers",{type,id});
+if(version!==detailVersion)return;
+
+const ma=d.results?.MA;
+
+if(!ma){
+document.getElementById("providers").textContent=
+tr("معلومات المنصات غير متوفرة للمغرب حالياً",
+"Streaming information unavailable for Morocco");
+return;
+}
+
+let html="";
+const groups=[
+["flatrate",tr("اشتراك","Subscription")],
+["rent",tr("كراء","Rent")],
+["buy",tr("شراء","Buy")]
+];
+
+for(const [key,label] of groups){
+const providers=ma[key]||[];
+if(!providers.length)continue;
+
+html+=`<h4>${label}</h4>`;
+
+for(const p of providers){
+html+=`
+<div class="provider">
+${p.logo_path?`<img src="${IMG+p.logo_path}" alt="">`:""}
+${escapeHTML(p.provider_name)}
+</div>`;
+}
+}
+
+if(ma.link){
+const safeLink=escapeHTML(ma.link);
+html+=`<p><a href="${safeLink}" target="_blank" rel="noopener noreferrer">
+${tr("معلومات المشاهدة ↗","Watch information ↗")}
+</a></p>`;
+}
+
+document.getElementById("providers").innerHTML=
+html||tr("لا توجد منصات مسجلة","No providers listed");
+
+}catch{
+if(version!==detailVersion)return;
+document.getElementById("providers").textContent=
+tr("تعذر تحميل المنصات","Unable to load providers");
+}
+}
+
+async function loadSimilar(type,id,version){
+try{
+const d=await api("similar",{type,id});
+if(version!==detailVersion)return;
+
+renderCards("similar",(d.results||[]).slice(0,15),type);
+}catch{
+if(version!==detailVersion)return;
+document.getElementById("similar").textContent=
+tr("غير متوفر حالياً","Currently unavailable");
+}
+}
+
+function setupSeasons(d){
+document.getElementById("seasonsSection").classList.remove("hidden");
+
+const select=document.getElementById("seasonSelect");
+
+const seasons=(d.seasons||[]).filter(s=>
+s.season_number>=0
+);
+
+select.innerHTML=seasons.map(s=>
+`<option value="${s.season_number}">
+${escapeHTML(s.name)} (${s.episode_count})
+</option>`
+).join("");
+
+updateOverallProgress(d);
+
+const regular=seasons.find(s=>s.season_number===1)||seasons[0];
+
+if(regular){
+select.value=regular.season_number;
+loadSeason(regular.season_number);
+}
+}
+
+function episodeKey(tv,season,episode){
+return `${tv}_${season}_${episode}`;
+}
+
+function isWatched(tv,season,episode){
+return watched[episodeKey(tv,season,episode)]===true;
+}
+
+function updateOverallProgress(d){
+const seasons=(d.seasons||[]).filter(s=>s.season_number>0);
+
+const total=seasons.reduce((a,s)=>a+s.episode_count,0);
+
+let done=0;
+
+for(const s of seasons){
+for(let ep=1;ep<=s.episode_count;ep++){
+if(isWatched(d.id,s.season_number,ep))done++;
+}
+}
+
+const percent=total?Math.round(done/total*100):0;
+
+document.getElementById("overallProgress").innerHTML=`
+<div style="color:var(--muted);font-size:13px">
+${tr("تقدم المشاهدة","Watching Progress")}: ${done}/${total}
+</div>
+<div class="progress">
+<div class="progress-bar" style="width:${percent}%"></div>
+</div>
+<div style="font-size:12px;color:var(--accent)">${percent}%</div>
+`;
+}
+
+async function loadSeason(number){
+if(!current||current.media_type!=="tv")return;
+
+const seasonNumber=Number(number);
+const tvId=current.id;
+const version=++seasonVersion;
+
+document.getElementById("episodesList").innerHTML=
+`<div class="loading">${tr("جاري تحميل الحلقات...","Loading episodes...")}</div>`;
+
+document.getElementById("seasonProgress").innerHTML="";
+
+try{
+const d=await api("season",{
+type:"tv",
+id:tvId,
+season:seasonNumber
+});
+
+if(version!==seasonVersion||current?.id!==tvId)return;
+
+const episodes=d.episodes||[];
+
+const done=episodes.filter(e=>
+isWatched(tvId,seasonNumber,e.episode_number)
+).length;
+
+const percent=episodes.length?
+Math.round(done/episodes.length*100):0;
+
+document.getElementById("seasonProgress").innerHTML=`
+<div style="font-size:13px;color:var(--muted)">
+${tr("الموسم","Season")}: ${done}/${episodes.length}
+</div>
+<div class="progress">
+<div class="progress-bar" style="width:${percent}%"></div>
+</div>
+`;
+
+document.getElementById("episodesList").innerHTML=
+episodes.map(e=>{
+const marked=isWatched(tvId,seasonNumber,e.episode_number);
+const image=e.still_path?IMG+e.still_path:"";
+const aired=e.air_date||"";
+const future=aired&&aired>new Date().toISOString().slice(0,10);
+
+return `
+<div class="episode">
+${image?`<img loading="lazy" src="${image}" alt="">`:""}
+<div class="episode-info">
+<div class="episode-title">
+${e.episode_number}. ${escapeHTML(e.name)}
+</div>
+<div class="episode-date">
+📅 ${escapeHTML(aired||"—")}
+</div>
+<div class="episode-desc">
+${escapeHTML(e.overview||"")}
+</div>
+<button
+class="watch-btn ${marked?"done":""}"
+data-tv="${tvId}"
+data-season="${seasonNumber}"
+data-episode="${e.episode_number}"
+${future?"disabled":""}>
+${future?
+tr("⏳ لم تُعرض بعد","⏳ Not aired"):
+marked?
+tr("✅ شاهدتها","✅ Watched"):
+tr("⬜ تحديد كمشاهدة","⬜ Mark Watched")}
+</button>
+</div>
+</div>`;
+}).join("");
+
+}catch{
+if(version!==seasonVersion)return;
+document.getElementById("episodesList").textContent=
+tr("تعذر تحميل الحلقات","Failed to load episodes");
+}
+}
+
+document.addEventListener("click",e=>{
+const btn=e.target.closest(".watch-btn[data-episode]");
+if(!btn||btn.disabled)return;
+
+toggleEpisode(
+Number(btn.dataset.tv),
+Number(btn.dataset.season),
+Number(btn.dataset.episode)
+);
+});
+
+function toggleEpisode(tv,season,episode){
+const key=episodeKey(tv,season,episode);
+
+if(watched[key]){
+delete watched[key];
+}else{
+watched[key]=true;
+}
+
+save();
+
+if(current&&current.id===tv){
+updateOverallProgress(current);
+loadSeason(season);
+}
+}
+
+function surpriseMe(){
+const pool=(cache.trending||[]).filter(x=>
+x.media_type==="movie"||x.media_type==="tv"
+);
+
+if(!pool.length){
+alert(tr("البيانات مازال كتحمل","Data is still loading"));
+return;
+}
+
+const x=pool[Math.floor(Math.random()*pool.length)];
+openDetail(x.media_type,x.id);
+}
+
+function toggleLang(){
+lang=lang==="ar-MA"?"en-US":"ar-MA";
+localStorage.setItem("cv_lang",lang);
+applyLang();
+loadHome();
+
+if(current){
+openDetail(current.media_type,current.id);
+}
+
+const q=document.getElementById("searchInput").value.trim();
+if(q)handleSearch(q);
+}
+
+function applyLang(){
+const ar=lang==="ar-MA";
+
+document.documentElement.lang=ar?"ar":"en";
+document.documentElement.dir=ar?"rtl":"ltr";
+
+document.getElementById("langBtn").textContent=ar?"EN":"AR";
+
+document.getElementById("searchInput").placeholder=
+tr("بحث عن فيلم أو مسلسل...","Search movies or TV shows...");
+
+document.querySelectorAll("[data-ar]").forEach(el=>{
+el.textContent=ar?el.dataset.ar:el.dataset.en;
+});
+}
+
+// Migration from CINEVERSE 1.0 favorites
+if(!localStorage.getItem("cv_favorites")){
+const old=readSaved("cineverse_favs",[]);
+
+if(Array.isArray(old)&&old.length){
+favorites=old.map(x=>({
+...x,
+media_type:x.type||x.media_type
+}));
+save();
+}
+}
+
+applyLang();
+renderLibrary();
+loadHome();
+</script>
+
+<footer style="text-align:center;color:#777;font-size:11px;padding:30px 15px">
+This product uses the TMDB API but is not endorsed or certified by TMDB.
+<br>
+Streaming availability data provided by JustWatch via TMDB.
+</footer>
+
+</body>
+                                                                             </html>g();
+}
+
+async function api(endpoint,params={}){
+const r=await fetch(buildURL(endpoint,params));
+if(!r.ok)throw Error("API "+r.status);
+return r.json();
+}
+
+function normalize(item,type){
+return {
+...item,
+media_type:type||item.media_type||(item.title?"movie":"tv")
+};
+}
+
+function card(item,type){
+const x=normalize(item,type);
+if(x.media_type!=="movie"&&x.media_type!=="tv")return "";
+
+const title=escapeHTML(x.title||x.name||"Unknown");
+const poster=x.poster_path?IMG+x.poster_path:"";
+const year=(x.release_date||x.first_air_date||"").slice(0,4);
+const rating=Number(x.vote_average||0).toFixed(1);
+
+return `
+<div class="card" data-type="${x.media_type}" data-id="${Number(x.id)}">
+${poster?`<img loading="lazy" src="${poster}" alt="">`:
+`<div style="height:200px;padding:40px">🎬</div>`}
+<div class="card-body">
+<div class="card-title">${title}</div>
+<div class="meta">⭐ ${rating} · ${year}</div>
+</div>
+</div>`;
+}
+
+document.addEventListener("click",e=>{
+const el=e.target.closest(".card[data-id]");
+if(!el)return;
+openDetail(el.dataset.type,Number(el.dataset.id));
+});
+
+function renderCards(id,items,type){
+document.getElementById(id).innerHTML=
+items.length?
+items.map(x=>card(x,type)).join(""):
+`<div class="empty">${tr("لا توجد نتائج","No results")}</div>`;
+}
+
+async function loadHome(){
+const sections=[
+["trending","trending",null],
+["movies","movies","movie"],
+["tv","tv","tv"],
+["top","top_movies","movie"],
+["upcoming","upcoming","movie"]
+];
+
 await Promise.all(sections.map(async 
