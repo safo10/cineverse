@@ -1086,6 +1086,140 @@ This product uses the TMDB API but is not endorsed or certified by TMDB.
 <br>
 Streaming availability data provided by JustWatch via TMDB.
 </footer>
+<script>
+function cineverseBackup() {
+  const keys = [
+    "cv_lang",
+    "cv_favorites",
+    "cv_watched",
+    "cineverse_favs",
+    "cineverse_lang"
+  ];
 
+  const backup = {
+    app: "CINEVERSE",
+    version: 1,
+    created: new Date().toISOString(),
+    data: {}
+  };
+
+  keys.forEach(key => {
+    const value = localStorage.getItem(key);
+
+    if (value !== null) {
+      backup.data[key] = value;
+    }
+  });
+
+  const blob = new Blob(
+    [JSON.stringify(backup, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "cineverse-backup.json";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function cineverseRestore(file) {
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    try {
+      const backup = JSON.parse(event.target.result);
+
+      if (
+        backup.app !== "CINEVERSE" ||
+        backup.version !== 1 ||
+        !backup.data ||
+        typeof backup.data !== "object"
+      ) {
+        throw new Error("Invalid backup");
+      }
+
+      const allowed = [
+        "cv_lang",
+        "cv_favorites",
+        "cv_watched",
+        "cineverse_favs",
+        "cineverse_lang"
+      ];
+
+      if (!confirm(
+        "استرجاع النسخة غادي يعوض البيانات الحالية. واش متأكد؟"
+      )) return;
+
+      allowed.forEach(key => {
+        if (Object.hasOwn(backup.data, key)) {
+          const value = backup.data[key];
+
+          if (typeof value !== "string") {
+            throw new Error("Invalid data");
+          }
+
+          localStorage.setItem(key, value);
+        }
+      });
+
+      alert("✅ تم استرجاع البيانات بنجاح!");
+      location.reload();
+
+    } catch (error) {
+      alert("❌ ملف النسخة الاحتياطية غير صالح.");
+    }
+  };
+
+  reader.readAsText(file);
+}
+</script>
+
+<div style="
+padding:20px;
+margin:20px 15px;
+background:#171423;
+border:1px solid #302743;
+border-radius:18px;
+text-align:center;
+">
+
+<h3>💾 CINEVERSE Backup</h3>
+
+<p style="color:#aaa;font-size:13px">
+احتافظ بنسخة من مكتبتك والحلقات المشاهدة
+</p>
+
+<button
+class="btn"
+onclick="cineverseBackup()">
+📤 تصدير البيانات
+</button>
+
+<br><br>
+
+<label
+class="btn ghost"
+style="display:inline-block;cursor:pointer">
+
+📥 استرجاع البيانات
+
+<input
+type="file"
+accept=".json,application/json"
+style="display:none"
+onchange="cineverseRestore(this.files[0]);this.value=''">
+
+</label>
+
+</div>
 </body>
 </html>
