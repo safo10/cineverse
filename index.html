@@ -1631,5 +1631,247 @@ cvInitializeLibrary();
 cvRenderSmartLibrary();
 
 </script>  
+<script>
+/*
+ CINEVERSE Backup 2.0
+ Complete Personal Data Backup
+*/
+
+function cvBackupV2() {
+
+  const keys = [
+    "cv_lang",
+    "cv_favorites",
+    "cv_watched",
+    "cv_smart_library",
+    "cineverse_favs",
+    "cineverse_lang"
+  ];
+
+  const backup = {
+    app: "CINEVERSE",
+    version: 2,
+    created: new Date().toISOString(),
+    data: {}
+  };
+
+  keys.forEach(key => {
+    const value = localStorage.getItem(key);
+
+    if (value !== null) {
+      backup.data[key] = value;
+    }
+  });
+
+  const blob = new Blob(
+    [JSON.stringify(backup, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  link.download =
+    "cineverse-backup-" +
+    new Date().toISOString().slice(0, 10) +
+    ".json";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+
+function cvRestoreV2(file) {
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+
+    try {
+
+      const backup = JSON.parse(
+        event.target.result
+      );
+
+      if (
+        backup.app !== "CINEVERSE" ||
+        backup.version !== 2 ||
+        !backup.data ||
+        typeof backup.data !== "object" ||
+        Array.isArray(backup.data)
+      ) {
+        throw new Error("Invalid backup");
+      }
+
+      const allowed = [
+        "cv_lang",
+        "cv_favorites",
+        "cv_watched",
+        "cv_smart_library",
+        "cineverse_favs",
+        "cineverse_lang"
+      ];
+
+      const updates = {};
+
+      for (const key of allowed) {
+
+        if (!Object.hasOwn(backup.data, key)) {
+          continue;
+        }
+
+        const value = backup.data[key];
+
+        if (typeof value !== "string") {
+          throw new Error("Invalid value");
+        }
+
+        if (key === "cv_lang") {
+          if (!["ar-MA", "en-US"].includes(value)) {
+            throw new Error("Invalid language");
+          }
+        } else if (key === "cineverse_lang") {
+          if (!["ar-MA", "en-US"].includes(value)) {
+            throw new Error("Invalid language");
+          }
+        } else {
+          const parsed = JSON.parse(value);
+
+          if (key === "cv_favorites" ||
+              key === "cineverse_favs") {
+            if (!Array.isArray(parsed)) {
+              throw new Error("Invalid favorites");
+            }
+          } else if (
+            !parsed ||
+            typeof parsed !== "object" ||
+            Array.isArray(parsed)
+          ) {
+            throw new Error("Invalid library data");
+          }
+        }
+
+        updates[key] = value;
+      }
+
+      if (!Object.keys(updates).length) {
+        throw new Error("Empty backup");
+      }
+
+      const confirmed = confirm(
+        "⚠️ استرجاع النسخة غادي يعوض البيانات الحالية. واش متأكد؟"
+      );
+
+      if (!confirmed) return;
+
+      // Keep a recovery copy of current data.
+      const previous = {};
+
+      for (const key of allowed) {
+        previous[key] = localStorage.getItem(key);
+      }
+
+      try {
+        for (const [key, value] of Object.entries(updates)) {
+          localStorage.setItem(key, value);
+        }
+      } catch (error) {
+        for (const [key, value] of Object.entries(previous)) {
+          if (value === null) {
+            localStorage.removeItem(key);
+          } else {
+            localStorage.setItem(key, value);
+          }
+        }
+        throw error;
+      }
+
+      alert("✅ تم استرجاع البيانات!");
+
+      location.reload();
+
+    } catch (error) {
+
+      alert(
+        "❌ تعذر استرجاع الملف. تأكد أنه نسخة احتياطية صالحة من CINEVERSE 2.0."
+      );
+
+    }
+
+  };
+
+  reader.onerror = function() {
+    alert("❌ تعذر قراءة الملف.");
+  };
+
+  reader.readAsText(file);
+}
+</script>
+
+<section style="
+margin:20px 15px;
+padding:20px;
+background:#171423;
+border:1px solid #302743;
+border-radius:20px;
+text-align:center;
+">
+
+<h3>💾 CINEVERSE Backup 2.0</h3>
+
+<p style="
+color:#aaa;
+font-size:13px;
+line-height:1.8;
+">
+حافظ على مكتبتك الشخصية وتقييماتك
+وتقدم مشاهدة المسلسلات.
+</p>
+
+<button
+class="btn"
+onclick="cvBackupV2()">
+📤 تحميل نسخة احتياطية كاملة
+</button>
+
+<br><br>
+
+<label
+class="btn ghost"
+style="display:inline-block;cursor:pointer">
+
+📥 استرجاع نسخة احتياطية
+
+<input
+type="file"
+accept=".json,application/json"
+style="display:none"
+onchange="
+cvRestoreV2(this.files[0]);
+this.value='';
+">
+
+</label>
+
+<p style="
+font-size:11px;
+color:#888;
+margin-top:15px;
+">
+CINEVERSE • Backup Version 2.0
+</p>
+
+</section>
 </body>
 </html>
