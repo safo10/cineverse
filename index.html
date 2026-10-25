@@ -4254,5 +4254,200 @@ console.log("CINEVERSE 2.4 Mood Finder Fix Applied");
 
 })();
    </script>
+ <style>
+/* CINEVERSE 2.5 — Navigation UX */
+
+#cv25Menu {
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+#cv25MenuButton {
+  transition: transform .2s ease, opacity .2s ease;
+}
+
+#cv25MenuButton:active {
+  transform: scale(.92);
+}
+
+body.cv-detail-open #cv25MenuButton,
+body.cv-detail-open #cv25Menu {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cv25Menu,
+  #cv25MenuButton {
+    transition: none;
+  }
+}
+</style>
+
+<script>
+/*
+========================================
+ CINEVERSE 2.5
+ NAVIGATION & UX PATCH
+========================================
+*/
+
+(function(){
+
+  const navIds = [
+    "home",
+    "searchView",
+    "library",
+    "upcomingView"
+  ];
+
+  function updateNav(viewId){
+
+    const items = document.querySelectorAll(
+      "#bottomNav .nav-item"
+    );
+
+    items.forEach((item,index)=>{
+
+      const active = navIds[index] === viewId;
+
+      item.classList.toggle("active",active);
+
+    });
+
+  }
+
+  function updateQuickMenu(viewId){
+
+    const button = document.getElementById(
+      "cv25MenuButton"
+    );
+
+    const menu = document.getElementById(
+      "cv25Menu"
+    );
+
+    const detailOpen = viewId === "detail";
+
+    document.body.classList.toggle(
+      "cv-detail-open",
+      detailOpen
+    );
+
+    if(detailOpen && menu){
+
+      menu.classList.remove("open");
+
+      if(button){
+        button.textContent = "☰";
+        button.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+
+    }
+
+  }
+
+  /* Improve showView without replacing its logic */
+
+  const previousShowView = showView;
+
+  showView = function(id,el){
+
+    previousShowView(id,el);
+
+    updateNav(id);
+
+    updateQuickMenu(id);
+
+    /* Keep Mood Finder results when returning */
+    if(id === "cvMoodFinder"){
+
+      const results = document.getElementById(
+        "cvMoodResults"
+      );
+
+      const status = document.getElementById(
+        "cvMoodStatus"
+      );
+
+      if(
+        results &&
+        !results.children.length &&
+        status &&
+        !status.textContent.trim()
+      ){
+
+        if(typeof searchMood === "function"){
+          searchMood();
+        }
+
+      }
+
+    }
+
+  };
+
+  /* Better Back Navigation */
+
+  goBack = function(){
+
+    const target = previousView || "home";
+
+    const exists = document.getElementById(target);
+
+    if(!exists || target === "detail"){
+
+      showView("home");
+
+      return;
+
+    }
+
+    showView(target);
+
+  };
+
+  /* Close quick menu when navigating */
+
+  document.addEventListener("click",function(e){
+
+    const menu = document.getElementById(
+      "cv25Menu"
+    );
+
+    const button = document.getElementById(
+      "cv25MenuButton"
+    );
+
+    if(!menu || !button)return;
+
+    if(e.target.closest(".cv25-menu-item")){
+
+      menu.classList.remove("open");
+
+      button.textContent = "☰";
+
+      button.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+    }
+
+  });
+
+  /* Initialize */
+
+  updateNav(currentView);
+
+  updateQuickMenu(currentView);
+
+  console.log(
+    "CINEVERSE 2.5 Navigation Patch Ready"
+  );
+
+})();
+     </script>
 </body>
 </html>
