@@ -2186,5 +2186,59 @@ cvCreateRecommendationsUI();
 cvLoadRecommendations();
 
 </script>
+<script>
+/*
+ CINEVERSE 2.3
+ Stability Patch 1
+ Automatic Recommendations Refresh
+*/
+
+(function () {
+  if (
+    typeof cvUpdateEntry !== "function" ||
+    typeof cvLoadRecommendations !== "function"
+  ) {
+    console.warn(
+      "CINEVERSE: Recommendations module unavailable"
+    );
+    return;
+  }
+
+  const originalUpdateEntry = cvUpdateEntry;
+
+  let refreshTimer = null;
+
+  cvUpdateEntry = function(field, value) {
+
+    originalUpdateEntry(field, value);
+
+    if (
+      field === "rating" ||
+      field === "status"
+    ) {
+
+      clearTimeout(refreshTimer);
+
+      refreshTimer = setTimeout(() => {
+
+        cvLoadRecommendations().catch(error => {
+          console.error(
+            "Recommendations refresh failed:",
+            error
+          );
+        });
+
+      }, 600);
+
+    }
+
+  };
+
+  console.log(
+    "CINEVERSE 2.3: Auto-refresh enabled"
+  );
+
+})();
+  </script>
 </body>
 </html>
