@@ -1,0 +1,28 @@
+{
+  "id": "/cineverse/",
+  "name": "CINEVERSE - Your Cinema Universe",
+  "short_name": "CINEVERSE",
+  "description": "Discover movies, track TV shows and organize your personal cinema library.",
+  "lang": "ar",
+  "dir": "auto",
+  "start_url": "/cineverse/",
+  "scope": "/cineverse/",
+  "display": "standalone",
+  "background_color": "#09090f",
+  "theme_color": "#7c3aed",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
