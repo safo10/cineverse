@@ -4449,5 +4449,661 @@ body.cv-detail-open #cv25Menu {
 
 })();
      </script>
+ <style>
+/* CINEVERSE 2.5 — CINEMA ANALYTICS */
+
+#cv25Analytics {
+  margin-top: 35px;
+  padding-top: 20px;
+  border-top: 1px solid #302743;
+}
+
+.cv25-analytics-title {
+  font-size: 23px;
+  color: #c4b5fd;
+  margin-bottom: 20px;
+}
+
+.cv25-analytics-box {
+  background: linear-gradient(145deg,#20162f,#14101e);
+  border: 1px solid #392653;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.cv25-analytics-box h3 {
+  margin: 0 0 18px;
+  font-size: 17px;
+}
+
+.cv25-donut-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.cv25-donut {
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
+  position: relative;
+  background: #302743;
+}
+
+.cv25-donut::after {
+  content: "";
+  position: absolute;
+  inset: 28px;
+  border-radius: 50%;
+  background: #171423;
+}
+
+.cv25-donut-center {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.cv25-donut-center small {
+  font-size: 11px;
+  color: #aaa;
+  font-weight: 400;
+}
+
+.cv25-legend {
+  font-size: 13px;
+  line-height: 2.5;
+}
+
+.cv25-legend span {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 4px;
+  margin-inline-end: 7px;
+}
+
+.cv25-bars {
+  display: flex;
+  align-items: end;
+  gap: 7px;
+  height: 155px;
+  padding-top: 10px;
+}
+
+.cv25-bar-column {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 10px;
+  color: #aaa;
+}
+
+.cv25-bar-track {
+  height: 120px;
+  display: flex;
+  align-items: end;
+  background: #241b35;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.cv25-bar-fill {
+  width: 100%;
+  background: linear-gradient(0deg,#7c3aed,#c4b5fd);
+  border-radius: 7px 7px 0 0;
+  min-height: 0;
+}
+
+.cv25-genre {
+  margin: 14px 0;
+}
+
+.cv25-genre-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.cv25-genre-track {
+  height: 9px;
+  background: #302743;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.cv25-genre-fill {
+  height: 100%;
+  background: linear-gradient(90deg,#7c3aed,#a78bfa);
+  border-radius: 20px;
+}
+
+.cv25-achievements {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+
+.cv25-achievement {
+  background: #211a33;
+  border: 1px solid #392653;
+  border-radius: 15px;
+  padding: 17px 10px;
+  text-align: center;
+  opacity: .4;
+}
+
+.cv25-achievement.unlocked {
+  opacity: 1;
+  border-color: #a78bfa;
+}
+
+.cv25-achievement-icon {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.cv25-achievement-name {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cv25-achievement-progress {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 6px;
+}
+
+.cv25-analytics-empty {
+  color: #aaa;
+  font-size: 13px;
+  text-align: center;
+  padding: 15px;
+}
+</style>
+
+<script>
+/*
+========================================
+ CINEVERSE 2.5
+ CINEMA ANALYTICS PRO
+========================================
+*/
+
+(function(){
+
+const GENRE_CACHE_KEY = "cv25_genre_cache";
+
+let genreCache = {};
+
+try {
+  genreCache = JSON.parse(
+    localStorage.getItem(GENRE_CACHE_KEY) || "{}"
+  );
+
+  if (
+    !genreCache ||
+    typeof genreCache !== "object" ||
+    Array.isArray(genreCache)
+  ) {
+    genreCache = {};
+  }
+} catch {
+  genreCache = {};
+}
+
+let analyticsVersion = 0;
+
+const genreNames = {
+  28:["أكشن","Action"],
+  12:["مغامرة","Adventure"],
+  16:["أنيميشن","Animation"],
+  35:["كوميديا","Comedy"],
+  80:["جريمة","Crime"],
+  99:["وثائقي","Documentary"],
+  18:["دراما","Drama"],
+  10751:["عائلي","Family"],
+  14:["فانتازيا","Fantasy"],
+  36:["تاريخ","History"],
+  27:["رعب","Horror"],
+  10402:["موسيقى","Music"],
+  9648:["غموض","Mystery"],
+  10749:["رومانسي","Romance"],
+  878:["خيال علمي","Science Fiction"],
+  10770:["فيلم تلفزيوني","TV Movie"],
+  53:["تشويق","Thriller"],
+  10752:["حرب","War"],
+  37:["غربي","Western"],
+  10759:["أكشن ومغامرة","Action & Adventure"],
+  10762:["أطفال","Kids"],
+  10763:["أخبار","News"],
+  10764:["واقعي","Reality"],
+  10765:["خيال علمي وفانتازيا","Sci-Fi & Fantasy"],
+  10766:["مسلسل يومي","Soap"],
+  10767:["حواري","Talk"],
+  10768:["حرب وسياسة","War & Politics"]
+};
+
+function t(ar,en){
+  return lang==="ar-MA"?ar:en;
+}
+
+function createAnalytics(){
+
+  if(document.getElementById("cv25Analytics"))return;
+
+  const stats=document.getElementById("cv24-stats");
+
+  if(!stats)return;
+
+  const section=document.createElement("section");
+
+  section.id="cv25Analytics";
+
+  section.innerHTML=`
+    <h2 class="cv25-analytics-title"></h2>
+
+    <div class="cv25-analytics-box">
+      <h3 id="cv25DistributionTitle"></h3>
+      <div class="cv25-donut-wrap" id="cv25Distribution"></div>
+    </div>
+
+    <div class="cv25-analytics-box">
+      <h3 id="cv25RatingsTitle"></h3>
+      <div id="cv25Ratings"></div>
+    </div>
+
+    <div class="cv25-analytics-box">
+      <h3 id="cv25GenresTitle"></h3>
+      <div id="cv25Genres"></div>
+    </div>
+
+    <div class="cv25-analytics-box">
+      <h3 id="cv25AchievementsTitle"></h3>
+      <div class="cv25-achievements" id="cv25Achievements"></div>
+    </div>
+  `;
+
+  stats.appendChild(section);
+}
+
+function updateAnalyticsLanguage(){
+
+  const labels=[
+    [".cv25-analytics-title","📈 تحليلاتي السينمائية","📈 Cinema Analytics"],
+    ["#cv25DistributionTitle","🎬 الأفلام والمسلسلات","🎬 Movies & TV Shows"],
+    ["#cv25RatingsTitle","⭐ توزيع تقييماتي","⭐ My Rating Distribution"],
+    ["#cv25GenresTitle","🎭 أنواعي السينمائية المفضلة","🎭 My Favorite Genres"],
+    ["#cv25AchievementsTitle","🏆 إنجازاتي السينمائية","🏆 Cinema Achievements"]
+  ];
+
+  labels.forEach(([selector,ar,en])=>{
+    const el=document.querySelector(selector);
+    if(el)el.textContent=t(ar,en);
+  });
+}
+
+function getEntries(){
+
+  return Object.values(smartLibrary||{})
+    .filter(x=>
+      x &&
+      ["movie","tv"].includes(x.media_type)
+    );
+}
+
+function getWatchedEpisodes(){
+
+  return Object.entries(watched||{})
+    .filter(([key,value])=>
+      value===true &&
+      /^\d+_\d+_\d+$/.test(key)
+    ).length;
+}
+
+function renderDistribution(entries){
+
+  const movies=entries.filter(x=>
+    x.media_type==="movie" &&
+    x.status==="completed"
+  ).length;
+
+  const shows=entries.filter(x=>
+    x.media_type==="tv" &&
+    ["watching","completed"].includes(x.status)
+  ).length;
+
+  const total=movies+shows;
+
+  const percent=total?
+    Math.round(movies/total*100):0;
+
+  const container=document.getElementById(
+    "cv25Distribution"
+  );
+
+  const donut=document.createElement("div");
+  donut.className="cv25-donut";
+
+  donut.style.background=total?
+    `conic-gradient(
+      #a78bfa 0 ${percent}%,
+      #7c3aed ${percent}% 100%
+    )`:
+    "#302743";
+
+  const center=document.createElement("div");
+  center.className="cv25-donut-center";
+
+  center.innerHTML=`
+    ${total}
+    <small>${t("عمل","Titles")}</small>
+  `;
+
+  donut.appendChild(center);
+
+  const legend=document.createElement("div");
+  legend.className="cv25-legend";
+
+  legend.innerHTML=`
+    <div>
+      <span style="background:#a78bfa"></span>
+      ${t("أفلام شاهدتها","Movies Watched")}: ${movies}
+    </div>
+    <div>
+      <span style="background:#7c3aed"></span>
+      ${t("مسلسلات أتابعها أو أكملتها","TV Watching / Completed")}: ${shows}
+    </div>
+  `;
+
+  container.replaceChildren(donut,legend);
+}
+
+function renderRatings(entries){
+
+  const counts=Array(10).fill(0);
+
+  entries.forEach(x=>{
+    const rating=Number(x.rating);
+
+    if(Number.isInteger(rating)&&rating>=1&&rating<=10){
+      counts[rating-1]++;
+    }
+  });
+
+  const max=Math.max(...counts,1);
+
+  const container=document.getElementById(
+    "cv25Ratings"
+  );
+
+  container.innerHTML=`
+    <div class="cv25-bars">
+      ${counts.map((count,index)=>`
+        <div class="cv25-bar-column"
+          title="${index+1}/10: ${count}">
+          <div class="cv25-bar-track">
+            <div class="cv25-bar-fill"
+              style="height:${count/max*100}%">
+            </div>
+          </div>
+          <div style="margin-top:7px">${index+1}</div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+async function getGenres(type,id){
+
+  const key=type+"_"+id;
+
+  if(Array.isArray(genreCache[key])){
+    return genreCache[key];
+  }
+
+  try{
+
+    const data=await api("details",{type,id});
+
+    const genres=(data.genres||[])
+      .map(g=>Number(g.id))
+      .filter(Number.isInteger);
+
+    genreCache[key]=genres;
+
+    try{
+      localStorage.setItem(
+        GENRE_CACHE_KEY,
+        JSON.stringify(genreCache)
+      );
+    }catch{}
+
+    return genres;
+
+  }catch{
+    return [];
+  }
+}
+
+async function renderGenres(entries,version){
+
+  const watchedTitles=entries.filter(x=>
+    x.status==="completed" ||
+    (x.media_type==="tv"&&x.status==="watching")
+  );
+
+  const container=document.getElementById(
+    "cv25Genres"
+  );
+
+  if(!watchedTitles.length){
+
+    container.innerHTML=`
+      <div class="cv25-analytics-empty">
+        ${t(
+          "سجل أعمال شاهدتها باش تظهر الأنواع المفضلة.",
+          "Mark titles as watched to discover your favorite genres."
+        )}
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML=`
+    <div class="cv25-analytics-empty">
+      ${t("جاري تحليل الأنواع...","Analyzing genres...")}
+    </div>
+  `;
+
+  const results=await Promise.all(
+    watchedTitles.map(x=>
+      getGenres(x.media_type,x.id)
+    )
+  );
+
+  if(version!==analyticsVersion)return;
+
+  const counts=new Map();
+
+  results.forEach(genres=>{
+    genres.forEach(id=>{
+      counts.set(id,(counts.get(id)||0)+1);
+    });
+  });
+
+  const ranked=[...counts.entries()]
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,6);
+
+  if(!ranked.length){
+
+    container.innerHTML=`
+      <div class="cv25-analytics-empty">
+        ${t(
+          "معلومات الأنواع غير متوفرة حالياً.",
+          "Genre information is currently unavailable."
+        )}
+      </div>
+    `;
+
+    return;
+  }
+
+  const max=ranked[0][1];
+
+  container.innerHTML=ranked.map(([id,count])=>{
+
+    const name=genreNames[id]||
+      [t("نوع آخر","Other"),"Other"];
+
+    return `
+      <div class="cv25-genre">
+        <div class="cv25-genre-header">
+          <span>${escapeHTML(t(name[0],name[1]))}</span>
+          <span>${count}</span>
+        </div>
+        <div class="cv25-genre-track">
+          <div class="cv25-genre-fill"
+            style="width:${count/max*100}%">
+          </div>
+        </div>
+      </div>
+    `;
+
+  }).join("");
+}
+
+function renderAchievements(entries){
+
+  const movies=entries.filter(x=>
+    x.media_type==="movie" &&
+    x.status==="completed"
+  ).length;
+
+  const episodes=getWatchedEpisodes();
+
+  const rated=entries.filter(x=>
+    Number(x.rating)>=1 &&
+    Number(x.rating)<=10
+  ).length;
+
+  const achievements=[
+    ["🎬","أول فيلم","First Movie",movies,1],
+    ["🍿","عاشق السينما","Movie Lover",movies,10],
+    ["🏆","سينمائي محترف","Cinema Master",movies,50],
+    ["📺","بداية المسلسلات","TV Starter",episodes,1],
+    ["🔥","ماراثون الحلقات","Episode Marathon",episodes,50],
+    ["👑","أسطورة المسلسلات","TV Legend",episodes,200],
+    ["⭐","أول تقييم","First Rating",rated,1],
+    ["💎","ناقد سينمائي","Cinema Critic",rated,25]
+  ];
+
+  const container=document.getElementById(
+    "cv25Achievements"
+  );
+
+  container.innerHTML=achievements.map(
+    ([icon,ar,en,value,target])=>{
+
+      const unlocked=value>=target;
+
+      return `
+        <div class="cv25-achievement ${unlocked?"unlocked":""}">
+          <div class="cv25-achievement-icon">${icon}</div>
+          <div class="cv25-achievement-name">
+            ${escapeHTML(t(ar,en))}
+          </div>
+          <div class="cv25-achievement-progress">
+            ${Math.min(value,target)}/${target}
+            ${unlocked?"✅":"🔒"}
+          </div>
+        </div>
+      `;
+
+    }
+  ).join("");
+}
+
+async function refreshAnalytics(){
+
+  const version=++analyticsVersion;
+
+  updateAnalyticsLanguage();
+
+  const entries=getEntries();
+
+  renderDistribution(entries);
+  renderRatings(entries);
+  renderAchievements(entries);
+
+  await renderGenres(entries,version);
+}
+
+/* Connect to existing Stats */
+
+const previousStatsRefresh=CV24Stats.refresh.bind(CV24Stats);
+
+CV24Stats.refresh=function(){
+
+  previousStatsRefresh();
+
+  if(currentView==="cv24-stats"){
+    refreshAnalytics();
+  }
+
+};
+
+/* Refresh when opening Stats */
+
+const previousOpenStats=window.cvOpenStats;
+
+window.cvOpenStats=function(){
+
+  if(typeof previousOpenStats==="function"){
+    previousOpenStats();
+  }
+
+  refreshAnalytics();
+
+};
+
+/* Connect language switch */
+
+const previousToggleLang=toggleLang;
+
+toggleLang=function(){
+
+  previousToggleLang();
+
+  updateAnalyticsLanguage();
+
+  if(currentView==="cv24-stats"){
+    refreshAnalytics();
+  }
+
+};
+
+/* Initialize */
+
+createAnalytics();
+updateAnalyticsLanguage();
+
+console.log(
+  "CINEVERSE 2.5 Cinema Analytics Pro Ready"
+);
+
+})();
+</script>
 </body>
 </html>
