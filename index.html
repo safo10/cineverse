@@ -1221,5 +1221,415 @@ onchange="cineverseRestore(this.files[0]);this.value=''">
 </label>
 
 </div>
+<script>
+/*
+ CINEVERSE 2.1
+ Smart Personal Library
+*/
+
+const CV_LIBRARY_KEY = "cv_smart_library";
+
+let smartLibrary = {};
+
+try {
+  smartLibrary = JSON.parse(
+    localStorage.getItem(CV_LIBRARY_KEY) || "{}"
+  );
+
+  if (
+    !smartLibrary ||
+    typeof smartLibrary !== "object" ||
+    Array.isArray(smartLibrary)
+  ) {
+    smartLibrary = {};
+  }
+} catch {
+  smartLibrary = {};
+}
+
+const libraryStatuses = {
+  watchlist: {
+    ar: "📌 سأشاهده لاحقاً",
+    en: "📌 Watchlist"
+  },
+  watching: {
+    ar: "▶️ أشاهده حالياً",
+    en: "▶️ Watching"
+  },
+  completed: {
+    ar: "✅ شاهدته",
+    en: "✅ Completed"
+  },
+  paused: {
+    ar: "⏸️ متوقف مؤقتاً",
+    en: "⏸️ On Hold"
+  },
+  dropped: {
+    ar: "❌ لم أكمله",
+    en: "❌ Dropped"
+  }
+};
+
+function cvText(ar, en) {
+  return lang === "ar-MA" ? ar : en;
+}
+
+function cvSaveLibrary() {
+  localStorage.setItem(
+    CV_LIBRARY_KEY,
+    JSON.stringify(smartLibrary)
+  );
+}
+
+function cvKey(type, id) {
+  return type + "_" + id;
+}
+
+function cvCurrentKey() {
+  if (!current) return null;
+
+  return cvKey(
+    current.media_type,
+    current.id
+  );
+}
+
+function cvGetEntry() {
+  const key = cvCurrentKey();
+
+  return key ? smartLibrary[key] || {} : {};
+}
+
+function cvUpdateEntry(field, value) {
+  if (!current) return;
+
+  const key = cvCurrentKey();
+
+  if (!smartLibrary[key]) {
+    smartLibrary[key] = {};
+  }
+
+  const entry = smartLibrary[key];
+
+  entry.id = current.id;
+  entry.media_type = current.media_type;
+  entry.title = current.title || current.name;
+  entry.name = current.name;
+  entry.poster_path = current.poster_path;
+  entry.vote_average = current.vote_average;
+  entry.release_date = current.release_date;
+  entry.first_air_date = current.first_air_date;
+
+  if (value === "") {
+    delete entry[field];
+  } else {
+    entry[field] = value;
+  }
+
+  if (!entry.status && !entry.rating) {
+    delete smartLibrary[key];
+  }
+
+  cvSaveLibrary();
+  cvRenderControls();
+  cvRenderSmartLibrary();
+}
+
+function cvRenderControls() {
+  const container = document.getElementById(
+    "cvLibraryControls"
+  );
+
+  if (!container || !current) return;
+
+  const entry = cvGetEntry();
+
+  let options = `
+    <option value="">
+      ${cvText("بدون حالة", "No Status")}
+    </option>
+  `;
+
+  for (const [key, value] of Object.entries(
+    libraryStatuses
+  )) {
+    options += `
+      <option value="${key}"
+        ${entry.status === key ? "selected" : ""}>
+        ${cvText(value.ar, value.en)}
+      </option>
+    `;
+  }
+
+  let ratings = `
+    <option value="">
+      ${cvText("بدون تقييم", "Not Rated")}
+    </option>
+  `;
+
+  for (let i = 1; i <= 10; i++) {
+    ratings += `
+      <option value="${i}"
+        ${Number(entry.rating) === i ? "selected" : ""}>
+        ⭐ ${i}/10
+      </option>
+    `;
+  }
+
+  container.innerHTML = `
+    <div style="
+      background:#171423;
+      border:1px solid #302743;
+      border-radius:18px;
+      padding:18px;
+      margin-top:20px;
+    ">
+
+      <h3>
+        ${cvText(
+          "📚 مكتبتي الشخصية",
+          "📚 My Personal Library"
+        )}
+      </h3>
+
+      <p style="color:#aaa;font-size:13px">
+        ${cvText(
+          "نظم مشاهدتك وقيّم هاد العمل",
+          "Track and rate this title"
+        )}
+      </p>
+
+      <label style="display:block;margin:15px 0 8px">
+        ${cvText("حالة المشاهدة", "Watch Status")}
+      </label>
+
+      <select id="cvStatus" style="
+        width:100%;
+        padding:13px;
+        border-radius:12px;
+        background:#211a33;
+        color:white;
+        border:1px solid #302743;
+      ">
+        ${options}
+      </select>
+
+      <label style="display:block;margin:18px 0 8px">
+        ${cvText(
+          "⭐ تقييمي الشخصي",
+          "⭐ My Rating"
+        )}
+      </label>
+
+      <select id="cvRating" style="
+        width:100%;
+        padding:13px;
+        border-radius:12px;
+        background:#211a33;
+        color:white;
+        border:1px solid #302743;
+      ">
+        ${ratings}
+      </select>
+
+      <p style="
+        color:#a78bfa;
+        font-size:12px;
+        margin-top:15px;
+      ">
+        ${cvText(
+          "✅ التغييرات كتتحفظ تلقائياً",
+          "✅ Changes are saved automatically"
+        )}
+      </p>
+
+    </div>
+  `;
+
+  document.getElementById("cvStatus")
+    .addEventListener("change", function() {
+      cvUpdateEntry("status", this.value);
+    });
+
+  document.getElementById("cvRating")
+    .addEventListener("change", function() {
+      cvUpdateEntry(
+        "rating",
+        this.value ? Number(this.value) : ""
+      );
+    });
+}
+
+function cvRenderSmartLibrary() {
+  const container = document.getElementById(
+    "cvSmartLibrary"
+  );
+
+  if (!container) return;
+
+  const entries = Object.values(smartLibrary);
+
+  let html = `
+    <h2 style="padding:15px">
+      ${cvText(
+        "📚 مكتبة المشاهدة",
+        "📚 Watch Library"
+      )}
+    </h2>
+  `;
+
+  let hasItems = false;
+
+  for (const [status, label] of Object.entries(
+    libraryStatuses
+  )) {
+    const items = entries.filter(
+      x => x.status === status
+    );
+
+    if (!items.length) continue;
+
+    hasItems = true;
+
+    html += `
+      <div class="section">
+        <h2>
+          ${cvText(label.ar, label.en)}
+          (${items.length})
+        </h2>
+
+        <div class="row">
+          ${items.map(x =>
+            card(x, x.media_type)
+          ).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  const rated = entries.filter(
+    x => Number(x.rating) > 0
+  );
+
+  if (rated.length) {
+    hasItems = true;
+
+    rated.sort(
+      (a, b) => b.rating - a.rating
+    );
+
+    html += `
+      <div class="section">
+        <h2>
+          ${cvText(
+            "⭐ تقييماتي الشخصية",
+            "⭐ My Ratings"
+          )}
+        </h2>
+
+        <div class="row">
+          ${rated.map(x =>
+            card(x, x.media_type)
+          ).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  if (!hasItems) {
+    html += `
+      <div class="empty">
+        ${cvText(
+          "مازال ما سجلتي حتى عمل. دخل لأي فيلم أو مسلسل وحدد حالة المشاهدة ديالو.",
+          "Your library is empty. Open a title and select its watch status."
+        )}
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+function cvInitializeLibrary() {
+  const detailContent = document.querySelector(
+    ".detail-content"
+  );
+
+  if (
+    detailContent &&
+    !document.getElementById("cvLibraryControls")
+  ) {
+    const controls = document.createElement("div");
+
+    controls.id = "cvLibraryControls";
+
+    const favoriteButton = document.getElementById(
+      "favButton"
+    );
+
+    favoriteButton.insertAdjacentElement(
+      "afterend",
+      controls
+    );
+  }
+
+  const libraryView = document.getElementById(
+    "library"
+  );
+
+  if (
+    libraryView &&
+    !document.getElementById("cvSmartLibrary")
+  ) {
+    const smartSection = document.createElement("div");
+
+    smartSection.id = "cvSmartLibrary";
+
+    libraryView.appendChild(smartSection);
+  }
+}
+
+/* Connect to existing CINEVERSE functions */
+
+const cvOriginalOpenDetail = openDetail;
+
+openDetail = async function(type, id) {
+  await cvOriginalOpenDetail(type, id);
+
+  if (
+    current &&
+    current.id === id &&
+    current.media_type === type
+  ) {
+    cvRenderControls();
+  }
+};
+
+const cvOriginalShowView = showView;
+
+showView = function(id, el) {
+  cvOriginalShowView(id, el);
+
+  if (id === "library") {
+    cvRenderSmartLibrary();
+  }
+};
+
+const cvOriginalToggleLang = toggleLang;
+
+toggleLang = function() {
+  cvOriginalToggleLang();
+
+  cvRenderSmartLibrary();
+
+  if (current) {
+    cvRenderControls();
+  }
+};
+
+cvInitializeLibrary();
+cvRenderSmartLibrary();
+
+</script>  
 </body>
 </html>
