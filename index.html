@@ -310,6 +310,142 @@ a{color:var(--accent)}
 main{max-width:900px;margin:auto}
 }
 </style>
+ <style>
+/* ==============================
+   CINEVERSE 2.4 — CINEMA STATS
+============================== */
+
+#cv24-stats {
+  color: #fff;
+  padding: 25px 15px;
+  max-width: 1200px;
+  margin: auto;
+  font-family: inherit;
+}
+
+.cv24-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.cv24-subtitle {
+  color: #999;
+  margin-bottom: 25px;
+}
+
+.cv24-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+}
+
+.cv24-card {
+  background: linear-gradient(145deg, #20202b, #111118);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 22px;
+  transition: .3s;
+}
+
+.cv24-card:hover {
+  transform: translateY(-4px);
+  border-color: #e50914;
+}
+
+.cv24-icon {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.cv24-number {
+  font-size: 31px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.cv24-label {
+  color: #aaa;
+  font-size: 13px;
+  margin-top: 7px;
+}
+
+.cv24-section {
+  margin-top: 35px;
+}
+
+.cv24-section h3 {
+  margin-bottom: 18px;
+  font-size: 20px;
+}
+
+.cv24-top-list {
+  display: grid;
+  gap: 12px;
+}
+
+.cv24-top-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #191920;
+  padding: 12px;
+  border-radius: 14px;
+}
+
+.cv24-top-item img {
+  width: 55px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.cv24-top-info {
+  flex: 1;
+}
+
+.cv24-top-name {
+  font-weight: 700;
+}
+
+.cv24-top-rating {
+  color: #ffcc00;
+  margin-top: 6px;
+}
+
+.cv24-empty {
+  color: #888;
+  text-align: center;
+  padding: 30px;
+  background: #191920;
+  border-radius: 14px;
+}
+
+.cv24-refresh {
+  background: #e50914;
+  color: white;
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+@media(max-width:600px) {
+  .cv24-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .cv24-number {
+    font-size: 25px;
+  }
+
+  .cv24-card {
+    padding: 16px;
+  }
+}
+</style> 
 </head>
 
 <body>
@@ -2240,5 +2376,364 @@ cvLoadRecommendations();
 
 })();
   </script>
+<!-- CINEVERSE 2.4 STATS PAGE -->
+
+<section id="cv24-stats">
+
+  <h2 class="cv24-title">
+    📊 My Cinema Stats
+  </h2>
+
+  <p class="cv24-subtitle">
+    Your personal cinema journey
+  </p>
+
+  <button
+    class="cv24-refresh"
+    onclick="CV24Stats.refresh()">
+    🔄 Refresh Stats
+  </button>
+
+  <div class="cv24-grid">
+
+    <div class="cv24-card">
+      <div class="cv24-icon">🎬</div>
+      <div class="cv24-number" id="cv24-movies">0</div>
+      <div class="cv24-label">Movies Watched</div>
+    </div>
+
+    <div class="cv24-card">
+      <div class="cv24-icon">📺</div>
+      <div class="cv24-number" id="cv24-shows">0</div>
+      <div class="cv24-label">TV Shows</div>
+    </div>
+
+    <div class="cv24-card">
+      <div class="cv24-icon">✅</div>
+      <div class="cv24-number" id="cv24-episodes">0</div>
+      <div class="cv24-label">Episodes Watched</div>
+    </div>
+
+    <div class="cv24-card">
+      <div class="cv24-icon">⏱️</div>
+      <div class="cv24-number" id="cv24-hours">0</div>
+      <div class="cv24-label">Watch Hours</div>
+    </div>
+
+    <div class="cv24-card">
+      <div class="cv24-icon">⭐</div>
+      <div class="cv24-number" id="cv24-rating">—</div>
+      <div class="cv24-label">Average Rating</div>
+    </div>
+
+    <div class="cv24-card">
+      <div class="cv24-icon">📈</div>
+      <div class="cv24-number" id="cv24-progress">—</div>
+      <div class="cv24-label">Watching Progress</div>
+    </div>
+
+  </div>
+
+  <div class="cv24-section">
+
+    <h3>🏆 Your Top Rated</h3>
+
+    <div
+      class="cv24-top-list"
+      id="cv24-top-rated">
+
+      <div class="cv24-empty">
+        No rated titles yet.
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<script>
+/* =====================================
+   CINEVERSE 2.4 — MY CINEMA STATS
+===================================== */
+
+const CV24Stats = {
+
+  // Temporary adapter:
+  // Replace with the application's real library.
+  getLibrary() {
+    return [];
+  },
+
+  isWatched(item) {
+    return (
+      item.status === "watched" ||
+      item.watchStatus === "watched"
+    );
+  },
+
+  isTV(item) {
+    return (
+      item.media_type === "tv" ||
+      item.mediaType === "tv" ||
+      item.type === "tv"
+    );
+  },
+
+  getEpisodes(item) {
+    if (!this.isTV(item)) return 0;
+
+    const episodes = Number(
+      item.watchedEpisodes ??
+      item.episodesWatched ??
+      0
+    );
+
+    return Number.isFinite(episodes)
+      ? Math.max(0, episodes)
+      : 0;
+  },
+
+  getRating(item) {
+    const rating = Number(
+      item.userRating ??
+      item.personalRating ??
+      0
+    );
+
+    return Number.isFinite(rating) &&
+      rating > 0 &&
+      rating <= 10
+        ? rating
+        : null;
+  },
+
+  getRuntime(item) {
+    const runtime = Number(
+      item.runtime ?? 0
+    );
+
+    return Number.isFinite(runtime) &&
+      runtime > 0
+        ? runtime
+        : 0;
+  },
+
+  calculate() {
+
+    const library = this.getLibrary();
+
+    const watchedMovies = library.filter(
+      item =>
+        !this.isTV(item) &&
+        this.isWatched(item)
+    );
+
+    const shows = library.filter(
+      item => this.isTV(item)
+    );
+
+    const episodes = shows.reduce(
+      (total, item) =>
+        total + this.getEpisodes(item),
+      0
+    );
+
+    const movieMinutes = watchedMovies.reduce(
+      (total, item) =>
+        total + this.getRuntime(item),
+      0
+    );
+
+    const episodeMinutes = shows.reduce(
+      (total, item) => {
+
+        const episodeRuntime = Number(
+          item.episodeRuntime ??
+          item.episode_run_time ??
+          0
+        );
+
+        return total +
+          this.getEpisodes(item) *
+          (
+            Number.isFinite(episodeRuntime) &&
+            episodeRuntime > 0
+              ? episodeRuntime
+              : 0
+          );
+
+      },
+      0
+    );
+
+    const hours =
+      (movieMinutes + episodeMinutes) / 60;
+
+    const rated = library.filter(
+      item => this.getRating(item) !== null
+    );
+
+    const averageRating = rated.length
+      ? rated.reduce(
+          (total, item) =>
+            total + this.getRating(item),
+          0
+        ) / rated.length
+      : null;
+
+    const topRated = [...rated]
+      .sort(
+        (a, b) =>
+          this.getRating(b) -
+          this.getRating(a)
+      )
+      .slice(0, 5);
+
+    let totalEpisodes = 0;
+
+    shows.forEach(item => {
+
+      const total = Number(
+        item.number_of_episodes ??
+        item.totalEpisodes ??
+        0
+      );
+
+      if (Number.isFinite(total) && total > 0) {
+        totalEpisodes += total;
+      }
+
+    });
+
+    const progress = totalEpisodes > 0
+      ? Math.min(
+          100,
+          Math.round(
+            episodes / totalEpisodes * 100
+          )
+        )
+      : null;
+
+    return {
+      movies: watchedMovies.length,
+      shows: shows.length,
+      episodes,
+      hours,
+      averageRating,
+      progress,
+      topRated
+    };
+
+  },
+
+  renderTopRated(items) {
+
+    const container =
+      document.getElementById("cv24-top-rated");
+
+    container.replaceChildren();
+
+    if (!items.length) {
+      const empty = document.createElement("div");
+      empty.className = "cv24-empty";
+      empty.textContent = "No rated titles yet.";
+      container.appendChild(empty);
+      return;
+    }
+
+    items.forEach(item => {
+
+      const row = document.createElement("div");
+      row.className = "cv24-top-item";
+
+      const poster = document.createElement("img");
+
+      const posterPath =
+        item.poster_path ?? item.poster ?? "";
+
+      if (
+        typeof posterPath === "string" &&
+        posterPath.startsWith("/")
+      ) {
+        poster.src =
+          "https://image.tmdb.org/t/p/w185" +
+          posterPath;
+      } else if (
+        typeof posterPath === "string" &&
+        /^https:\/\//i.test(posterPath)
+      ) {
+        poster.src = posterPath;
+      }
+
+      poster.alt = item.title ?? item.name ?? "Poster";
+      poster.loading = "lazy";
+
+      const info = document.createElement("div");
+      info.className = "cv24-top-info";
+
+      const name = document.createElement("div");
+      name.className = "cv24-top-name";
+      name.textContent =
+        item.title ?? item.name ?? "Unknown";
+
+      const rating = document.createElement("div");
+      rating.className = "cv24-top-rating";
+      rating.textContent =
+        "⭐ " + this.getRating(item) + "/10";
+
+      info.append(name, rating);
+      row.append(poster, info);
+
+      container.appendChild(row);
+
+    });
+
+  },
+
+  refresh() {
+
+    const stats = this.calculate();
+
+    document.getElementById(
+      "cv24-movies"
+    ).textContent = stats.movies;
+
+    document.getElementById(
+      "cv24-shows"
+    ).textContent = stats.shows;
+
+    document.getElementById(
+      "cv24-episodes"
+    ).textContent = stats.episodes;
+
+    document.getElementById(
+      "cv24-hours"
+    ).textContent = stats.hours.toFixed(1);
+
+    document.getElementById(
+      "cv24-rating"
+    ).textContent =
+      stats.averageRating === null
+        ? "—"
+        : stats.averageRating.toFixed(1);
+
+    document.getElementById(
+      "cv24-progress"
+    ).textContent =
+      stats.progress === null
+        ? "—"
+        : stats.progress + "%";
+
+    this.renderTopRated(stats.topRated);
+
+  }
+
+};
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => CV24Stats.refresh()
+);
+</script>
 </body>
 </html>
