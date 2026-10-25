@@ -5869,5 +5869,421 @@ console.log("CINEVERSE Backup 3.0 Ready");
 
 })();
 </script>
+<style>
+/* CINEVERSE 2.6.2 — MONTHLY ANALYTICS */
+
+#cv262Monthly {
+  margin-top: 25px;
+  padding: 20px;
+  background: linear-gradient(145deg,#211632,#14101f);
+  border: 1px solid #49316b;
+  border-radius: 20px;
+}
+
+.cv262-title {
+  color: #c4b5fd;
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+.cv262-description {
+  color: #aaa;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.cv262-summary {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.cv262-summary-card {
+  background: #211a33;
+  border: 1px solid #392653;
+  border-radius: 14px;
+  padding: 15px;
+  text-align: center;
+}
+
+.cv262-summary-number {
+  font-size: 25px;
+  font-weight: 900;
+  color: #c4b5fd;
+}
+
+.cv262-summary-label {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 7px;
+}
+
+.cv262-chart {
+  display: flex;
+  align-items: end;
+  gap: 7px;
+  height: 190px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.cv262-column {
+  flex: 1;
+  min-width: 23px;
+  text-align: center;
+}
+
+.cv262-bar-container {
+  height: 135px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  background: #241b35;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.cv262-bar-movie {
+  background: #a78bfa;
+}
+
+.cv262-bar-tv {
+  background: #7c3aed;
+}
+
+.cv262-month-label {
+  font-size: 10px;
+  color: #aaa;
+  margin-top: 8px;
+}
+
+.cv262-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 15px;
+}
+
+.cv262-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-inline-end: 5px;
+}
+
+.cv262-note {
+  color: #888;
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 20px;
+}
+</style>
+
+<script>
+/*
+========================================
+ CINEVERSE 2.6.2
+ MONTHLY ACTIVITY ANALYTICS
+========================================
+*/
+
+(function(){
+
+function t(ar,en){
+  return lang==="ar-MA"?ar:en;
+}
+
+function createMonthlyUI(){
+
+  if(document.getElementById("cv262Monthly"))return;
+
+  const stats=document.getElementById("cv24-stats");
+
+  if(!stats)return;
+
+  const section=document.createElement("section");
+
+  section.id="cv262Monthly";
+
+  section.innerHTML=`
+    <h2 class="cv262-title"></h2>
+
+    <p class="cv262-description"></p>
+
+    <div class="cv262-summary">
+
+      <div class="cv262-summary-card">
+        <div class="cv262-summary-number" id="cv262Total">0</div>
+        <div class="cv262-summary-label" id="cv262TotalLabel"></div>
+      </div>
+
+      <div class="cv262-summary-card">
+        <div class="cv262-summary-number" id="cv262Best">—</div>
+        <div class="cv262-summary-label" id="cv262BestLabel"></div>
+      </div>
+
+    </div>
+
+    <div class="cv262-chart" id="cv262Chart"></div>
+
+    <div class="cv262-legend">
+      <div>
+        <span class="cv262-dot" style="background:#a78bfa"></span>
+        <span id="cv262MoviesLabel"></span>
+      </div>
+
+      <div>
+        <span class="cv262-dot" style="background:#7c3aed"></span>
+        <span id="cv262TVLabel"></span>
+      </div>
+    </div>
+
+    <p class="cv262-note" id="cv262Note"></p>
+  `;
+
+  stats.appendChild(section);
+}
+
+function readActivity(){
+
+  try{
+
+    const data=JSON.parse(
+      localStorage.getItem("cv26_watch_activity")||"{}"
+    );
+
+    return data&&typeof data==="object"&&!Array.isArray(data)
+      ?data:{};
+
+  }catch{
+    return {};
+  }
+}
+
+function getMonths(){
+
+  const months=[];
+
+  const now=new Date();
+
+  for(let i=11;i>=0;i--){
+
+    const date=new Date(
+      now.getFullYear(),
+      now.getMonth()-i,
+      1
+    );
+
+    const key=
+      date.getFullYear()+"-"+
+      String(date.getMonth()+1).padStart(2,"0");
+
+    months.push({
+      key,
+      date,
+      movies:0,
+      tv:0
+    });
+
+  }
+
+  return months;
+}
+
+function calculateMonthly(){
+
+  const activity=readActivity();
+
+  const months=getMonths();
+
+  const map=new Map(
+    months.map(m=>[m.key,m])
+  );
+
+  for(const [key,date] of Object.entries(activity)){
+
+    if(typeof date!=="string")continue;
+
+    const month=map.get(date.slice(0,7));
+
+    if(!month)continue;
+
+    if(/^movie_\d+_$/.test(key)){
+      month.movies++;
+    }
+
+    if(/^tv_\d+_\d+_\d+$/.test(key)){
+      month.tv++;
+    }
+
+  }
+
+  return months;
+}
+
+function refreshMonthly(){
+
+  const section=document.getElementById(
+    "cv262Monthly"
+  );
+
+  if(!section)return;
+
+  const months=calculateMonthly();
+
+  const total=months.reduce(
+    (sum,m)=>sum+m.movies+m.tv,
+    0
+  );
+
+  const best=months.reduce(
+    (a,b)=>
+      a.movies+a.tv>=b.movies+b.tv?a:b
+  );
+
+  const maximum=Math.max(
+    1,
+    ...months.map(m=>m.movies+m.tv)
+  );
+
+  const locale=lang==="ar-MA"?"ar-MA":"en-US";
+
+  section.querySelector(".cv262-title").textContent=
+    t("📊 نشاط المشاهدة الشهري","📊 Monthly Watching Activity");
+
+  section.querySelector(".cv262-description").textContent=
+    t(
+      "اكتشف نشاطك السينمائي خلال آخر 12 شهر.",
+      "Explore your watching activity over the last 12 months."
+    );
+
+  document.getElementById("cv262Total").textContent=
+    total;
+
+  document.getElementById("cv262TotalLabel").textContent=
+    t("مجموع المشاهدات المسجلة","Total Logged Views");
+
+  document.getElementById("cv262Best").textContent=
+    total?
+      best.date.toLocaleDateString(locale,{
+        month:"short",
+        year:"numeric"
+      }):"—";
+
+  document.getElementById("cv262BestLabel").textContent=
+    t("الشهر الأكثر نشاطاً","Most Active Month");
+
+  document.getElementById("cv262MoviesLabel").textContent=
+    t("الأفلام","Movies");
+
+  document.getElementById("cv262TVLabel").textContent=
+    t("الحلقات","Episodes");
+
+  document.getElementById("cv262Note").textContent=
+    t(
+      "الإحصائيات كتبدأ من نهار تفعيل Watch Calendar. المشاهدات القديمة ما عندهاش تواريخ معروفة.",
+      "Activity tracking starts after Watch Calendar was enabled. Older viewing dates are unknown."
+    );
+
+  document.getElementById("cv262Chart").innerHTML=
+    months.map(m=>{
+
+      const movieHeight=m.movies/maximum*100;
+      const tvHeight=m.tv/maximum*100;
+
+      const label=m.date.toLocaleDateString(locale,{
+        month:"short"
+      });
+
+      return `
+        <div class="cv262-column"
+          title="${m.key}: ${m.movies+m.tv}">
+
+          <div class="cv262-bar-container">
+
+            <div class="cv262-bar-tv"
+              style="height:${tvHeight}%"></div>
+
+            <div class="cv262-bar-movie"
+              style="height:${movieHeight}%"></div>
+
+          </div>
+
+          <div class="cv262-month-label">
+            ${escapeHTML(label)}
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+/* Integrate with Stats */
+
+const previousOpenStats=window.cvOpenStats;
+
+window.cvOpenStats=function(){
+
+  if(typeof previousOpenStats==="function"){
+    previousOpenStats();
+  }
+
+  refreshMonthly();
+
+};
+
+/* Refresh when activity changes */
+
+const previousToggleEpisode=toggleEpisode;
+
+toggleEpisode=function(tv,season,episode){
+
+  previousToggleEpisode(tv,season,episode);
+
+  refreshMonthly();
+
+};
+
+const previousUpdateEntry=cvUpdateEntry;
+
+cvUpdateEntry=function(field,value){
+
+  previousUpdateEntry(field,value);
+
+  if(field==="status"){
+    refreshMonthly();
+  }
+
+};
+
+/* Language support */
+
+const previousToggleLang=toggleLang;
+
+toggleLang=function(){
+
+  previousToggleLang();
+
+  refreshMonthly();
+
+};
+
+/* Initialize */
+
+createMonthlyUI();
+refreshMonthly();
+
+console.log(
+  "CINEVERSE 2.6.2 Monthly Activity Ready"
+);
+
+})();
+</script>
 </body>
 </html>
