@@ -3748,5 +3748,287 @@ console.log("CINEVERSE 2.4 Mood Finder Ready");
 
 })();
  </script>
+ <script>
+/*
+========================================
+ CINEVERSE 2.4 — SURPRISE ME 3.0
+========================================
+*/
+
+(function(){
+
+function t(ar,en){
+  return lang === "ar-MA" ? ar : en;
+}
+
+/* Get pool of titles to surprise from */
+
+function getSurprisePool(){
+
+  const pool = [];
+
+  /* 1. Personal Recommendations */
+  const recRow = document.getElementById("cvRecommendationsRow");
+  if(recRow){
+    const cards = recRow.querySelectorAll(".card[data-id]");
+    cards.forEach(c=>{
+      pool.push({
+        type: c.dataset.type,
+        id: Number(c.dataset.id)
+      });
+    });
+  }
+
+  /* 2. Mood Finder Results */
+  const moodRow = document.getElementById("cvMoodResults");
+  if(moodRow){
+    const cards = moodRow.querySelectorAll(".card[data-id]");
+    cards.forEach(c=>{
+      pool.push({
+        type: c.dataset.type,
+        id: Number(c.dataset.id)
+      });
+    });
+  }
+
+  /* 3. Trending Cache */
+  if(cache.trending){
+    cache.trending.forEach(item=>{
+      if(item.media_type==="movie"||item.media_type==="tv"){
+        pool.push({
+          type: item.media_type,
+          id: Number(item.id)
+        });
+      }
+    });
+  }
+
+  /* 4. Top Rated */
+  if(cache.top){
+    cache.top.forEach(item=>{
+      pool.push({
+        type: item.media_type || "movie",
+        id: Number(item.id)
+      });
+    });
+  }
+
+  return pool;
+}
+
+/* Filter out watched titles */
+
+function filterWatched(pool){
+
+  const watchedIds = new Set();
+
+  /* Completed in Smart Library */
+  Object.entries(smartLibrary||{}).forEach(([key,entry])=>{
+    if(entry.status==="completed"){
+      watchedIds.add(`${entry.media_type}_${entry.id}`);
+    }
+  });
+
+  /* Watched episodes for TV */
+  Object.entries(watched||{}).forEach(([key])=>{
+    const parts = key.split("_");
+    if(parts.length===3){
+      watchedIds.add(`tv_${parts[0]}`);
+    }
+  });
+
+  return pool.filter(item=>
+    !watchedIds.has(`${item.type}_${item.id}`)
+  );
+}
+
+/* Main Surprise Me function */
+
+function smartSurpriseMe(excludeWatched=true){
+
+  let pool = getSurprisePool();
+
+  /* Remove duplicates */
+  const unique = new Map();
+  pool.forEach(item=>{
+    const key = `${item.type}_${item.id}`;
+    if(!unique.has(key)){
+      unique.set(key,item);
+    }
+  });
+  pool = [...unique.values()];
+
+  /* Filter watched if needed */
+  if(excludeWatched){
+    pool = filterWatched(pool);
+  }
+
+  if(!pool.length){
+    alert(t(
+      "ما كاينش أعمال جديدة للاختيار منها. جرب تحديث الصفحة أو إضافة أعمال جديدة لمكتبتك.",
+      "No unwatched titles available. Try refreshing or adding new titles to your library."
+    ));
+    return;
+  }
+
+  /* Random selection */
+  const selected = pool[Math.floor(Math.random()*pool.length)];
+
+  openDetail(selected.type, selected.id);
+}
+
+/* Replace original surpriseMe */
+
+const originalSurprise = window.surpriseMe;
+
+window.surpriseMe = function(excludeWatched=true){
+  smartSurpriseMe(excludeWatched);
+};
+
+/* Add new button to home hero */
+
+function addSurpriseButton(){
+
+  const hero = document.querySelector("#home .hero");
+
+  if(!hero || document.getElementById("cvSurpriseButton")) return;
+
+  const button = document.createElement("button");
+  button.id = "cvSurpriseButton";
+  button.className = "btn";
+  button.style.margin = "10px 5px 0";
+  button.innerHTML = "🎲 Surprise Me 3.0";
+  button.onclick = () => {
+    if(confirm(t(
+      "استبعد الأعمال المشاهدة؟",
+      "Exclude watched titles?"
+    ))){
+      smartSurpriseMe(true);
+    } else {
+      smartSurpriseMe(false);
+    }
+  };
+
+  hero.appendChild(button);
+}
+
+/* Language support */
+
+const originalToggle = toggleLang;
+toggleLang = function(){
+  originalToggle();
+  if(document.getElementById("cvSurpriseButton")){
+    document.getElementById("cvSurpriseButton").textContent =
+      t("🎲 فاجئني 3.0", "🎲 Surprise Me 3.0");
+  }
+};
+
+/* Initialize */
+addSurpriseButton();
+console.log("CINEVERSE 2.4 Surprise Me 3.0 Ready");
+
+})();
+ </script>
+ <script>
+/*
+========================================
+ CINEVERSE 2.4 — MOOD FINDER FIX
+ Correct Genre IDs for TV Shows
+========================================
+*/
+
+(function(){
+
+const moods = window.moods || [];
+
+// Fix genre IDs for TV shows
+const genreFixes = {
+  scifi: { movie: "878", tv: "10765" },
+  action: { movie: "28", tv: "10759" },
+  mystery: { movie: "9648", tv: "9648" },
+  horror: { movie: "27", tv: "27" },
+  romance: { movie: "10749", tv: "10749" },
+  comedy: { movie: "35", tv: "35" },
+  crime: { movie: "80", tv: "80" },
+  drama: { movie: "18", tv: "18" }
+};
+
+if(moods.length){
+  moods.forEach(mood=>{
+    if(genreFixes[mood.id]){
+      mood.genres_movie = genreFixes[mood.id].movie;
+      mood.genres_tv = genreFixes[mood.id].tv;
+    }
+  });
+}
+
+// Override searchMood to use correct genres
+const originalSearchMood = window.searchMood;
+window.searchMood = async function(){
+
+  const mood = moods.find(m=>m.id===selectedMood);
+  const type = document.getElementById("cvMoodType").value;
+  const rating = document.getElementById("cvMoodRating").value;
+  const sort = document.getElementById("cvMoodSort").value;
+
+  const status = document.getElementById("cvMoodStatus");
+  const results = document.getElementById("cvMoodResults");
+
+  moodResults = [];
+  results.innerHTML = "";
+
+  status.textContent = t(
+    "🔍 جاري البحث عن أعمال مناسبة...",
+    "🔍 Finding titles for your mood..."
+  );
+
+  try{
+    const endpoint = type==="movie" ? "discover_movies" : "discover_tv";
+    const genres = type==="movie" ? mood.genres_movie : mood.genres_tv;
+
+    // Fix sort_by for TV shows
+    let sortBy = sort;
+    if(type==="tv" && sort==="primary_release_date.desc"){
+      sortBy = "first_air_date.desc";
+    }
+
+    const params = {
+      with_genres: genres,
+      "vote_average.gte": rating,
+      sort_by: sortBy,
+      "vote_count.gte": 100,
+      page: 1
+    };
+
+    const data = await api(endpoint, params);
+    const version = ++window.moodRequestVersion;
+
+    if(version !== window.moodRequestVersion) return;
+
+    const items = (data.results||[]).filter(x=>x.poster_path)
+      .map(x=>({...x, media_type: type}));
+
+    moodResults = items;
+
+    status.textContent = items.length
+      ? t(`🎬 لقينا ${items.length} عمل مناسب`, `🎬 Found ${items.length} titles`)
+      : t("ما لقيناش نتائج. جرب تقييم أقل.", "No results. Try a lower rating.");
+
+    renderCards("cvMoodResults", items, type);
+
+  } catch(error){
+    if(window.moodRequestVersion !== window.moodRequestVersion) return;
+    console.error("Mood Finder:", error);
+    status.textContent = t(
+      "❌ تعذر تحميل النتائج. حاول مرة أخرى.",
+      "❌ Unable to load results. Please try again."
+    );
+  }
+};
+
+console.log("CINEVERSE 2.4 Mood Finder Fix Applied");
+
+})();
+ </script>
 </body>
 </html>
