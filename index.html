@@ -475,6 +475,14 @@ data-en="Discover movies and shows, track episodes and organize your library.">
 اكتشف الأفلام والمسلسلات، تابع حلقاتك، ونظم مكتبتك الشخصية.
 </p>
 <button class="btn" onclick="surpriseMe()">🎲 Surprise Me</button>
+ <button
+class="btn ghost"
+onclick="cvOpenStats()"
+style="margin-top:10px">
+
+📊 My Cinema Stats
+
+ </button>
 </div>
 
 <div class="section">
@@ -2378,7 +2386,7 @@ cvLoadRecommendations();
   </script>
 <!-- CINEVERSE 2.4 STATS PAGE -->
 
-<section id="cv24-stats">
+<section id="cv24-stats" class="view">
 
   <h2 class="cv24-title">
     📊 My Cinema Stats
@@ -2461,15 +2469,12 @@ const CV24Stats = {
   // Temporary adapter:
   // Replace with the application's real library.
   getLibrary() {
-    return [];
-  },
+  return Object.values(smartLibrary || {});
+},
 
   isWatched(item) {
-    return (
-      item.status === "watched" ||
-      item.watchStatus === "watched"
-    );
-  },
+  return item.status === "completed";
+},
 
   isTV(item) {
     return (
@@ -2480,32 +2485,41 @@ const CV24Stats = {
   },
 
   getEpisodes(item) {
-    if (!this.isTV(item)) return 0;
 
-    const episodes = Number(
-      item.watchedEpisodes ??
-      item.episodesWatched ??
-      0
-    );
+  if (!this.isTV(item)) return 0;
 
-    return Number.isFinite(episodes)
-      ? Math.max(0, episodes)
-      : 0;
-  },
+  const tvId = String(item.id);
+
+  return Object.entries(watched).filter(
+    ([key, value]) => {
+
+      if (value !== true) return false;
+
+      const parts = key.split("_");
+
+      return (
+        parts.length === 3 &&
+        parts[0] === tvId &&
+        Number(parts[1]) >= 0 &&
+        Number(parts[2]) > 0
+      );
+
+    }
+  ).length;
+
+},
 
   getRating(item) {
-    const rating = Number(
-      item.userRating ??
-      item.personalRating ??
-      0
-    );
 
-    return Number.isFinite(rating) &&
-      rating > 0 &&
-      rating <= 10
-        ? rating
-        : null;
-  },
+  const rating = Number(item.rating);
+
+  return Number.isFinite(rating) &&
+    rating >= 1 &&
+    rating <= 10
+      ? rating
+      : null;
+
+},
 
   getRuntime(item) {
     const runtime = Number(
@@ -2735,5 +2749,57 @@ document.addEventListener(
   () => CV24Stats.refresh()
 );
 </script>
+ <script>
+
+/*
+ CINEVERSE 2.4
+ Stats Navigation
+*/
+
+function cvOpenStats() {
+
+  const stats = document.getElementById("cv24-stats");
+
+  if (!stats) return;
+
+  showView("cv24-stats");
+
+  CV24Stats.refresh();
+
+}
+
+ </script>
+ <script>
+
+/*
+ CINEVERSE 2.4
+ Automatic Stats Refresh
+*/
+
+(function() {
+
+  const originalSaveLibrary = cvSaveLibrary;
+
+  cvSaveLibrary = function() {
+
+    originalSaveLibrary();
+
+    CV24Stats.refresh();
+
+  };
+
+  const originalToggleEpisode = toggleEpisode;
+
+  toggleEpisode = function(tv, season, episode) {
+
+    originalToggleEpisode(tv, season, episode);
+
+    CV24Stats.refresh();
+
+  };
+
+})();
+
+ </script>
 </body>
 </html>
