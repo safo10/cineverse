@@ -6285,5 +6285,210 @@ console.log(
 
 })();
 </script>
+<script>
+/*
+========================================
+ CINEVERSE 2.7
+ SMART API CACHE
+========================================
+*/
+
+(function(){
+
+const CACHE_PREFIX = "cv27_api_";
+
+const CACHE_VERSION = 1;
+
+const TTL = {
+  trending: 30 * 60 * 1000,
+  movies: 60 * 60 * 1000,
+  tv: 60 * 60 * 1000,
+  top_movies: 6 * 60 * 60 * 1000,
+  upcoming: 60 * 60 * 1000,
+  details: 24 * 60 * 60 * 1000,
+  providers: 12 * 60 * 60 * 1000,
+  similar: 6 * 60 * 60 * 1000,
+  recommendations: 6 * 60 * 60 * 1000,
+  discover_movies: 60 * 60 * 1000,
+  discover_tv: 60 * 60 * 1000,
+  season: 6 * 60 * 60 * 1000,
+  search: 15 * 60 * 1000
+};
+
+const memoryCache = new Map();
+const pendingRequests = new Map();
+
+function cacheKey(endpoint,params){
+
+  const sorted = Object.entries(params||{})
+    .sort(([a],[b])=>a.localeCompare(b));
+
+  const raw = JSON.stringify({
+    version:CACHE_VERSION,
+    endpoint,
+    language:lang,
+    params:sorted
+  });
+
+  let hash = 0;
+
+  for(let i=0;i<raw.length;i++){
+    hash = ((hash<<5)-hash)+raw.charCodeAt(i);
+    hash |= 0;
+  }
+
+  return CACHE_PREFIX+
+    endpoint+"_"+Math.abs(hash);
+}
+
+function readCache(key){
+
+  const now = Date.now();
+
+  const memory = memoryCache.get(key);
+
+  if(memory && memory.expires>now){
+    return memory.data;
+  }
+
+  try{
+
+    const raw = sessionStorage.getItem(key);
+
+    if(!raw)return null;
+
+    const entry = JSON.parse(raw);
+
+    if(entry.expires<=now){
+      sessionStorage.removeItem(key);
+      return null;
+    }
+
+    memoryCache.set(key,entry);
+
+    return entry.data;
+
+  }catch{
+    return null;
+  }
+}
+
+function writeCache(key,data,ttl){
+
+  const entry = {
+    expires:Date.now()+ttl,
+    data
+  };
+
+  memoryCache.set(key,entry);
+
+  try{
+
+    sessionStorage.setItem(
+      key,
+      JSON.stringify(entry)
+    );
+
+  }catch{
+    // Storage might be full or unavailable.
+  }
+}
+
+/* Preserve original API function */
+
+const originalAPI = api;
+
+/* Replace API wrapper */
+
+api = async function(endpoint,params={}){
+
+  const ttl = TTL[endpoint];
+
+  if(!ttl){
+    return originalAPI(endpoint,params);
+  }
+
+  const key = cacheKey(endpoint,params);
+
+  const cached = readCache(key);
+
+  if(cached!==null){
+    return cached;
+  }
+
+  if(pendingRequests.has(key)){
+    return pendingRequests.get(key);
+  }
+
+  const request = originalAPI(endpoint,params)
+    .then(data=>{
+
+      writeCache(key,data,ttl);
+
+      return data;
+
+    })
+    .finally(()=>{
+      pendingRequests.delete(key);
+    });
+
+  pendingRequests.set(key,request);
+
+  return request;
+
+};
+
+/* Cache cleanup */
+
+function cleanupCache(){
+
+  const now = Date.now();
+
+  for(const [key,value] of memoryCache){
+
+    if(value.expires<=now){
+      memoryCache.delete(key);
+    }
+
+  }
+
+  try{
+
+    for(let i=sessionStorage.length-1;i>=0;i--){
+
+      const key=sessionStorage.key(i);
+
+      if(!key || !key.startsWith(CACHE_PREFIX)){
+        continue;
+      }
+
+      const raw=sessionStorage.getItem(key);
+
+      try{
+
+        const entry=JSON.parse(raw);
+
+        if(!entry || entry.expires<=now){
+          sessionStorage.removeItem(key);
+        }
+
+      }catch{
+        sessionStorage.removeItem(key);
+      }
+
+    }
+
+  }catch{}
+
+}
+
+cleanupCache();
+
+console.log(
+  "CINEVERSE 2.7 Smart API Cache Ready"
+);
+
+})();
+</script>
 </body>
 </html>
