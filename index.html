@@ -4030,5 +4030,229 @@ console.log("CINEVERSE 2.4 Mood Finder Fix Applied");
 
 })();
  </script>
+<style>
+/* CINEVERSE 2.5 — QUICK MENU */
+
+#cv25MenuButton {
+  position: fixed;
+  bottom: 92px;
+  inset-inline-end: 18px;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  border: 1px solid #a78bfa;
+  background: linear-gradient(135deg,#7c3aed,#4c1d95);
+  color: white;
+  font-size: 25px;
+  z-index: 45;
+  box-shadow: 0 8px 30px #7c3aed66;
+}
+
+#cv25Menu {
+  position: fixed;
+  bottom: 155px;
+  inset-inline-end: 18px;
+  width: min(290px, calc(100vw - 36px));
+  max-height: calc(100dvh - 180px);
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 20px;
+  border: 1px solid #49316b;
+  background: #171423;
+  box-shadow: 0 15px 45px #0009;
+  z-index: 44;
+  display: none;
+}
+
+#cv25Menu.open {
+  display: block;
+}
+
+.cv25-menu-title {
+  font-weight: 900;
+  color: #c4b5fd;
+  margin-bottom: 12px;
+}
+
+.cv25-menu-item {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin: 7px 0;
+  text-align: start;
+  border: 1px solid #302743;
+  border-radius: 12px;
+  background: #211a33;
+  color: white;
+  font-size: 13px;
+}
+
+.cv25-menu-item:active {
+  background: #392653;
+}
+
+#cv25MenuButton:focus-visible,
+.cv25-menu-item:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 3px;
+}
+</style>
+
+<script>
+/*
+ CINEVERSE 2.5
+ Quick Navigation Menu
+*/
+
+(function() {
+
+  if (document.getElementById("cv25MenuButton")) {
+    return;
+  }
+
+  const button = document.createElement("button");
+  button.id = "cv25MenuButton";
+  button.type = "button";
+  button.textContent = "☰";
+  button.setAttribute("aria-label", "Open quick menu");
+  button.setAttribute("aria-expanded", "false");
+
+  const menu = document.createElement("div");
+  menu.id = "cv25Menu";
+
+  const options = [
+    {
+      icon: "🏠",
+      ar: "الرئيسية",
+      en: "Home",
+      action: () => showView("home")
+    },
+    {
+      icon: "❤️",
+      ar: "مكتبتي",
+      en: "My Library",
+      action: () => showView("library")
+    },
+    {
+      icon: "📊",
+      ar: "إحصائياتي",
+      en: "My Stats",
+      action: () => {
+        if (typeof cvOpenStats === "function") {
+          cvOpenStats();
+        }
+      }
+    },
+    {
+      icon: "🎭",
+      ar: "اكتشف حسب المزاج",
+      en: "Mood Finder",
+      action: () => {
+        showView("cvMoodFinder");
+      }
+    },
+    {
+      icon: "🎲",
+      ar: "فاجئني",
+      en: "Surprise Me",
+      action: () => {
+        if (typeof surpriseMe === "function") {
+          surpriseMe();
+        }
+      }
+    },
+    {
+      icon: "📅",
+      ar: "الإصدارات القادمة",
+      en: "Upcoming",
+      action: () => showView("upcomingView")
+    }
+  ];
+
+  function currentText(ar, en) {
+    return lang === "ar-MA" ? ar : en;
+  }
+
+  function closeMenu() {
+    menu.classList.remove("open");
+    button.textContent = "☰";
+    button.setAttribute("aria-expanded", "false");
+  }
+
+  function renderMenu() {
+    menu.replaceChildren();
+
+    const title = document.createElement("div");
+    title.className = "cv25-menu-title";
+    title.textContent = currentText(
+      "✦ القائمة السريعة",
+      "✦ Quick Menu"
+    );
+
+    menu.appendChild(title);
+
+    options.forEach(option => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "cv25-menu-item";
+
+      item.textContent =
+        option.icon + " " +
+        currentText(option.ar, option.en);
+
+      item.addEventListener("click", () => {
+        closeMenu();
+        option.action();
+      });
+
+      menu.appendChild(item);
+    });
+
+    button.setAttribute(
+      "aria-label",
+      currentText("فتح القائمة السريعة", "Open quick menu")
+    );
+  }
+
+  button.addEventListener("click", event => {
+    event.stopPropagation();
+
+    const isOpen = menu.classList.toggle("open");
+
+    button.textContent = isOpen ? "✕" : "☰";
+    button.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  document.addEventListener("click", event => {
+    if (
+      !menu.contains(event.target) &&
+      !button.contains(event.target)
+    ) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+
+  document.body.appendChild(button);
+  document.body.appendChild(menu);
+
+  const originalToggleLang = toggleLang;
+
+  toggleLang = function() {
+    originalToggleLang();
+    renderMenu();
+  };
+
+  renderMenu();
+
+  console.log("CINEVERSE 2.5 Quick Menu Ready");
+
+})();
+   </script>
 </body>
 </html>
