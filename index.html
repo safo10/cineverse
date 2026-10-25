@@ -4,28 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#09090f">
-<title>CINEVERSE 2.0</title>
+<meta name="description" content="CINEVERSE - Your personal cinema universe">
+<title>CINEVERSE 3.0</title>
 
 <style>
 :root{
 --bg:#09090f;
 --card:#171423;
+--card2:#211a33;
 --accent:#a78bfa;
 --purple:#7c3aed;
 --text:#fff;
 --muted:#a1a1b5;
 --border:#302743;
+--green:#22c55e;
 }
+
 *{box-sizing:border-box}
+
 body{
 margin:0;
 background:var(--bg);
 color:var(--text);
 font-family:system-ui,Arial,sans-serif;
-padding-bottom:85px;
+padding-bottom:90px;
 }
+
 button,input,select{font:inherit}
 button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+
 header{
 position:sticky;
 top:0;
@@ -35,30 +43,34 @@ backdrop-filter:blur(12px);
 border-bottom:1px solid var(--border);
 padding:14px;
 }
+
 .top{
 display:flex;
 justify-content:space-between;
 align-items:center;
 }
+
 .logo{
 font-size:23px;
 font-weight:900;
 color:var(--accent);
-letter-spacing:1px;
 }
+
 .btn{
 border:0;
 border-radius:12px;
 padding:11px 15px;
 background:var(--accent);
 color:#09090f;
-font-weight:700;
+font-weight:800;
 }
+
 .ghost{
-background:#211a33;
+background:var(--card2);
 color:white;
 border:1px solid var(--border);
 }
+
 .search{
 width:100%;
 margin-top:14px;
@@ -69,19 +81,39 @@ border-radius:12px;
 color:white;
 outline:none;
 }
+
+main{
+max-width:1000px;
+margin:auto;
+}
+
+.view{display:none}
+.view.active{display:block}
+
 .hero{
 margin:15px;
 padding:25px 20px;
 border-radius:22px;
 background:linear-gradient(135deg,#5925a3,#19112f);
 }
-.hero h1{margin:0 0 10px;font-size:25px}
-.hero p{color:#ddd;line-height:1.7}
-.section{margin-top:25px}
+
+.hero h1{margin:0 0 10px;font-size:26px}
+.hero p{color:#ddd;line-height:1.8}
+
+.actions{
+display:flex;
+flex-wrap:wrap;
+gap:9px;
+margin-top:15px;
+}
+
+.section{margin-top:28px}
+
 .section h2{
 font-size:19px;
 padding:0 16px;
 }
+
 .row{
 display:flex;
 gap:12px;
@@ -89,7 +121,9 @@ overflow-x:auto;
 padding:0 15px 15px;
 scrollbar-width:none;
 }
+
 .row::-webkit-scrollbar{display:none}
+
 .card{
 min-width:140px;
 width:140px;
@@ -100,48 +134,314 @@ overflow:hidden;
 flex-shrink:0;
 cursor:pointer;
 }
+
 .card img{
 width:100%;
 height:200px;
 object-fit:cover;
-background:#211a33;
+background:var(--card2);
 }
+
 .card-body{padding:9px}
+
 .card-title{
 font-size:13px;
 font-weight:700;
-height:36px;
-overflow:hidden;
+min-height:36px;
 }
+
 .meta{
 font-size:11px;
 color:var(--muted);
 margin-top:5px;
 }
+
 .grid{
 display:grid;
 grid-template-columns:repeat(2,minmax(0,1fr));
 gap:12px;
 padding:15px;
 }
+
 .grid .card{
 width:100%;
 min-width:0;
 }
+
 .grid .card img{height:220px}
-.view{display:none}
-.view.active{display:block}
+
+.panel{
+margin:15px;
+padding:20px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:20px;
+}
+
+.panel h2{
+color:var(--accent);
+font-size:21px;
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:12px;
+}
+
+.stat{
+background:linear-gradient(145deg,#26183d,#15101f);
+padding:19px;
+border:1px solid #49316b;
+border-radius:16px;
+text-align:center;
+}
+
+.stat-number{
+font-size:28px;
+font-weight:900;
+color:#c4b5fd;
+}
+
+.stat-label{
+font-size:12px;
+color:var(--muted);
+margin-top:8px;
+}
+
+select{
+width:100%;
+padding:13px;
+background:var(--card2);
+color:white;
+border:1px solid var(--border);
+border-radius:12px;
+margin:8px 0 15px;
+}
+
+label{
+display:block;
+font-size:13px;
+color:#c4b5fd;
+margin-top:12px;
+}
+
+.mood-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.mood-option{
+background:var(--card2);
+border:1px solid var(--border);
+color:white;
+padding:17px 8px;
+border-radius:14px;
+}
+
+.mood-option.active{
+background:var(--purple);
+border-color:var(--accent);
+}
+
+.detail-cover{
+height:260px;
+position:relative;
+background:var(--card2);
+}
+
+.detail-cover img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.back{
+position:absolute;
+top:15px;
+inset-inline-start:15px;
+width:43px;
+height:43px;
+border:0;
+border-radius:50%;
+background:#000b;
+color:white;
+font-size:23px;
+}
+
+.detail-content{padding:18px}
+
+.detail-title{
+font-size:27px;
+font-weight:900;
+}
+
+.overview{
+font-size:14px;
+color:#ddd;
+line-height:1.9;
+}
+
+.tags{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+margin:15px 0;
+}
+
+.tag{
+background:var(--card2);
+border:1px solid var(--border);
+padding:7px 11px;
+border-radius:20px;
+font-size:12px;
+}
+
+.detail-section{
+margin-top:25px;
+border-top:1px solid var(--border);
+padding-top:15px;
+}
+
+.episode{
+display:flex;
+gap:12px;
+border-bottom:1px solid var(--border);
+padding:14px 0;
+}
+
+.episode img{
+width:100px;
+height:65px;
+object-fit:cover;
+border-radius:9px;
+}
+
+.episode-info{flex:1;min-width:0}
+
+.watch-btn{
+background:var(--card2);
+color:white;
+border:1px solid var(--border);
+padding:9px;
+border-radius:10px;
+margin-top:9px;
+}
+
+.watch-btn.done{
+background:#14532d;
+border-color:var(--green);
+}
+
+.progress{
+height:9px;
+background:#302743;
+border-radius:20px;
+overflow:hidden;
+margin:12px 0;
+}
+
+.progress-bar{
+height:100%;
+background:linear-gradient(90deg,#7c3aed,#a78bfa);
+}
+
+.top-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px;
+background:var(--card2);
+border-radius:12px;
+margin:8px 0;
+cursor:pointer;
+}
+
+.top-item img{
+width:50px;
+height:75px;
+object-fit:cover;
+border-radius:7px;
+}
+
+.chart{
+display:flex;
+align-items:end;
+gap:5px;
+height:140px;
+}
+
+.chart-col{
+flex:1;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:end;
+align-items:center;
+font-size:10px;
+color:var(--muted);
+}
+
+.chart-bar{
+width:100%;
+background:linear-gradient(0deg,#7c3aed,#c4b5fd);
+border-radius:5px 5px 0 0;
+}
+
+.calendar-grid{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:5px;
+}
+
+.calendar-day{
+aspect-ratio:1;
+display:grid;
+place-items:center;
+background:var(--card2);
+border-radius:8px;
+font-size:12px;
+}
+
+.calendar-day.active{
+background:var(--purple);
+}
+
+.calendar-day.today{
+outline:1px solid var(--accent);
+}
+
+.calendar-day.blank{
+background:transparent;
+}
+
+.calendar-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:15px 0;
+}
+
+.empty,.loading{
+color:var(--muted);
+text-align:center;
+padding:25px;
+line-height:1.8;
+}
+
 nav{
 position:fixed;
 bottom:0;
 left:0;
 right:0;
+display:flex;
 background:#10101c;
 border-top:1px solid var(--border);
-display:flex;
-z-index:30;
 padding:10px 3px;
+z-index:30;
 }
+
 .nav-item{
 flex:1;
 text-align:center;
@@ -149,303 +449,69 @@ font-size:11px;
 color:var(--muted);
 cursor:pointer;
 }
+
 .nav-item span{
 display:block;
 font-size:21px;
 }
+
 .nav-item.active{color:var(--accent)}
-.detail-cover{
-height:260px;
-background:#211a33;
-position:relative;
-}
-.detail-cover img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
-.back{
-position:absolute;
-top:15px;
-inset-inline-start:15px;
-background:#000b;
+
+#quickButton{
+position:fixed;
+bottom:90px;
+inset-inline-end:18px;
+width:55px;
+height:55px;
+border-radius:18px;
+background:var(--purple);
 color:white;
-border:0;
-border-radius:50%;
-width:42px;
-height:42px;
-font-size:23px;
+border:1px solid var(--accent);
+font-size:25px;
+z-index:41;
+box-shadow:0 8px 25px #7c3aed66;
 }
-.detail-content{padding:18px}
-.detail-title{
-font-size:27px;
-font-weight:900;
-margin:5px 0;
-}
-.detail-meta{
-color:var(--muted);
-font-size:13px;
-margin:10px 0;
-}
-.overview{
-font-size:14px;
-line-height:1.9;
-color:#ddd;
-}
-.tags{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin:15px 0;
-}
-.tag{
-background:#241b3d;
-border:1px solid var(--border);
-padding:7px 11px;
+
+#quickMenu{
+display:none;
+position:fixed;
+bottom:155px;
+inset-inline-end:18px;
+width:min(290px,calc(100vw - 36px));
+max-height:65vh;
+overflow:auto;
+background:var(--card);
+border:1px solid #49316b;
 border-radius:20px;
-font-size:12px;
+padding:15px;
+z-index:40;
+box-shadow:0 15px 40px #000a;
 }
-.detail-section{
-margin-top:25px;
-border-top:1px solid var(--border);
-padding-top:15px;
-}
-.detail-section h3{
-font-size:19px;
-margin-bottom:15px;
-}
-.season-select{
+
+#quickMenu.open{display:block}
+
+.menu-item{
 width:100%;
-padding:14px;
-background:#211a33;
+display:block;
+background:var(--card2);
 color:white;
 border:1px solid var(--border);
-border-radius:12px;
-margin-bottom:15px;
+padding:13px;
+text-align:start;
+border-radius:11px;
+margin:7px 0;
 }
-.episode{
-display:flex;
-gap:12px;
-padding:13px 0;
-border-bottom:1px solid var(--border);
-align-items:flex-start;
-}
-.episode img{
-width:110px;
-height:70px;
-object-fit:cover;
-border-radius:9px;
-background:#211a33;
-}
-.episode-info{flex:1;min-width:0}
-.episode-title{
-font-size:13px;
-font-weight:800;
-}
-.episode-date{
-font-size:11px;
-color:var(--muted);
-margin-top:5px;
-}
-.episode-desc{
-font-size:12px;
-color:#aaa;
-line-height:1.6;
-margin-top:7px;
-}
-.watch-btn{
-background:#211a33;
-border:1px solid var(--border);
-color:white;
-padding:8px;
-border-radius:9px;
-font-size:12px;
-margin-top:9px;
-}
-.watch-btn.done{
-background:#14532d;
-border-color:#22c55e;
-}
-.progress{
-background:#302743;
-height:9px;
-border-radius:20px;
-overflow:hidden;
-margin:12px 0;
-}
-.progress-bar{
-height:100%;
-background:linear-gradient(90deg,#7c3aed,#a78bfa);
-width:0%;
-transition:.3s;
-}
-.provider{
-display:inline-flex;
-align-items:center;
-gap:7px;
-background:#211a33;
-padding:7px;
-border-radius:10px;
-margin:5px;
-font-size:12px;
-}
-.provider img{
-width:30px;
-height:30px;
-border-radius:7px;
-}
-.empty{
-color:var(--muted);
-text-align:center;
-padding:30px 15px;
-line-height:1.8;
-}
-.loading{
-color:var(--muted);
-padding:20px;
-}
-a{color:var(--accent)}
+
 .hidden{display:none!important}
+
+a{color:var(--accent)}
+
 @media(min-width:700px){
-main{max-width:900px;margin:auto}
+.stats-grid{grid-template-columns:repeat(3,1fr)}
+.mood-grid{grid-template-columns:repeat(4,1fr)}
+.grid{grid-template-columns:repeat(4,1fr)}
 }
 </style>
- <style>
-/* ==============================
-   CINEVERSE 2.4 — CINEMA STATS
-============================== */
-
-#cv24-stats {
-  color: #fff;
-  padding: 25px 15px;
-  max-width: 1200px;
-  margin: auto;
-  font-family: inherit;
-}
-
-.cv24-title {
-  font-size: 28px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.cv24-subtitle {
-  color: #999;
-  margin-bottom: 25px;
-}
-
-.cv24-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 15px;
-}
-
-.cv24-card {
-  background: linear-gradient(145deg, #20202b, #111118);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 18px;
-  padding: 22px;
-  transition: .3s;
-}
-
-.cv24-card:hover {
-  transform: translateY(-4px);
-  border-color: #e50914;
-}
-
-.cv24-icon {
-  font-size: 28px;
-  margin-bottom: 15px;
-}
-
-.cv24-number {
-  font-size: 31px;
-  font-weight: 800;
-  color: #fff;
-}
-
-.cv24-label {
-  color: #aaa;
-  font-size: 13px;
-  margin-top: 7px;
-}
-
-.cv24-section {
-  margin-top: 35px;
-}
-
-.cv24-section h3 {
-  margin-bottom: 18px;
-  font-size: 20px;
-}
-
-.cv24-top-list {
-  display: grid;
-  gap: 12px;
-}
-
-.cv24-top-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: #191920;
-  padding: 12px;
-  border-radius: 14px;
-}
-
-.cv24-top-item img {
-  width: 55px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.cv24-top-info {
-  flex: 1;
-}
-
-.cv24-top-name {
-  font-weight: 700;
-}
-
-.cv24-top-rating {
-  color: #ffcc00;
-  margin-top: 6px;
-}
-
-.cv24-empty {
-  color: #888;
-  text-align: center;
-  padding: 30px;
-  background: #191920;
-  border-radius: 14px;
-}
-
-.cv24-refresh {
-  background: #e50914;
-  color: white;
-  border: 0;
-  padding: 12px 20px;
-  border-radius: 12px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
-@media(max-width:600px) {
-  .cv24-grid {
-    grid-template-columns: repeat(2,1fr);
-  }
-
-  .cv24-number {
-    font-size: 25px;
-  }
-
-  .cv24-card {
-    padding: 16px;
-  }
-}
-</style> 
 </head>
 
 <body>
@@ -453,36 +519,40 @@ main{max-width:900px;margin:auto}
 <header id="mainHeader">
 <div class="top">
 <div class="logo">CINEVERSE ✦</div>
-<button class="btn ghost" onclick="toggleLang()" id="langBtn">EN</button>
+<button class="btn ghost" id="langBtn">EN</button>
 </div>
-<input
-class="search"
-id="searchInput"
-placeholder="بحث عن فيلم أو مسلسل..."
-oninput="handleSearch(this.value)">
+<input class="search" id="searchInput">
 </header>
 
 <main>
 
-<div id="home" class="view active">
+<section id="home" class="view active">
 
 <div class="hero">
 <h1 data-ar="عالمك السينمائي 🎬" data-en="Your Cinema Universe 🎬">
 عالمك السينمائي 🎬
 </h1>
-<p data-ar="اكتشف الأفلام والمسلسلات، تابع حلقاتك، ونظم مكتبتك الشخصية."
+
+<p data-ar="اكتشف الأفلام والمسلسلات، تابع حلقاتك ونظم مكتبتك الشخصية."
 data-en="Discover movies and shows, track episodes and organize your library.">
-اكتشف الأفلام والمسلسلات، تابع حلقاتك، ونظم مكتبتك الشخصية.
+اكتشف الأفلام والمسلسلات، تابع حلقاتك ونظم مكتبتك الشخصية.
 </p>
+
+<div class="actions">
 <button class="btn" onclick="surpriseMe()">🎲 Surprise Me</button>
- <button
-class="btn ghost"
-onclick="cvOpenStats()"
-style="margin-top:10px">
+<button class="btn ghost" onclick="showView('mood')">🎭 Mood Finder</button>
+<button class="btn ghost" onclick="showView('stats')">📊 Stats</button>
+</div>
+</div>
 
-📊 My Cinema Stats
+<div class="section">
+<h2 data-ar="🧠 مختارة خصيصاً لك" data-en="🧠 Recommended For You">🧠 مختارة خصيصاً لك</h2>
+<div class="row" id="recommendations"></div>
+</div>
 
- </button>
+<div class="section">
+<h2>💎 Hidden Gems</h2>
+<div class="row" id="gems"></div>
 </div>
 
 <div class="section">
@@ -510,24 +580,173 @@ style="margin-top:10px">
 <div class="row" id="upcoming"></div>
 </div>
 
-</div>
+</section>
 
-<div id="searchView" class="view">
-<h2 style="padding:15px" data-ar="🔍 نتائج البحث" data-en="🔍 Search Results">🔍 نتائج البحث</h2>
+<section id="searchView" class="view">
+<div class="panel"><h2 id="searchTitle">🔍 نتائج البحث</h2></div>
 <div id="searchResults" class="grid"></div>
-</div>
+</section>
 
-<div id="library" class="view">
-<h2 style="padding:15px" data-ar="❤️ مكتبتي" data-en="❤️ My Library">❤️ مكتبتي</h2>
-<div id="libraryGrid" class="grid"></div>
+<section id="library" class="view">
+<div class="panel">
+<h2 id="libraryTitle">📚 مكتبتي</h2>
 </div>
+<div id="libraryContent"></div>
+</section>
 
-<div id="upcomingView" class="view">
-<h2 style="padding:15px" data-ar="📅 الإصدارات القادمة" data-en="📅 Upcoming Releases">📅 الإصدارات القادمة</h2>
+<section id="upcomingView" class="view">
+<div class="panel"><h2>📅 Upcoming</h2></div>
 <div id="upcomingGrid" class="grid"></div>
+</section>
+
+<section id="mood" class="view">
+
+<div class="panel">
+<h2 id="moodTitle">🎭 Mood Finder</h2>
+<p id="moodDescription"></p>
+<div class="mood-grid" id="moodOptions"></div>
 </div>
 
-<div id="detail" class="view">
+<div class="panel">
+
+<label id="moodTypeLabel">Content Type</label>
+<select id="moodType">
+<option value="movie">🎬 Movie</option>
+<option value="tv">📺 TV</option>
+</select>
+
+<label id="moodRatingLabel">Minimum Rating</label>
+<select id="moodRating">
+<option value="0">0+</option>
+<option value="5">5+</option>
+<option value="6">6+</option>
+<option value="7" selected>7+</option>
+<option value="8">8+</option>
+</select>
+
+<label id="moodSortLabel">Sort</label>
+<select id="moodSort">
+<option value="popularity.desc">Popular</option>
+<option value="vote_average.desc">Top Rated</option>
+<option value="primary_release_date.desc">Newest</option>
+</select>
+
+<button class="btn" onclick="searchMood()" id="moodSearchBtn">🔍 Discover</button>
+<button class="btn ghost" onclick="surpriseMe('mood')" id="moodSurpriseBtn">🎲 Surprise Me</button>
+
+</div>
+
+<div class="panel">
+<h2 id="moodResultsTitle">✨ Results</h2>
+<div id="moodStatus" class="loading"></div>
+</div>
+
+<div id="moodResults" class="grid"></div>
+
+</section>
+
+<section id="stats" class="view">
+
+<div class="panel">
+<h2 id="statsTitle">📊 My Cinema Stats</h2>
+<p id="statsSubtitle"></p>
+
+<div class="stats-grid">
+
+<div class="stat">
+<div class="stat-number" id="statMovies">0</div>
+<div class="stat-label" id="labelMovies">Movies Watched</div>
+</div>
+
+<div class="stat">
+<div class="stat-number" id="statShows">0</div>
+<div class="stat-label" id="labelShows">TV Shows</div>
+</div>
+
+<div class="stat">
+<div class="stat-number" id="statEpisodes">0</div>
+<div class="stat-label" id="labelEpisodes">Episodes Watched</div>
+</div>
+
+<div class="stat">
+<div class="stat-number" id="statHours">0</div>
+<div class="stat-label" id="labelHours">Watch Hours</div>
+</div>
+
+<div class="stat">
+<div class="stat-number" id="statRating">—</div>
+<div class="stat-label" id="labelRating">Average Rating</div>
+</div>
+
+<div class="stat">
+<div class="stat-number" id="statProgress">—</div>
+<div class="stat-label" id="labelProgress">TV Progress</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="panel">
+<h2 id="topRatedTitle">🏆 Top Rated</h2>
+<div id="topRatedList"></div>
+</div>
+
+<div class="panel">
+<h2 id="distributionTitle">🍩 Movies & TV</h2>
+<div id="distribution"></div>
+</div>
+
+<div class="panel">
+<h2 id="ratingsTitle">⭐ Rating Distribution</h2>
+<div id="ratingsChart"></div>
+</div>
+
+<div class="panel">
+<h2 id="genresTitle">🎭 Favorite Genres</h2>
+<div id="genresChart"></div>
+</div>
+
+<div class="panel">
+<h2 id="achievementsTitle">🏆 Achievements</h2>
+<div id="achievements"></div>
+</div>
+
+<div class="panel">
+<h2 id="calendarTitle">📅 Watch Calendar</h2>
+
+<div class="stats-grid">
+<div class="stat">
+<div class="stat-number" id="monthCount">0</div>
+<div class="stat-label" id="monthCountLabel">This Month</div>
+</div>
+
+<div class="stat">
+<div class="stat-number" id="streakCount">0</div>
+<div class="stat-label" id="streakLabel">Day Streak</div>
+</div>
+</div>
+
+<div class="calendar-head">
+<button class="btn ghost" onclick="changeMonth(-1)">❮</button>
+<strong id="calendarMonth"></strong>
+<button class="btn ghost" onclick="changeMonth(1)">❯</button>
+</div>
+
+<div class="calendar-grid" id="calendarDays"></div>
+
+<p id="calendarNote" class="meta"></p>
+</div>
+
+<div class="panel">
+<h2 id="monthlyTitle">📊 Monthly Activity</h2>
+<div id="monthlyChart"></div>
+<div id="monthlySummary" class="meta"></div>
+</div>
+
+</section>
+
+<section id="detail" class="view">
 
 <div class="detail-cover">
 <img id="detailImage" alt="">
@@ -537,82 +756,130 @@ style="margin-top:10px">
 <div class="detail-content">
 
 <h1 class="detail-title" id="detailTitle"></h1>
-<div class="detail-meta" id="detailMeta"></div>
-
+<div class="meta" id="detailMeta"></div>
 <div class="tags" id="detailGenres"></div>
 
 <button class="btn" id="favButton" onclick="toggleFavorite()">
-❤️ إضافة للمفضلة
+❤️ Favorite
 </button>
 
+<div class="panel" style="margin:20px 0">
+
+<h2 id="personalTitle">📚 My Library</h2>
+
+<label id="statusLabel">Watch Status</label>
+<select id="statusSelect"></select>
+
+<label id="ratingLabel">My Rating</label>
+<select id="ratingSelect"></select>
+
+</div>
+
 <div class="detail-section">
-<h3 data-ar="📖 القصة" data-en="📖 Overview">📖 القصة</h3>
+<h3 id="overviewTitle">📖 Overview</h3>
 <p class="overview" id="detailOverview"></p>
 </div>
 
-<div class="detail-section" id="providerSection">
-<h3 data-ar="📺 منصات المشاهدة في المغرب" data-en="📺 Where to Watch in Morocco">
-📺 منصات المشاهدة في المغرب
-</h3>
+<div class="detail-section">
+<h3 id="providersTitle">📺 Where to Watch in Morocco</h3>
 <div id="providers"></div>
 </div>
 
 <div class="detail-section hidden" id="seasonsSection">
-<h3 data-ar="📺 المواسم والحلقات" data-en="📺 Seasons & Episodes">
-📺 المواسم والحلقات
-</h3>
+
+<h3 id="seasonsTitle">📺 Seasons & Episodes</h3>
 
 <div id="overallProgress"></div>
 
-<select class="season-select" id="seasonSelect" onchange="loadSeason(this.value)">
-</select>
+<select id="seasonSelect"></select>
 
 <div id="seasonProgress"></div>
+
 <div id="episodesList"></div>
+
 </div>
 
 <div class="detail-section">
-<h3 data-ar="✨ أعمال مشابهة" data-en="✨ Similar Titles">✨ أعمال مشابهة</h3>
+<h3 id="similarTitle">✨ Similar Titles</h3>
 <div class="row" id="similar"></div>
 </div>
 
 </div>
+</section>
+
+<section id="backup" class="view">
+
+<div class="panel">
+
+<h2>💾 CINEVERSE Backup 3.0</h2>
+
+<p id="backupDescription"></p>
+
+<div class="actions">
+
+<button class="btn" onclick="exportBackup()" id="exportBtn">
+📤 Export
+</button>
+
+<label class="btn ghost" style="cursor:pointer">
+<span id="importLabel">📥 Import</span>
+<input type="file" accept=".json,application/json"
+style="display:none" id="backupFile">
+</label>
+
 </div>
+
+<p class="meta" id="backupNote"></p>
+
+</div>
+
+</section>
 
 </main>
 
 <nav id="bottomNav">
 
-<div class="nav-item active" onclick="showView('home',this)">
-<span>🏠</span>
-<b data-ar="الرئيسية" data-en="Home">الرئيسية</b>
+<div class="nav-item active" data-view="home" onclick="showView('home')">
+<span>🏠</span><b id="navHome">الرئيسية</b>
 </div>
 
-<div class="nav-item" onclick="showView('searchView',this)">
-<span>🔍</span>
-<b data-ar="البحث" data-en="Search">البحث</b>
+<div class="nav-item" data-view="searchView" onclick="showView('searchView')">
+<span>🔍</span><b id="navSearch">البحث</b>
 </div>
 
-<div class="nav-item" onclick="showView('library',this)">
-<span>❤️</span>
-<b data-ar="مكتبتي" data-en="Library">مكتبتي</b>
+<div class="nav-item" data-view="library" onclick="showView('library')">
+<span>❤️</span><b id="navLibrary">مكتبتي</b>
 </div>
 
-<div class="nav-item" onclick="showView('upcomingView',this)">
-<span>📅</span>
-<b data-ar="القادم" data-en="Upcoming">القادم</b>
+<div class="nav-item" data-view="upcomingView" onclick="showView('upcomingView')">
+<span>📅</span><b id="navUpcoming">القادم</b>
 </div>
 
 </nav>
 
+<button id="quickButton" aria-label="Quick Menu" aria-expanded="false">☰</button>
+<div id="quickMenu"></div>
+
+<footer style="text-align:center;color:#777;font-size:11px;padding:30px 15px">
+This product uses the TMDB API but is not endorsed or certified by TMDB.
+<br>
+Streaming availability data provided by JustWatch via TMDB.
+</footer>
+
 <script>
+"use strict";
+
+/* ==========================================
+   CINEVERSE 3.0 — CORE
+========================================== */
+
 const API="https://cineverse-api.nouamanmostafa.workers.dev/";
 const IMG="https://image.tmdb.org/t/p/w500";
 const BACKDROP="https://image.tmdb.org/t/p/w780";
 
-let lang=localStorage.getItem("cv_lang")||"ar-MA";
+const $=id=>document.getElementById(id);
 
-function readSaved(key,fallback){
+function readJSON(key,fallback){
 try{
 const value=JSON.parse(localStorage.getItem(key));
 return value??fallback;
@@ -621,32 +888,57 @@ return fallback;
 }
 }
 
-let favorites=readSaved("cv_favorites",[]);
-let watched=readSaved("cv_watched",{});
+function safeObject(value){
+return value&&typeof value==="object"&&!Array.isArray(value)
+?value:{};
+}
 
+let lang=localStorage.getItem("cv_lang")==="en-US"?"en-US":"ar-MA";
+
+let favorites=readJSON("cv_favorites",[]);
 if(!Array.isArray(favorites))favorites=[];
-if(!watched||typeof watched!=="object"||Array.isArray(watched))watched={};
+
+let watched=safeObject(readJSON("cv_watched",{}));
+let smartLibrary=safeObject(readJSON("cv_smart_library",{}));
+let activity=safeObject(readJSON("cv26_watch_activity",{}));
 
 let current=null;
 let currentView="home";
 let previousView="home";
-let cache={};
-let searchTimer;
-let searchVersion=0;
+
+let homeCache={};
+let recommendationItems=[];
+let moodResults=[];
+
 let detailVersion=0;
 let seasonVersion=0;
+let moodVersion=0;
+let searchVersion=0;
+let recommendationVersion=0;
+let statsVersion=0;
 
-function tr(ar,en){
+let searchTimer=null;
+
+let displayedMonth=new Date();
+displayedMonth.setDate(1);
+
+const runtimeCacheKey="cv24_runtime_cache";
+const genreCacheKey="cv25_genre_cache";
+
+let runtimeCache=safeObject(readJSON(runtimeCacheKey,{}));
+let genreCache=safeObject(readJSON(genreCacheKey,{}));
+
+function t(ar,en){
 return lang==="ar-MA"?ar:en;
 }
 
-function save(){
-localStorage.setItem("cv_favorites",JSON.stringify(favorites));
-localStorage.setItem("cv_watched",JSON.stringify(watched));
+function setText(id,ar,en){
+const el=$(id);
+if(el)el.textContent=t(ar,en);
 }
 
-function escapeHTML(s){
-return String(s??"").replace(/[&<>"']/g,c=>({
+function escapeHTML(value){
+return String(value??"").replace(/[&<>"']/g,c=>({
 "&":"&amp;",
 "<":"&lt;",
 ">":"&gt;",
@@ -655,21 +947,94 @@ return String(s??"").replace(/[&<>"']/g,c=>({
 }[c]));
 }
 
-function buildURL(endpoint,params={}){
-const u=new URL(API);
-u.searchParams.set("endpoint",endpoint);
-u.searchParams.set("language",lang);
-Object.entries(params).forEach(([k,v])=>{
-u.searchParams.set(k,v);
-});
-return u.toString();
+function saveData(){
+localStorage.setItem("cv_favorites",JSON.stringify(favorites));
+localStorage.setItem("cv_watched",JSON.stringify(watched));
+localStorage.setItem("cv_smart_library",JSON.stringify(smartLibrary));
+localStorage.setItem("cv26_watch_activity",JSON.stringify(activity));
 }
 
-async function api(endpoint,params={}){
-const r=await fetch(buildURL(endpoint,params));
-if(!r.ok)throw Error("API "+r.status);
-return r.json();
+/* Old favorites migration */
+
+if(!localStorage.getItem("cv_favorites")){
+const old=readJSON("cineverse_favs",[]);
+if(Array.isArray(old)&&old.length){
+favorites=old.map(x=>({
+...x,
+media_type:x.media_type||x.type||(x.title?"movie":"tv")
+}));
+localStorage.setItem("cv_favorites",JSON.stringify(favorites));
 }
+}
+
+/* ==========================================
+   API CACHE
+========================================== */
+
+const apiMemory=new Map();
+const pending=new Map();
+
+const TTL={
+trending:1800000,
+movies:3600000,
+tv:3600000,
+top_movies:21600000,
+upcoming:3600000,
+details:86400000,
+providers:43200000,
+similar:21600000,
+recommendations:21600000,
+discover_movies:3600000,
+discover_tv:3600000,
+season:21600000,
+search:900000
+};
+
+async function api(endpoint,params={}){
+
+const entries=Object.entries(params)
+.sort(([a],[b])=>a.localeCompare(b));
+
+const key=JSON.stringify([endpoint,lang,entries]);
+
+const cached=apiMemory.get(key);
+
+if(cached&&cached.expires>Date.now()){
+return cached.data;
+}
+
+if(pending.has(key)){
+return pending.get(key);
+}
+
+const url=new URL(API);
+url.searchParams.set("endpoint",endpoint);
+url.searchParams.set("language",lang);
+
+entries.forEach(([k,v])=>url.searchParams.set(k,v));
+
+const request=fetch(url)
+.then(response=>{
+if(!response.ok)throw Error("API "+response.status);
+return response.json();
+})
+.then(data=>{
+apiMemory.set(key,{
+data,
+expires:Date.now()+(TTL[endpoint]||300000)
+});
+return data;
+})
+.finally(()=>pending.delete(key));
+
+pending.set(key,request);
+
+return request;
+}
+
+/* ==========================================
+   CARDS
+========================================== */
 
 function normalize(item,type){
 return {
@@ -679,8 +1044,10 @@ media_type:type||item.media_type||(item.title?"movie":"tv")
 }
 
 function card(item,type){
+
 const x=normalize(item,type);
-if(x.media_type!=="movie"&&x.media_type!=="tv")return "";
+
+if(!["movie","tv"].includes(x.media_type))return "";
 
 const title=escapeHTML(x.title||x.name||"Unknown");
 const poster=x.poster_path?IMG+x.poster_path:"";
@@ -688,9 +1055,11 @@ const year=(x.release_date||x.first_air_date||"").slice(0,4);
 const rating=Number(x.vote_average||0).toFixed(1);
 
 return `
-<div class="card" data-type="${x.media_type}" data-id="${Number(x.id)}">
-${poster?`<img loading="lazy" src="${poster}" alt="">`:
-`<div style="height:200px;padding:40px">🎬</div>`}
+<div class="card" data-id="${Number(x.id)}"
+data-type="${x.media_type}">
+${poster?
+`<img loading="lazy" src="${poster}" alt="">`:
+`<div style="height:200px;padding:50px">🎬</div>`}
 <div class="card-body">
 <div class="card-title">${title}</div>
 <div class="meta">⭐ ${rating} · ${year}</div>
@@ -698,20 +1067,128 @@ ${poster?`<img loading="lazy" src="${poster}" alt="">`:
 </div>`;
 }
 
-document.addEventListener("click",e=>{
-const el=e.target.closest(".card[data-id]");
-if(!el)return;
-openDetail(el.dataset.type,Number(el.dataset.id));
-});
-
 function renderCards(id,items,type){
-document.getElementById(id).innerHTML=
-items.length?
+
+const el=$(id);
+if(!el)return;
+
+el.innerHTML=items.length?
 items.map(x=>card(x,type)).join(""):
-`<div class="empty">${tr("لا توجد نتائج","No results")}</div>`;
+`<div class="empty">${t("لا توجد نتائج","No results")}</div>`;
 }
 
+document.addEventListener("click",event=>{
+
+const el=event.target.closest(".card[data-id]");
+if(!el)return;
+
+openDetail(el.dataset.type,Number(el.dataset.id));
+
+});
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+function showView(id){
+
+if(!$(id))return;
+
+if(currentView!=="detail"&&id==="detail"){
+previousView=currentView;
+}
+
+currentView=id;
+
+document.querySelectorAll(".view").forEach(v=>{
+v.classList.toggle("active",v.id===id);
+});
+
+document.querySelectorAll(".nav-item").forEach(n=>{
+n.classList.toggle("active",n.dataset.view===id);
+});
+
+$("mainHeader").style.display=id==="detail"?"none":"block";
+$("bottomNav").style.display=id==="detail"?"none":"flex";
+
+$("quickButton").classList.toggle("hidden",id==="detail");
+
+document.body.style.paddingBottom=id==="detail"?"0":"90px";
+
+closeMenu();
+
+if(id==="library")renderLibrary();
+if(id==="stats")refreshStats();
+if(id==="backup")updateBackupLanguage();
+
+window.scrollTo(0,0);
+}
+
+function goBack(){
+showView(previousView==="detail"?"home":previousView);
+}
+
+function closeMenu(){
+$("quickMenu").classList.remove("open");
+$("quickButton").textContent="☰";
+$("quickButton").setAttribute("aria-expanded","false");
+}
+
+const menuOptions=[
+["🏠","الرئيسية","Home","home"],
+["🔍","البحث","Search","searchView"],
+["❤️","مكتبتي","Library","library"],
+["📊","إحصائياتي","My Stats","stats"],
+["🎭","اكتشف حسب المزاج","Mood Finder","mood"],
+["📅","القادم","Upcoming","upcomingView"],
+["💾","النسخ الاحتياطي","Backup","backup"]
+];
+
+function renderMenu(){
+
+$("quickMenu").innerHTML=menuOptions.map(([icon,ar,en,id])=>`
+<button class="menu-item" data-target="${id}">
+${icon} ${escapeHTML(t(ar,en))}
+</button>
+`).join("")+
+`<button class="menu-item" id="menuSurprise">🎲 Surprise Me</button>`;
+
+$("quickMenu").querySelectorAll("[data-target]").forEach(btn=>{
+btn.onclick=()=>showView(btn.dataset.target);
+});
+
+$("menuSurprise").onclick=()=>surpriseMe();
+}
+
+$("quickButton").onclick=()=>{
+
+const open=$("quickMenu").classList.toggle("open");
+
+$("quickButton").textContent=open?"✕":"☰";
+$("quickButton").setAttribute("aria-expanded",String(open));
+
+};
+
+document.addEventListener("click",event=>{
+if(
+!$("quickMenu").contains(event.target)&&
+!$("quickButton").contains(event.target)
+)closeMenu();
+});
+
+document.addEventListener("keydown",event=>{
+if(event.key==="Escape"){
+if(currentView==="detail")goBack();
+else closeMenu();
+}
+});
+
+/* ==========================================
+   HOME
+========================================== */
+
 async function loadHome(){
+
 const sections=[
 ["trending","trending",null],
 ["movies","movies","movie"],
@@ -720,100 +1197,86 @@ const sections=[
 ["upcoming","upcoming","movie"]
 ];
 
-await Promise.all(sections.map(async ([id,endpoint,type])=>{
-document.getElementById(id).innerHTML=
-`<div class="loading">${tr("جاري التحميل...","Loading...")}</div>`;
+await Promise.all(sections.map(async([id,endpoint,type])=>{
+
+$(id).innerHTML=`<div class="loading">${t("جاري التحميل...","Loading...")}</div>`;
 
 try{
+
 const data=await api(endpoint);
-cache[id]=(data.results||[]).filter(x=>
-type||x.media_type==="movie"||x.media_type==="tv"
+
+const items=(data.results||[]).filter(x=>
+type||["movie","tv"].includes(x.media_type)
 );
-renderCards(id,cache[id],type);
+
+homeCache[id]=items;
+
+renderCards(id,items,type);
 
 if(id==="upcoming"){
-renderCards("upcomingGrid",cache[id],"movie");
+renderCards("upcomingGrid",items,"movie");
 }
-}catch(e){
-document.getElementById(id).innerHTML=
-`<div class="empty">${tr("تعذر تحميل البيانات","Failed to load")}</div>`;
+
+}catch{
+$(id).innerHTML=`<div class="empty">${t("تعذر التحميل","Loading failed")}</div>`;
 }
+
 }));
 }
 
-function showView(id,el){
-currentView=id;
+/* ==========================================
+   SEARCH
+========================================== */
 
-document.querySelectorAll(".view").forEach(v=>{
-v.classList.remove("active");
-});
+$("searchInput").addEventListener("input",event=>{
 
-document.getElementById(id).classList.add("active");
+const query=event.target.value.trim();
 
-document.querySelectorAll(".nav-item").forEach(n=>{
-n.classList.remove("active");
-});
-
-if(el)el.classList.add("active");
-
-document.getElementById("mainHeader").style.display=
-id==="detail"?"none":"block";
-
-document.getElementById("bottomNav").style.display=
-id==="detail"?"none":"flex";
-
-document.body.style.paddingBottom=
-id==="detail"?"0":"85px";
-
-if(id==="library")renderLibrary();
-
-window.scrollTo(0,0);
-}
-
-function goBack(){
-showView(previousView);
-const navMap={
-home:0,
-searchView:1,
-library:2,
-upcomingView:3
-};
-const index=navMap[previousView]??0;
-document.querySelectorAll(".nav-item")[index]?.classList.add("active");
-}
-
-function handleSearch(q){
 clearTimeout(searchTimer);
+
 const version=++searchVersion;
 
-if(!q.trim()){
-showView("home",document.querySelectorAll(".nav-item")[0]);
+if(!query){
+showView("home");
 return;
 }
 
-showView("searchView",document.querySelectorAll(".nav-item")[1]);
+showView("searchView");
 
-document.getElementById("searchResults").innerHTML=
-tr("جاري البحث...","Searching...");
+$("searchResults").innerHTML=
+`<div class="loading">${t("جاري البحث...","Searching...")}</div>`;
 
-searchTimer=setTimeout(async ()=>{
+searchTimer=setTimeout(async()=>{
+
 try{
-const data=await api("search",{query:q.trim()});
+
+const data=await api("search",{query});
+
 if(version!==searchVersion)return;
-const results=(data.results||[]).filter(x=>
-x.media_type==="movie"||x.media_type==="tv"
+
+renderCards("searchResults",
+(data.results||[]).filter(x=>["movie","tv"].includes(x.media_type))
 );
-renderCards("searchResults",results);
+
 }catch{
-if(version!==searchVersion)return;
-document.getElementById("searchResults").textContent=
-tr("حدث خطأ أثناء البحث","Search failed");
+
+if(version===searchVersion){
+$("searchResults").textContent=t("تعذر البحث","Search failed");
 }
+
+}
+
 },450);
-}
+
+});
+
+/* ==========================================
+   DETAILS
+========================================== */
 
 async function openDetail(type,id){
-if(type!=="movie"&&type!=="tv")return;
+
+if(!["movie","tv"].includes(type))return;
 
 const version=++detailVersion;
 seasonVersion++;
@@ -824,84 +1287,95 @@ showView("detail");
 
 current=null;
 
-document.getElementById("detailTitle").textContent=
-tr("جاري التحميل...","Loading...");
-document.getElementById("detailMeta").textContent="";
-document.getElementById("detailOverview").textContent="";
-document.getElementById("detailGenres").innerHTML="";
-document.getElementById("detailImage").removeAttribute("src");
-document.getElementById("providers").innerHTML="";
-document.getElementById("similar").innerHTML="";
-document.getElementById("episodesList").innerHTML="";
-document.getElementById("overallProgress").innerHTML="";
-document.getElementById("seasonProgress").innerHTML="";
-document.getElementById("seasonsSection").classList.add("hidden");
-document.getElementById("favButton").disabled=true;
+$("detailTitle").textContent=t("جاري التحميل...","Loading...");
+$("detailMeta").textContent="";
+$("detailOverview").textContent="";
+$("detailGenres").innerHTML="";
+$("detailImage").removeAttribute("src");
+$("providers").innerHTML="";
+$("similar").innerHTML="";
+$("episodesList").innerHTML="";
+$("overallProgress").innerHTML="";
+$("seasonProgress").innerHTML="";
+$("seasonsSection").classList.add("hidden");
+$("favButton").disabled=true;
 
 try{
-const d=await api("details",{type,id});
+
+const data=await api("details",{type,id});
+
 if(version!==detailVersion)return;
 
-current={...d,media_type:type};
+current={...data,media_type:type};
 
-document.getElementById("favButton").disabled=false;
+$("favButton").disabled=false;
 
-document.getElementById("detailTitle").textContent=
-d.title||d.name||"";
+$("detailTitle").textContent=data.title||data.name||"";
 
-const year=(d.release_date||d.first_air_date||"").slice(0,4);
+const year=(data.release_date||data.first_air_date||"").slice(0,4);
 
-document.getElementById("detailMeta").textContent=
-`⭐ ${Number(d.vote_average||0).toFixed(1)} · ${year} · ${
+$("detailMeta").textContent=
+`⭐ ${Number(data.vote_average||0).toFixed(1)} · ${year} · ${
 type==="movie"?
-(d.runtime?d.runtime+" min":"Movie"):
-(d.number_of_seasons||0)+" Seasons"
+(data.runtime?data.runtime+" min":"Movie"):
+(data.number_of_seasons||0)+" Seasons"
 }`;
 
-document.getElementById("detailOverview").textContent=
-d.overview||tr("القصة غير متوفرة حالياً","Overview unavailable");
+$("detailOverview").textContent=data.overview||
+t("القصة غير متوفرة","Overview unavailable");
 
-const picture=d.backdrop_path?
-BACKDROP+d.backdrop_path:
-(d.poster_path?IMG+d.poster_path:"");
+const image=data.backdrop_path?
+BACKDROP+data.backdrop_path:
+data.poster_path?IMG+data.poster_path:"";
 
-if(picture)document.getElementById("detailImage").src=picture;
+if(image)$("detailImage").src=image;
 
-document.getElementById("detailGenres").innerHTML=
-(d.genres||[]).map(g=>
-`<span class="tag">${escapeHTML(g.name)}</span>`
-).join("");
+$("detailGenres").innerHTML=(data.genres||[])
+.map(g=>`<span class="tag">${escapeHTML(g.name)}</span>`).join("");
 
-updateFavButton();
+updateFavoriteButton();
+renderPersonalControls();
 
-if(type==="tv")setupSeasons(d);
+if(type==="tv")setupSeasons(data);
 
 loadProviders(type,id,version);
 loadSimilar(type,id,version);
 
-}catch(e){
-if(version!==detailVersion)return;
-document.getElementById("detailTitle").textContent=
-tr("تعذر تحميل التفاصيل","Failed to load details");
-}
+}catch{
+
+if(version===detailVersion){
+$("detailTitle").textContent=t("تعذر تحميل التفاصيل","Failed to load details");
 }
 
-function updateFavButton(){
+}
+
+}
+
+function currentKey(){
+return current?`${current.media_type}_${current.id}`:null;
+}
+
+function updateFavoriteButton(){
+
 if(!current)return;
+
 const exists=favorites.some(x=>
-x.id===current.id&&x.media_type===current.media_type
+Number(x.id)===Number(current.id)&&
+x.media_type===current.media_type
 );
-document.getElementById("favButton").textContent=
-exists?
-tr("💔 إزالة من المفضلة","💔 Remove Favorite"):
-tr("❤️ إضافة للمفضلة","❤️ Add Favorite");
+
+$("favButton").textContent=exists?
+t("💔 إزالة من المفضلة","💔 Remove Favorite"):
+t("❤️ إضافة للمفضلة","❤️ Add Favorite");
 }
 
 function toggleFavorite(){
+
 if(!current)return;
 
 const index=favorites.findIndex(x=>
-x.id===current.id&&x.media_type===current.media_type
+Number(x.id)===Number(current.id)&&
+x.media_type===current.media_type
 );
 
 if(index>=0){
@@ -919,105 +1393,223 @@ first_air_date:current.first_air_date
 });
 }
 
-save();
-updateFavButton();
-renderLibrary();
+saveData();
+updateFavoriteButton();
 }
+
+/* ==========================================
+   SMART LIBRARY
+========================================== */
+
+const statuses={
+watchlist:["📌 سأشاهده لاحقاً","📌 Watchlist"],
+watching:["▶️ أشاهده حالياً","▶️ Watching"],
+completed:["✅ شاهدته","✅ Completed"],
+paused:["⏸️ متوقف مؤقتاً","⏸️ On Hold"],
+dropped:["❌ لم أكمله","❌ Dropped"]
+};
+
+function renderPersonalControls(){
+
+if(!current)return;
+
+const entry=smartLibrary[currentKey()]||{};
+
+$("statusSelect").innerHTML=
+`<option value="">${t("بدون حالة","No Status")}</option>`+
+Object.entries(statuses).map(([key,value])=>
+`<option value="${key}">${t(...value)}</option>`
+).join("");
+
+$("statusSelect").value=entry.status||"";
+
+$("ratingSelect").innerHTML=
+`<option value="">${t("بدون تقييم","Not Rated")}</option>`+
+Array.from({length:10},(_,i)=>
+`<option value="${i+1}">⭐ ${i+1}/10</option>`
+).join("");
+
+$("ratingSelect").value=entry.rating||"";
+}
+
+function dateKey(date=new Date()){
+return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+}
+
+function updateEntry(field,value){
+
+if(!current)return;
+
+const key=currentKey();
+
+const entry=smartLibrary[key]||{};
+
+const previousStatus=entry.status;
+
+Object.assign(entry,{
+id:current.id,
+media_type:current.media_type,
+title:current.title||current.name,
+name:current.name,
+poster_path:current.poster_path,
+vote_average:current.vote_average,
+release_date:current.release_date,
+first_air_date:current.first_air_date
+});
+
+if(value==="")delete entry[field];
+else entry[field]=value;
+
+if(!entry.status&&!entry.rating){
+delete smartLibrary[key];
+}else{
+smartLibrary[key]=entry;
+}
+
+if(field==="status"&&current.media_type==="movie"){
+
+const activityKey=`movie_${current.id}_`;
+
+if(value==="completed"&&previousStatus!=="completed"){
+activity[activityKey]=dateKey();
+}
+
+if(value!=="completed"&&previousStatus==="completed"){
+delete activity[activityKey];
+}
+
+}
+
+saveData();
+
+renderPersonalControls();
+scheduleRecommendations();
+
+}
+
+$("statusSelect").onchange=event=>
+updateEntry("status",event.target.value);
+
+$("ratingSelect").onchange=event=>
+updateEntry("rating",event.target.value?Number(event.target.value):"");
 
 function renderLibrary(){
-renderCards("libraryGrid",favorites);
+
+const sections=[];
+
+if(favorites.length){
+sections.push(`
+<div class="section">
+<h2>${t("❤️ المفضلة","❤️ Favorites")} (${favorites.length})</h2>
+<div class="row">${favorites.map(x=>card(x)).join("")}</div>
+</div>`);
 }
 
+const entries=Object.values(smartLibrary);
+
+for(const [status,names] of Object.entries(statuses)){
+
+const items=entries.filter(x=>x.status===status);
+
+if(!items.length)continue;
+
+sections.push(`
+<div class="section">
+<h2>${t(...names)} (${items.length})</h2>
+<div class="row">${items.map(x=>card(x)).join("")}</div>
+</div>`);
+
+}
+
+const rated=entries.filter(x=>Number(x.rating)>0)
+.sort((a,b)=>Number(b.rating)-Number(a.rating));
+
+if(rated.length){
+sections.push(`
+<div class="section">
+<h2>${t("⭐ تقييماتي الشخصية","⭐ My Ratings")}</h2>
+<div class="row">${rated.map(x=>card(x)).join("")}</div>
+</div>`);
+}
+
+$("libraryContent").innerHTML=sections.join("")||
+`<div class="empty">${t("المكتبة فارغة حالياً","Your library is empty")}</div>`;
+
+}
+
+/* ==========================================
+   PROVIDERS & SIMILAR
+========================================== */
+
 async function loadProviders(type,id,version){
+
 try{
-const d=await api("providers",{type,id});
+
+const data=await api("providers",{type,id});
+
 if(version!==detailVersion)return;
 
-const ma=d.results?.MA;
+const ma=data.results?.MA;
 
 if(!ma){
-document.getElementById("providers").textContent=
-tr("معلومات المنصات غير متوفرة للمغرب حالياً",
-"Streaming information unavailable for Morocco");
+$("providers").textContent=t("معلومات المنصات غير متوفرة","Streaming information unavailable");
 return;
 }
 
 let html="";
-const groups=[
-["flatrate",tr("اشتراك","Subscription")],
-["rent",tr("كراء","Rent")],
-["buy",tr("شراء","Buy")]
-];
 
-for(const [key,label] of groups){
-const providers=ma[key]||[];
-if(!providers.length)continue;
+for(const [key,label] of [
+["flatrate",t("اشتراك","Subscription")],
+["rent",t("كراء","Rent")],
+["buy",t("شراء","Buy")]
+]){
+
+if(!ma[key]?.length)continue;
 
 html+=`<h4>${label}</h4>`;
 
-for(const p of providers){
+for(const provider of ma[key]){
 html+=`
-<div class="provider">
-${p.logo_path?`<img src="${IMG+p.logo_path}" alt="">`:""}
-${escapeHTML(p.provider_name)}
-</div>`;
-}
-}
-
-if(ma.link){
-const safeLink=escapeHTML(ma.link);
-html+=`<p><a href="${safeLink}" target="_blank" rel="noopener noreferrer">
-${tr("معلومات المشاهدة ↗","Watch information ↗")}
-</a></p>`;
+<span class="tag">
+${provider.logo_path?
+`<img src="${IMG+provider.logo_path}" width="25" height="25" alt="">`:""}
+${escapeHTML(provider.provider_name)}
+</span>`;
 }
 
-document.getElementById("providers").innerHTML=
-html||tr("لا توجد منصات مسجلة","No providers listed");
+}
+
+if(ma.link&&/^https:\/\//.test(ma.link)){
+html+=`<p><a href="${escapeHTML(ma.link)}" target="_blank" rel="noopener noreferrer">${t("معلومات المشاهدة ↗","Watch information ↗")}</a></p>`;
+}
+
+$("providers").innerHTML=html||t("لا توجد منصات مسجلة","No providers listed");
 
 }catch{
-if(version!==detailVersion)return;
-document.getElementById("providers").textContent=
-tr("تعذر تحميل المنصات","Unable to load providers");
+if(version===detailVersion)$("providers").textContent=t("تعذر تحميل المنصات","Unable to load providers");
 }
+
 }
 
 async function loadSimilar(type,id,version){
+
 try{
-const d=await api("similar",{type,id});
+
+const data=await api("similar",{type,id});
+
 if(version!==detailVersion)return;
 
-renderCards("similar",(d.results||[]).slice(0,15),type);
+renderCards("similar",(data.results||[]).slice(0,15),type);
+
 }catch{
-if(version!==detailVersion)return;
-document.getElementById("similar").textContent=
-tr("غير متوفر حالياً","Currently unavailable");
-}
+if(version===detailVersion)$("similar").textContent=t("غير متوفر","Unavailable");
 }
 
-function setupSeasons(d){
-document.getElementById("seasonsSection").classList.remove("hidden");
-
-const select=document.getElementById("seasonSelect");
-
-const seasons=(d.seasons||[]).filter(s=>
-s.season_number>=0
-);
-
-select.innerHTML=seasons.map(s=>
-`<option value="${s.season_number}">
-${escapeHTML(s.name)} (${s.episode_count})
-</option>`
-).join("");
-
-updateOverallProgress(d);
-
-const regular=seasons.find(s=>s.season_number===1)||seasons[0];
-
-if(regular){
-select.value=regular.season_number;
-loadSeason(regular.season_number);
 }
-}
+
+/* ==========================================
+   EPISODES
+========================================== */
 
 function episodeKey(tv,season,episode){
 return `${tv}_${season}_${episode}`;
@@ -1027,116 +1619,121 @@ function isWatched(tv,season,episode){
 return watched[episodeKey(tv,season,episode)]===true;
 }
 
-function updateOverallProgress(d){
-const seasons=(d.seasons||[]).filter(s=>s.season_number>0);
+function setupSeasons(data){
 
-const total=seasons.reduce((a,s)=>a+s.episode_count,0);
+$("seasonsSection").classList.remove("hidden");
 
+const seasons=(data.seasons||[]).filter(x=>x.season_number>=0);
+
+$("seasonSelect").innerHTML=seasons.map(s=>
+`<option value="${s.season_number}">${escapeHTML(s.name)} (${s.episode_count})</option>`
+).join("");
+
+updateOverallProgress();
+
+const first=seasons.find(x=>x.season_number===1)||seasons[0];
+
+if(first){
+$("seasonSelect").value=first.season_number;
+loadSeason(first.season_number);
+}
+
+}
+
+function updateOverallProgress(){
+
+if(!current||current.media_type!=="tv")return;
+
+const seasons=(current.seasons||[]).filter(x=>x.season_number>0);
+
+let total=0;
 let done=0;
 
-for(const s of seasons){
-for(let ep=1;ep<=s.episode_count;ep++){
-if(isWatched(d.id,s.season_number,ep))done++;
+for(const season of seasons){
+
+total+=season.episode_count;
+
+for(let ep=1;ep<=season.episode_count;ep++){
+if(isWatched(current.id,season.season_number,ep))done++;
 }
+
 }
 
 const percent=total?Math.round(done/total*100):0;
 
-document.getElementById("overallProgress").innerHTML=`
-<div style="color:var(--muted);font-size:13px">
-${tr("تقدم المشاهدة","Watching Progress")}: ${done}/${total}
-</div>
-<div class="progress">
-<div class="progress-bar" style="width:${percent}%"></div>
-</div>
-<div style="font-size:12px;color:var(--accent)">${percent}%</div>
-`;
+$("overallProgress").innerHTML=`
+<div class="meta">${t("تقدم المشاهدة","Watching Progress")}: ${done}/${total}</div>
+<div class="progress"><div class="progress-bar" style="width:${percent}%"></div></div>
+<div class="meta">${percent}%</div>`;
 }
 
 async function loadSeason(number){
+
 if(!current||current.media_type!=="tv")return;
 
-const seasonNumber=Number(number);
 const tvId=current.id;
 const version=++seasonVersion;
+const season=Number(number);
 
-document.getElementById("episodesList").innerHTML=
-`<div class="loading">${tr("جاري تحميل الحلقات...","Loading episodes...")}</div>`;
-
-document.getElementById("seasonProgress").innerHTML="";
+$("episodesList").innerHTML=`<div class="loading">${t("جاري التحميل...","Loading...")}</div>`;
 
 try{
-const d=await api("season",{
-type:"tv",
-id:tvId,
-season:seasonNumber
-});
+
+const data=await api("season",{type:"tv",id:tvId,season});
 
 if(version!==seasonVersion||current?.id!==tvId)return;
 
-const episodes=d.episodes||[];
+const episodes=data.episodes||[];
 
-const done=episodes.filter(e=>
-isWatched(tvId,seasonNumber,e.episode_number)
-).length;
+const done=episodes.filter(e=>isWatched(tvId,season,e.episode_number)).length;
 
-const percent=episodes.length?
-Math.round(done/episodes.length*100):0;
+const percent=episodes.length?Math.round(done/episodes.length*100):0;
 
-document.getElementById("seasonProgress").innerHTML=`
-<div style="font-size:13px;color:var(--muted)">
-${tr("الموسم","Season")}: ${done}/${episodes.length}
-</div>
-<div class="progress">
-<div class="progress-bar" style="width:${percent}%"></div>
-</div>
-`;
+$("seasonProgress").innerHTML=`
+<div class="meta">${done}/${episodes.length}</div>
+<div class="progress"><div class="progress-bar" style="width:${percent}%"></div></div>`;
 
-document.getElementById("episodesList").innerHTML=
-episodes.map(e=>{
-const marked=isWatched(tvId,seasonNumber,e.episode_number);
-const image=e.still_path?IMG+e.still_path:"";
-const aired=e.air_date||"";
-const future=aired&&aired>new Date().toISOString().slice(0,10);
+const today=dateKey();
+
+$("episodesList").innerHTML=episodes.map(e=>{
+
+const marked=isWatched(tvId,season,e.episode_number);
+const future=e.air_date&&e.air_date>today;
 
 return `
 <div class="episode">
-${image?`<img loading="lazy" src="${image}" alt="">`:""}
+${e.still_path?`<img loading="lazy" src="${IMG+e.still_path}" alt="">`:""}
 <div class="episode-info">
-<div class="episode-title">
-${e.episode_number}. ${escapeHTML(e.name)}
-</div>
-<div class="episode-date">
-📅 ${escapeHTML(aired||"—")}
-</div>
-<div class="episode-desc">
-${escapeHTML(e.overview||"")}
-</div>
-<button
-class="watch-btn ${marked?"done":""}"
-data-tv="${tvId}"
-data-season="${seasonNumber}"
+<strong>${e.episode_number}. ${escapeHTML(e.name)}</strong>
+<div class="meta">📅 ${escapeHTML(e.air_date||"—")}</div>
+<p class="meta">${escapeHTML(e.overview||"")}</p>
+<button class="watch-btn ${marked?"done":""}"
+data-tv="${tvId}" data-season="${season}"
 data-episode="${e.episode_number}"
 ${future?"disabled":""}>
-${future?
-tr("⏳ لم تُعرض بعد","⏳ Not aired"):
-marked?
-tr("✅ شاهدتها","✅ Watched"):
-tr("⬜ تحديد كمشاهدة","⬜ Mark Watched")}
+${future?t("⏳ لم تُعرض بعد","⏳ Not aired"):
+marked?t("✅ شاهدتها","✅ Watched"):
+t("⬜ تحديد كمشاهدة","⬜ Mark Watched")}
 </button>
 </div>
 </div>`;
+
 }).join("");
 
 }catch{
-if(version!==seasonVersion)return;
-document.getElementById("episodesList").textContent=
-tr("تعذر تحميل الحلقات","Failed to load episodes");
+if(version===seasonVersion){
+$("episodesList").textContent=t("تعذر تحميل الحلقات","Failed to load episodes");
 }
 }
 
-document.addEventListener("click",e=>{
-const btn=e.target.closest(".watch-btn[data-episode]");
+}
+
+$("seasonSelect").onchange=event=>loadSeason(event.target.value);
+
+document.addEventListener("click",event=>{
+
+const btn=event.target.closest(".watch-btn[data-episode]");
+
 if(!btn||btn.disabled)return;
 
 toggleEpisode(
@@ -1144,5675 +1741,1076 @@ Number(btn.dataset.tv),
 Number(btn.dataset.season),
 Number(btn.dataset.episode)
 );
+
 });
 
 function toggleEpisode(tv,season,episode){
+
 const key=episodeKey(tv,season,episode);
+const activityKey=`tv_${key}`;
 
 if(watched[key]){
 delete watched[key];
+delete activity[activityKey];
 }else{
 watched[key]=true;
+activity[activityKey]=dateKey();
 }
 
-save();
+saveData();
 
-if(current&&current.id===tv){
-updateOverallProgress(current);
+if(current?.media_type==="tv"&&current.id===tv){
+updateOverallProgress();
 loadSeason(season);
 }
+
 }
 
-function surpriseMe(){
-const pool=(cache.trending||[]).filter(x=>
-x.media_type==="movie"||x.media_type==="tv"
-);
+/* ==========================================
+   MOOD FINDER
+========================================== */
 
-if(!pool.length){
-alert(tr("البيانات مازال كتحمل","Data is still loading"));
+const moods=[
+["mystery","🧩","غموض وتشويق","Mystery & Thriller","9648,53","9648"],
+["scifi","🚀","خيال علمي","Science Fiction","878","10765"],
+["comedy","😂","كوميديا","Comedy","35","35"],
+["horror","😱","رعب","Horror","27","9648,10765"],
+["romance","❤️","رومانسية","Romance","10749","18"],
+["action","💥","أكشن","Action","28","10759"],
+["crime","🕵️","جريمة وتحقيقات","Crime","80","80"],
+["drama","🎭","دراما قوية","Drama","18","18"]
+];
+
+let selectedMood="mystery";
+
+function renderMoods(){
+
+$("moodOptions").innerHTML=moods.map(m=>`
+<button class="mood-option ${selectedMood===m[0]?"active":""}"
+data-mood="${m[0]}">
+<div style="font-size:28px">${m[1]}</div>
+${t(m[2],m[3])}
+</button>
+`).join("");
+
+$("moodOptions").querySelectorAll("[data-mood]").forEach(btn=>{
+btn.onclick=()=>{
+selectedMood=btn.dataset.mood;
+renderMoods();
+searchMood();
+};
+});
+
+}
+
+async function searchMood(){
+
+const version=++moodVersion;
+
+const mood=moods.find(x=>x[0]===selectedMood);
+const type=$("moodType").value;
+const rating=$("moodRating").value;
+
+let sort=$("moodSort").value;
+
+if(type==="tv"&&sort==="primary_release_date.desc"){
+sort="first_air_date.desc";
+}
+
+const genres=type==="movie"?mood[4]:mood[5];
+
+moodResults=[];
+
+$("moodResults").innerHTML="";
+$("moodStatus").textContent=t("🔍 جاري البحث...","🔍 Searching...");
+
+try{
+
+const endpoint=type==="movie"?"discover_movies":"discover_tv";
+
+const data=await api(endpoint,{
+with_genres:genres,
+"vote_average.gte":rating,
+"vote_count.gte":100,
+sort_by:sort,
+page:1
+});
+
+if(version!==moodVersion)return;
+
+moodResults=(data.results||[])
+.filter(x=>x.poster_path)
+.map(x=>({...x,media_type:type}));
+
+renderCards("moodResults",moodResults,type);
+
+$("moodStatus").textContent=moodResults.length?
+t(`🎬 لقينا ${moodResults.length} عمل`,`🎬 Found ${moodResults.length} titles`):
+t("ما لقيناش نتائج. جرب تبدل الفلاتر.","No results. Try changing the filters.");
+
+}catch{
+
+if(version===moodVersion){
+$("moodStatus").textContent=t("❌ تعذر البحث","❌ Search failed");
+}
+
+}
+
+}
+
+$("moodType").onchange=searchMood;
+$("moodRating").onchange=searchMood;
+$("moodSort").onchange=searchMood;
+
+/* ==========================================
+   RECOMMENDATIONS
+========================================== */
+
+let recommendationTimer;
+
+function scheduleRecommendations(){
+
+clearTimeout(recommendationTimer);
+
+recommendationTimer=setTimeout(loadRecommendations,600);
+
+}
+
+async function loadRecommendations(){
+
+const version=++recommendationVersion;
+
+const sources=Object.values(smartLibrary)
+.filter(x=>
+Number(x.rating)>=7&&
+["movie","tv"].includes(x.media_type)&&
+Number(x.id)>0
+)
+.sort((a,b)=>Number(b.rating)-Number(a.rating))
+.slice(0,5);
+
+if(!sources.length){
+
+$("recommendations").innerHTML=
+`<div class="empty">${t("⭐ قيّم بعض الأعمال بـ 7/10 أو أكثر باش تظهر اقتراحات شخصية.","⭐ Rate titles 7/10 or higher to unlock recommendations.")}</div>`;
+
+loadHiddenGems(version);
 return;
 }
 
-const x=pool[Math.floor(Math.random()*pool.length)];
-openDetail(x.media_type,x.id);
+$("recommendations").innerHTML=
+`<div class="loading">${t("جاري تحضير اقتراحاتك...","Finding recommendations...")}</div>`;
+
+const requests=sources.flatMap(x=>[
+api("recommendations",{type:x.media_type,id:x.id})
+.then(data=>({source:x,items:data.results||[]})),
+api("similar",{type:x.media_type,id:x.id})
+.then(data=>({source:x,items:data.results||[]}))
+]);
+
+const results=await Promise.allSettled(requests);
+
+if(version!==recommendationVersion)return;
+
+const excluded=new Set(
+Object.values(smartLibrary)
+.filter(x=>["completed","dropped"].includes(x.status))
+.map(x=>`${x.media_type}_${x.id}`)
+);
+
+const sourceKeys=new Set(sources.map(x=>`${x.media_type}_${x.id}`));
+
+const unique=new Map();
+
+for(const result of results){
+
+if(result.status!=="fulfilled")continue;
+
+const {source,items}=result.value;
+
+for(const item of items){
+
+const x=normalize(item,source.media_type);
+const key=`${x.media_type}_${x.id}`;
+
+if(!x.poster_path||excluded.has(key)||sourceKeys.has(key))continue;
+
+unique.set(key,x);
+
 }
 
-function toggleLang(){
-lang=lang==="ar-MA"?"en-US":"ar-MA";
-localStorage.setItem("cv_lang",lang);
-applyLang();
-loadHome();
-
-if(current){
-openDetail(current.media_type,current.id);
 }
 
-const q=document.getElementById("searchInput").value.trim();
-if(q)handleSearch(q);
+recommendationItems=[...unique.values()]
+.sort((a,b)=>
+Number(b.vote_average||0)-Number(a.vote_average||0)
+);
+
+renderCards("recommendations",recommendationItems.slice(0,20));
+
+const gems=recommendationItems.filter(x=>
+Number(x.vote_average)>=7&&
+Number(x.vote_count)>=100&&
+Number(x.vote_count)<=3000
+);
+
+renderCards("gems",gems.slice(0,15));
+
 }
 
-function applyLang(){
+async function loadHiddenGems(version){
+
+try{
+
+const data=await api("top_movies");
+
+if(version!==recommendationVersion)return;
+
+renderCards("gems",(data.results||[]).filter(x=>
+Number(x.vote_average)>=7&&
+Number(x.vote_count)>=100&&
+Number(x.vote_count)<=3000
+).slice(0,15),"movie");
+
+}catch{
+$("gems").innerHTML="";
+}
+
+}
+
+/* ==========================================
+   SURPRISE ME
+========================================== */
+
+function surpriseMe(source="all"){
+
+let pool=[];
+
+if(source==="mood"){
+pool=[...moodResults];
+}else{
+
+pool=[
+...recommendationItems,
+...moodResults,
+...(homeCache.trending||[]),
+...(homeCache.top||[]).map(x=>normalize(x,"movie"))
+];
+
+}
+
+const unique=new Map();
+
+for(const item of pool){
+
+const x=normalize(item);
+
+if(!["movie","tv"].includes(x.media_type))continue;
+
+unique.set(`${x.media_type}_${x.id}`,x);
+
+}
+
+const excluded=new Set();
+
+Object.values(smartLibrary).forEach(x=>{
+if(x.status==="completed"){
+excluded.add(`${x.media_type}_${x.id}`);
+}
+});
+
+Object.entries(watched).forEach(([key,value])=>{
+if(value!==true)return;
+const match=key.match(/^(\d+)_\d+_\d+$/);
+if(match)excluded.add(`tv_${match[1]}`);
+});
+
+const available=[...unique.values()]
+.filter(x=>!excluded.has(`${x.media_type}_${x.id}`));
+
+if(!available.length){
+
+alert(t(
+"ما كايناش اقتراحات جديدة حالياً.",
+"No new suggestions available."
+));
+
+return;
+}
+
+const item=available[Math.floor(Math.random()*available.length)];
+
+openDetail(item.media_type,item.id);
+
+}
+
+/* ==========================================
+   STATISTICS
+========================================== */
+
+function watchedEpisodeMap(){
+
+const map={};
+
+for(const [key,value] of Object.entries(watched)){
+
+if(value!==true)continue;
+
+const match=key.match(/^(\d+)_(\d+)_(\d+)$/);
+
+if(!match||Number(match[3])<1)continue;
+
+const id=match[1];
+
+(map[id]??=[]).push({
+season:Number(match[2]),
+episode:Number(match[3])
+});
+
+}
+
+return map;
+}
+
+async function getRuntime(type,id){
+
+const key=`${type}_${id}`;
+
+if(runtimeCache[key])return runtimeCache[key];
+
+try{
+
+const data=await api("details",{type,id});
+
+const result={
+runtime:type==="movie"?
+Number(data.runtime||0):
+Number(data.episode_run_time?.[0]||0),
+totalEpisodes:Number(data.number_of_episodes||0)
+};
+
+runtimeCache[key]=result;
+
+try{
+localStorage.setItem(runtimeCacheKey,JSON.stringify(runtimeCache));
+}catch{}
+
+return result;
+
+}catch{
+return {runtime:0,totalEpisodes:0};
+}
+
+}
+
+async function refreshStats(){
+
+const version=++statsVersion;
+
+const entries=Object.values(smartLibrary);
+
+const movies=entries.filter(x=>
+x.media_type==="movie"&&x.status==="completed"
+);
+
+const rated=entries.filter(x=>
+Number(x.rating)>=1&&Number(x.rating)<=10
+);
+
+const average=rated.length?
+rated.reduce((sum,x)=>sum+Number(x.rating),0)/rated.length:null;
+
+const map=watchedEpisodeMap();
+
+const ids=new Set([
+...entries.filter(x=>x.media_type==="tv").map(x=>String(x.id)),
+...Object.keys(map)
+]);
+
+const episodes=Object.values(map).reduce((sum,list)=>sum+list.length,0);
+
+$("statMovies").textContent=movies.length;
+$("statShows").textContent=ids.size;
+$("statEpisodes").textContent=episodes;
+$("statRating").textContent=average===null?"—":average.toFixed(1);
+
+$("statHours").textContent="…";
+$("statProgress").textContent="…";
+
+const top=[...rated].sort((a,b)=>Number(b.rating)-Number(a.rating)).slice(0,5);
+
+$("topRatedList").innerHTML=top.length?
+top.map(x=>`
+<div class="top-item" data-id="${Number(x.id)}" data-type="${x.media_type}">
+${x.poster_path?`<img src="${IMG+x.poster_path}" alt="">`:""}
+<div><strong>${escapeHTML(x.title||x.name||"Unknown")}</strong>
+<div class="meta">⭐ ${Number(x.rating)}/10</div></div>
+</div>
+`).join(""):
+`<div class="empty">${t("مازال ما قيّمتي حتى عمل","No rated titles yet")}</div>`;
+
+renderAnalytics(entries,movies,map);
+renderCalendar();
+renderMonthly();
+
+const requests=[
+...movies.map(x=>getRuntime("movie",x.id).then(d=>({
+type:"movie",id:x.id,data:d
+}))),
+...[...ids].map(id=>getRuntime("tv",id).then(d=>({
+type:"tv",id,data:d
+})))
+];
+
+const results=await Promise.all(requests);
+
+if(version!==statsVersion)return;
+
+let minutes=0;
+let known=0;
+let total=0;
+
+for(const result of results){
+
+const d=result.data;
+
+if(result.type==="movie"){
+minutes+=d.runtime;
+}else{
+
+const count=map[result.id]?.length||0;
+
+minutes+=count*d.runtime;
+
+if(d.totalEpisodes>0){
+known+=Math.min(count,d.totalEpisodes);
+total+=d.totalEpisodes;
+}
+
+}
+
+}
+
+$("statHours").textContent=(minutes/60).toFixed(1);
+
+$("statProgress").textContent=total?
+Math.round(known/total*100)+"%":"—";
+
+}
+
+/* ==========================================
+   ANALYTICS
+========================================== */
+
+function renderBars(id,values,labels){
+
+const max=Math.max(1,...values);
+
+$(id).innerHTML=`
+<div class="chart">
+${values.map((n,i)=>`
+<div class="chart-col" title="${n}">
+<div class="chart-bar" style="height:${n/max*110}px"></div>
+<small>${escapeHTML(labels[i])}</small>
+</div>
+`).join("")}
+</div>`;
+
+}
+
+async function getGenres(type,id){
+
+const key=`${type}_${id}`;
+
+if(Array.isArray(genreCache[key]))return genreCache[key];
+
+try{
+
+const data=await api("details",{type,id});
+
+const genres=(data.genres||[]).map(x=>({
+id:x.id,
+name:x.name
+}));
+
+genreCache[key]=genres;
+
+try{
+localStorage.setItem(genreCacheKey,JSON.stringify(genreCache));
+}catch{}
+
+return genres;
+
+}catch{
+return [];
+}
+
+}
+
+function renderAnalytics(entries,movies,map){
+
+const shows=entries.filter(x=>
+x.media_type==="tv"&&["watching","completed"].includes(x.status)
+);
+
+const total=movies.length+shows.length;
+
+const percent=total?Math.round(movies.length/total*100):0;
+
+$("distribution").innerHTML=`
+<div style="width:150px;height:150px;border-radius:50%;margin:auto;
+background:${total?
+`conic-gradient(#a78bfa 0 ${percent}%,#7c3aed ${percent}% 100%)`:
+"#302743"};
+display:grid;place-items:center">
+<div style="width:95px;height:95px;border-radius:50%;background:#171423;
+display:grid;place-items:center;font-size:25px;font-weight:900">${total}</div>
+</div>
+<p class="meta" style="text-align:center">
+🎬 ${movies.length} · 📺 ${shows.length}
+</p>`;
+
+const ratings=Array(10).fill(0);
+
+entries.forEach(x=>{
+const n=Number(x.rating);
+if(Number.isInteger(n)&&n>=1&&n<=10)ratings[n-1]++;
+});
+
+renderBars("ratingsChart",ratings,
+Array.from({length:10},(_,i)=>String(i+1))
+);
+
+const episodes=Object.values(map).reduce((a,x)=>a+x.length,0);
+const rated=entries.filter(x=>Number(x.rating)>=1).length;
+
+const achievements=[
+["🎬",movies.length,1,t("أول فيلم","First Movie")],
+["🍿",movies.length,10,t("عاشق السينما","Movie Lover")],
+["🏆",movies.length,50,t("سينمائي محترف","Cinema Master")],
+["📺",episodes,1,t("أول حلقة","First Episode")],
+["🔥",episodes,50,t("ماراثون الحلقات","Episode Marathon")],
+["👑",episodes,200,t("أسطورة المسلسلات","TV Legend")],
+["⭐",rated,1,t("أول تقييم","First Rating")],
+["💎",rated,25,t("ناقد سينمائي","Cinema Critic")]
+];
+
+$("achievements").innerHTML=`
+<div class="stats-grid">
+${achievements.map(([icon,value,target,name])=>`
+<div class="stat" style="opacity:${value>=target?1:.45}">
+<div style="font-size:28px">${icon}</div>
+<strong>${escapeHTML(name)}</strong>
+<div class="meta">${Math.min(value,target)}/${target} ${value>=target?"✅":"🔒"}</div>
+</div>
+`).join("")}
+</div>`;
+
+renderFavoriteGenres(entries);
+
+}
+
+let genreVersion=0;
+
+async function renderFavoriteGenres(entries){
+
+const version=++genreVersion;
+
+const selected=entries.filter(x=>
+x.status==="completed"||
+(x.media_type==="tv"&&x.status==="watching")
+);
+
+if(!selected.length){
+$("genresChart").textContent=t("سجل أعمال شاهدتها أولاً","Mark titles as watched first");
+return;
+}
+
+$("genresChart").textContent=t("جاري التحليل...","Analyzing...");
+
+const results=await Promise.all(
+selected.map(x=>getGenres(x.media_type,x.id))
+);
+
+if(version!==genreVersion)return;
+
+const counts=new Map();
+
+results.forEach(list=>{
+list.forEach(g=>{
+const key=String(g.id);
+const old=counts.get(key)||{name:g.name,count:0};
+old.count++;
+counts.set(key,old);
+});
+});
+
+const ranked=[...counts.values()]
+.sort((a,b)=>b.count-a.count)
+.slice(0,6);
+
+const max=ranked[0]?.count||1;
+
+$("genresChart").innerHTML=ranked.map(x=>`
+<div style="margin:13px 0">
+<div class="meta">${escapeHTML(x.name)} · ${x.count}</div>
+<div class="progress">
+<div class="progress-bar" style="width:${x.count/max*100}%"></div>
+</div>
+</div>
+`).join("")||
+`<div class="empty">${t("المعلومات غير متوفرة","Information unavailable")}</div>`;
+
+}
+
+/* ==========================================
+   WATCH CALENDAR
+========================================== */
+
+function dailyActivity(){
+
+const days={};
+
+for(const date of Object.values(activity)){
+
+if(typeof date!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;
+
+days[date]=(days[date]||0)+1;
+
+}
+
+return days;
+}
+
+function calculateStreak(days){
+
+const today=new Date();
+today.setHours(12,0,0,0);
+
+if(!days[dateKey(today)]){
+today.setDate(today.getDate()-1);
+}
+
+let streak=0;
+
+while(days[dateKey(today)]){
+streak++;
+today.setDate(today.getDate()-1);
+}
+
+return streak;
+}
+
+function changeMonth(delta){
+
+displayedMonth=new Date(
+displayedMonth.getFullYear(),
+displayedMonth.getMonth()+delta,
+1
+);
+
+renderCalendar();
+
+}
+
+function renderCalendar(){
+
+const days=dailyActivity();
+const today=new Date();
+
+const monthKey=dateKey(today).slice(0,7);
+
+const count=Object.entries(days)
+.filter(([date])=>date.startsWith(monthKey))
+.reduce((sum,[,n])=>sum+n,0);
+
+$("monthCount").textContent=count;
+$("streakCount").textContent=calculateStreak(days);
+
+const year=displayedMonth.getFullYear();
+const month=displayedMonth.getMonth();
+
+$("calendarMonth").textContent=
+displayedMonth.toLocaleDateString(lang==="ar-MA"?"ar-MA":"en-US",{
+month:"long",year:"numeric"
+});
+
+const first=new Date(year,month,1).getDay();
+const total=new Date(year,month+1,0).getDate();
+
+let html="";
+
+for(let i=0;i<first;i++){
+html+=`<div class="calendar-day blank"></div>`;
+}
+
+for(let day=1;day<=total;day++){
+
+const date=dateKey(new Date(year,month,day));
+
+html+=`
+<div class="calendar-day ${days[date]?"active":""}
+${date===dateKey(today)?"today":""}"
+title="${date}: ${days[date]||0}">
+${day}
+</div>`;
+
+}
+
+$("calendarDays").innerHTML=html;
+
+}
+
+/* ==========================================
+   MONTHLY ACTIVITY
+========================================== */
+
+function renderMonthly(){
+
+const now=new Date();
+const months=[];
+
+for(let i=11;i>=0;i--){
+
+const date=new Date(now.getFullYear(),now.getMonth()-i,1);
+
+const key=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+
+months.push({date,key,movies:0,tv:0});
+
+}
+
+const map=new Map(months.map(x=>[x.key,x]));
+
+for(const [key,date] of Object.entries(activity)){
+
+if(typeof date!=="string")continue;
+
+const month=map.get(date.slice(0,7));
+if(!month)continue;
+
+if(/^movie_\d+_$/.test(key))month.movies++;
+if(/^tv_\d+_\d+_\d+$/.test(key))month.tv++;
+
+}
+
+const values=months.map(x=>x.movies+x.tv);
+
+const labels=months.map(x=>
+x.date.toLocaleDateString(lang==="ar-MA"?"ar-MA":"en-US",{
+month:"short"
+})
+);
+
+renderBars("monthlyChart",values,labels);
+
+const total=values.reduce((a,b)=>a+b,0);
+
+const best=months.reduce((a,b)=>
+a.movies+a.tv>=b.movies+b.tv?a:b
+);
+
+$("monthlySummary").textContent=total?
+t(
+`مجموع المشاهدات: ${total} · أفضل شهر: ${best.key}`,
+`Total logged views: ${total} · Best month: ${best.key}`
+):
+t("مازال ما تسجل حتى نشاط مؤرخ","No dated activity recorded yet");
+
+}
+
+/* ==========================================
+   BACKUP 3.0
+========================================== */
+
+const backupKeys=[
+"cv_lang",
+"cv_favorites",
+"cv_watched",
+"cv_smart_library",
+"cv26_watch_activity",
+"cineverse_favs",
+"cineverse_lang"
+];
+
+function exportBackup(){
+
+const backup={
+app:"CINEVERSE",
+version:3,
+created:new Date().toISOString(),
+data:{}
+};
+
+for(const key of backupKeys){
+
+const value=localStorage.getItem(key);
+
+if(value!==null)backup.data[key]=value;
+
+}
+
+const blob=new Blob(
+[JSON.stringify(backup,null,2)],
+{type:"application/json"}
+);
+
+const url=URL.createObjectURL(blob);
+const link=document.createElement("a");
+
+link.href=url;
+link.download=`cineverse-backup-v3-${dateKey()}.json`;
+
+document.body.appendChild(link);
+link.click();
+link.remove();
+
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+
+}
+
+$("backupFile").onchange=async event=>{
+
+const file=event.target.files[0];
+if(!file)return;
+
+try{
+
+if(file.size>10*1024*1024)throw Error("File too large");
+
+const backup=JSON.parse(await file.text());
+
+if(
+backup.app!=="CINEVERSE"||
+![1,2,3].includes(backup.version)||
+!backup.data||
+typeof backup.data!=="object"||
+Array.isArray(backup.data)
+)throw Error("Invalid backup");
+
+const updates={};
+
+for(const key of backupKeys){
+
+if(!Object.hasOwn(backup.data,key))continue;
+
+const value=backup.data[key];
+
+if(typeof value!=="string")throw Error("Invalid value");
+
+if(key==="cv_lang"||key==="cineverse_lang"){
+
+if(!["ar-MA","en-US"].includes(value))throw Error("Invalid language");
+
+}else{
+
+const parsed=JSON.parse(value);
+
+if(key==="cv_favorites"||key==="cineverse_favs"){
+
+if(!Array.isArray(parsed))throw Error("Invalid favorites");
+
+}else if(!parsed||typeof parsed!=="object"||Array.isArray(parsed)){
+
+throw Error("Invalid data");
+
+}
+
+}
+
+updates[key]=value;
+
+}
+
+if(!Object.keys(updates).length)throw Error("Empty backup");
+
+if(!confirm(t(
+"⚠️ الاسترجاع غادي يعوض البيانات الحالية. واش متأكد؟",
+"⚠️ Restore will overwrite current data. Continue?"
+)))return;
+
+const previous={};
+
+backupKeys.forEach(key=>previous[key]=localStorage.getItem(key));
+
+try{
+
+for(const [key,value] of Object.entries(updates)){
+localStorage.setItem(key,value);
+}
+
+}catch(error){
+
+for(const [key,value] of Object.entries(previous)){
+
+if(value===null)localStorage.removeItem(key);
+else localStorage.setItem(key,value);
+
+}
+
+throw error;
+
+}
+
+alert(t("✅ تم استرجاع البيانات","✅ Data restored"));
+
+location.reload();
+
+}catch(error){
+
+console.error(error);
+
+alert(t("❌ ملف غير صالح أو تعذر الاسترجاع","❌ Invalid backup or restore failed"));
+
+}finally{
+
+event.target.value="";
+
+}
+
+};
+
+/* ==========================================
+   LANGUAGE
+========================================== */
+
+function updateBackupLanguage(){
+
+setText("backupDescription",
+"حافظ على مكتبتك وتقييماتك والحلقات وتواريخ المشاهدة.",
+"Back up your library, ratings, episodes and watch dates.");
+
+setText("exportBtn","📤 تصدير البيانات","📤 Export Data");
+setText("importLabel","📥 استرجاع البيانات","📥 Restore Data");
+
+setText("backupNote",
+"🔒 البيانات كتتحفظ محلياً. احتافظ بملف النسخة الاحتياطية فمكان آمن.",
+"🔒 Data is stored locally. Keep your backup file safe.");
+
+}
+
+function applyLanguage(){
+
 const ar=lang==="ar-MA";
 
 document.documentElement.lang=ar?"ar":"en";
 document.documentElement.dir=ar?"rtl":"ltr";
 
-document.getElementById("langBtn").textContent=ar?"EN":"AR";
+$("langBtn").textContent=ar?"EN":"AR";
 
-document.getElementById("searchInput").placeholder=
-tr("بحث عن فيلم أو مسلسل...","Search movies or TV shows...");
+$("searchInput").placeholder=t(
+"بحث عن فيلم أو مسلسل...",
+"Search movies or TV shows..."
+);
 
 document.querySelectorAll("[data-ar]").forEach(el=>{
 el.textContent=ar?el.dataset.ar:el.dataset.en;
 });
+
+const translations=[
+["navHome","الرئيسية","Home"],
+["navSearch","البحث","Search"],
+["navLibrary","مكتبتي","Library"],
+["navUpcoming","القادم","Upcoming"],
+["libraryTitle","📚 مكتبتي","📚 My Library"],
+["searchTitle","🔍 نتائج البحث","🔍 Search Results"],
+["moodTitle","🎭 شنو باغي تتفرج اليوم؟","🎭 What's Your Mood?"],
+["moodDescription","اختار المزاج ديالك واكتشف أعمال مناسبة.","Choose your mood and discover matching titles."],
+["moodTypeLabel","نوع العمل","Content Type"],
+["moodRatingLabel","الحد الأدنى للتقييم","Minimum Rating"],
+["moodSortLabel","ترتيب النتائج","Sort Results"],
+["moodSearchBtn","🔍 اكتشف","🔍 Discover"],
+["moodSurpriseBtn","🎲 فاجئني","🎲 Surprise Me"],
+["moodResultsTitle","✨ اقتراحات حسب مزاجك","✨ Mood Recommendations"],
+["statsTitle","📊 إحصائياتي السينمائية","📊 My Cinema Stats"],
+["statsSubtitle","رحلتك الشخصية في عالم السينما","Your personal cinema journey"],
+["labelMovies","🎬 أفلام شاهدتها","🎬 Movies Watched"],
+["labelShows","📺 مسلسلاتي","📺 TV Shows"],
+["labelEpisodes","✅ حلقات شاهدتها","✅ Episodes Watched"],
+["labelHours","⏱️ ساعات المشاهدة","⏱️ Watch Hours"],
+["labelRating","⭐ متوسط تقييماتي","⭐ Average Rating"],
+["labelProgress","📈 تقدم المسلسلات","📈 TV Progress"],
+["topRatedTitle","🏆 أعلى تقييماتي","🏆 Top Rated"],
+["distributionTitle","🍩 الأفلام والمسلسلات","🍩 Movies & TV"],
+["ratingsTitle","⭐ توزيع تقييماتي","⭐ Rating Distribution"],
+["genresTitle","🎭 الأنواع المفضلة","🎭 Favorite Genres"],
+["achievementsTitle","🏆 إنجازاتي","🏆 Achievements"],
+["calendarTitle","📅 تقويم المشاهدة","📅 Watch Calendar"],
+["monthCountLabel","مشاهدات هذا الشهر","Views This Month"],
+["streakLabel","أيام متتالية","Day Streak"],
+["monthlyTitle","📊 النشاط الشهري","📊 Monthly Activity"],
+["personalTitle","📚 مكتبتي الشخصية","📚 My Library"],
+["statusLabel","حالة المشاهدة","Watch Status"],
+["ratingLabel","تقييمي الشخصي","My Rating"],
+["overviewTitle","📖 القصة","📖 Overview"],
+["providersTitle","📺 منصات المشاهدة في المغرب","📺 Where to Watch in Morocco"],
+["seasonsTitle","📺 المواسم والحلقات","📺 Seasons & Episodes"],
+["similarTitle","✨ أعمال مشابهة","✨ Similar Titles"]
+];
+
+translations.forEach(([id,arText,enText])=>
+setText(id,arText,enText)
+);
+
+$("calendarNote").textContent=t(
+"التواريخ كتسجل من وقت تفعيل Watch Calendar. المشاهدات القديمة ما عندهاش تاريخ معروف.",
+"Dates are recorded since Watch Calendar was enabled. Older viewing dates are unknown."
+);
+
+$("moodType").options[0].text=t("🎬 فيلم","🎬 Movie");
+$("moodType").options[1].text=t("📺 مسلسل","📺 TV Show");
+
+$("moodSort").options[0].text=t("🔥 الأكثر شعبية","🔥 Most Popular");
+$("moodSort").options[1].text=t("⭐ الأعلى تقييماً","⭐ Top Rated");
+$("moodSort").options[2].text=t("📅 الأحدث","📅 Newest");
+
+renderMoods();
+renderMenu();
+updateBackupLanguage();
+
+if(current)renderPersonalControls();
+
 }
 
-// Migration from CINEVERSE 1.0 favorites
-if(!localStorage.getItem("cv_favorites")){
-const old=readSaved("cineverse_favs",[]);
+$("langBtn").onclick=()=>{
 
-if(Array.isArray(old)&&old.length){
-favorites=old.map(x=>({
-...x,
-media_type:x.type||x.media_type
-}));
-save();
-}
+lang=lang==="ar-MA"?"en-US":"ar-MA";
+
+localStorage.setItem("cv_lang",lang);
+
+applyLanguage();
+
+loadHome();
+loadRecommendations();
+
+if(currentView==="mood")searchMood();
+
+if(currentView==="stats")refreshStats();
+
+if(current){
+openDetail(current.media_type,current.id);
 }
 
-applyLang();
+const query=$("searchInput").value.trim();
+
+if(query){
+$("searchInput").dispatchEvent(new Event("input"));
+}
+
+};
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+applyLanguage();
 renderLibrary();
 loadHome();
+loadRecommendations();
+
+console.log("CINEVERSE 3.0 Clean Edition Ready");
+
 </script>
 
-<footer style="text-align:center;color:#777;font-size:11px;padding:30px 15px">
-This product uses the TMDB API but is not endorsed or certified by TMDB.
-<br>
-Streaming availability data provided by JustWatch via TMDB.
-</footer>
-<script>
-function cineverseBackup() {
-  const keys = [
-    "cv_lang",
-    "cv_favorites",
-    "cv_watched",
-    "cineverse_favs",
-    "cineverse_lang"
-  ];
-
-  const backup = {
-    app: "CINEVERSE",
-    version: 1,
-    created: new Date().toISOString(),
-    data: {}
-  };
-
-  keys.forEach(key => {
-    const value = localStorage.getItem(key);
-
-    if (value !== null) {
-      backup.data[key] = value;
-    }
-  });
-
-  const blob = new Blob(
-    [JSON.stringify(backup, null, 2)],
-    { type: "application/json" }
-  );
-
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "cineverse-backup.json";
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function cineverseRestore(file) {
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function(event) {
-    try {
-      const backup = JSON.parse(event.target.result);
-
-      if (
-        backup.app !== "CINEVERSE" ||
-        backup.version !== 1 ||
-        !backup.data ||
-        typeof backup.data !== "object"
-      ) {
-        throw new Error("Invalid backup");
-      }
-
-      const allowed = [
-        "cv_lang",
-        "cv_favorites",
-        "cv_watched",
-        "cineverse_favs",
-        "cineverse_lang"
-      ];
-
-      if (!confirm(
-        "استرجاع النسخة غادي يعوض البيانات الحالية. واش متأكد؟"
-      )) return;
-
-      allowed.forEach(key => {
-        if (Object.hasOwn(backup.data, key)) {
-          const value = backup.data[key];
-
-          if (typeof value !== "string") {
-            throw new Error("Invalid data");
-          }
-
-          localStorage.setItem(key, value);
-        }
-      });
-
-      alert("✅ تم استرجاع البيانات بنجاح!");
-      location.reload();
-
-    } catch (error) {
-      alert("❌ ملف النسخة الاحتياطية غير صالح.");
-    }
-  };
-
-  reader.readAsText(file);
-}
-</script>
-
-<div style="
-padding:20px;
-margin:20px 15px;
-background:#171423;
-border:1px solid #302743;
-border-radius:18px;
-text-align:center;
-">
-
-<h3>💾 CINEVERSE Backup</h3>
-
-<p style="color:#aaa;font-size:13px">
-احتافظ بنسخة من مكتبتك والحلقات المشاهدة
-</p>
-
-<button
-class="btn"
-onclick="cineverseBackup()">
-📤 تصدير البيانات
-</button>
-
-<br><br>
-
-<label
-class="btn ghost"
-style="display:inline-block;cursor:pointer">
-
-📥 استرجاع البيانات
-
-<input
-type="file"
-accept=".json,application/json"
-style="display:none"
-onchange="cineverseRestore(this.files[0]);this.value=''">
-
-</label>
-
-</div>
-<script>
-/*
- CINEVERSE 2.1
- Smart Personal Library
-*/
-
-const CV_LIBRARY_KEY = "cv_smart_library";
-
-let smartLibrary = {};
-
-try {
-  smartLibrary = JSON.parse(
-    localStorage.getItem(CV_LIBRARY_KEY) || "{}"
-  );
-
-  if (
-    !smartLibrary ||
-    typeof smartLibrary !== "object" ||
-    Array.isArray(smartLibrary)
-  ) {
-    smartLibrary = {};
-  }
-} catch {
-  smartLibrary = {};
-}
-
-const libraryStatuses = {
-  watchlist: {
-    ar: "📌 سأشاهده لاحقاً",
-    en: "📌 Watchlist"
-  },
-  watching: {
-    ar: "▶️ أشاهده حالياً",
-    en: "▶️ Watching"
-  },
-  completed: {
-    ar: "✅ شاهدته",
-    en: "✅ Completed"
-  },
-  paused: {
-    ar: "⏸️ متوقف مؤقتاً",
-    en: "⏸️ On Hold"
-  },
-  dropped: {
-    ar: "❌ لم أكمله",
-    en: "❌ Dropped"
-  }
-};
-
-function cvText(ar, en) {
-  return lang === "ar-MA" ? ar : en;
-}
-
-function cvSaveLibrary() {
-  localStorage.setItem(
-    CV_LIBRARY_KEY,
-    JSON.stringify(smartLibrary)
-  );
-}
-
-function cvKey(type, id) {
-  return type + "_" + id;
-}
-
-function cvCurrentKey() {
-  if (!current) return null;
-
-  return cvKey(
-    current.media_type,
-    current.id
-  );
-}
-
-function cvGetEntry() {
-  const key = cvCurrentKey();
-
-  return key ? smartLibrary[key] || {} : {};
-}
-
-function cvUpdateEntry(field, value) {
-  if (!current) return;
-
-  const key = cvCurrentKey();
-
-  if (!smartLibrary[key]) {
-    smartLibrary[key] = {};
-  }
-
-  const entry = smartLibrary[key];
-
-  entry.id = current.id;
-  entry.media_type = current.media_type;
-  entry.title = current.title || current.name;
-  entry.name = current.name;
-  entry.poster_path = current.poster_path;
-  entry.vote_average = current.vote_average;
-  entry.release_date = current.release_date;
-  entry.first_air_date = current.first_air_date;
-
-  if (value === "") {
-    delete entry[field];
-  } else {
-    entry[field] = value;
-  }
-
-  if (!entry.status && !entry.rating) {
-    delete smartLibrary[key];
-  }
-
-  cvSaveLibrary();
-  cvRenderControls();
-  cvRenderSmartLibrary();
-}
-
-function cvRenderControls() {
-  const container = document.getElementById(
-    "cvLibraryControls"
-  );
-
-  if (!container || !current) return;
-
-  const entry = cvGetEntry();
-
-  let options = `
-    <option value="">
-      ${cvText("بدون حالة", "No Status")}
-    </option>
-  `;
-
-  for (const [key, value] of Object.entries(
-    libraryStatuses
-  )) {
-    options += `
-      <option value="${key}"
-        ${entry.status === key ? "selected" : ""}>
-        ${cvText(value.ar, value.en)}
-      </option>
-    `;
-  }
-
-  let ratings = `
-    <option value="">
-      ${cvText("بدون تقييم", "Not Rated")}
-    </option>
-  `;
-
-  for (let i = 1; i <= 10; i++) {
-    ratings += `
-      <option value="${i}"
-        ${Number(entry.rating) === i ? "selected" : ""}>
-        ⭐ ${i}/10
-      </option>
-    `;
-  }
-
-  container.innerHTML = `
-    <div style="
-      background:#171423;
-      border:1px solid #302743;
-      border-radius:18px;
-      padding:18px;
-      margin-top:20px;
-    ">
-
-      <h3>
-        ${cvText(
-          "📚 مكتبتي الشخصية",
-          "📚 My Personal Library"
-        )}
-      </h3>
-
-      <p style="color:#aaa;font-size:13px">
-        ${cvText(
-          "نظم مشاهدتك وقيّم هاد العمل",
-          "Track and rate this title"
-        )}
-      </p>
-
-      <label style="display:block;margin:15px 0 8px">
-        ${cvText("حالة المشاهدة", "Watch Status")}
-      </label>
-
-      <select id="cvStatus" style="
-        width:100%;
-        padding:13px;
-        border-radius:12px;
-        background:#211a33;
-        color:white;
-        border:1px solid #302743;
-      ">
-        ${options}
-      </select>
-
-      <label style="display:block;margin:18px 0 8px">
-        ${cvText(
-          "⭐ تقييمي الشخصي",
-          "⭐ My Rating"
-        )}
-      </label>
-
-      <select id="cvRating" style="
-        width:100%;
-        padding:13px;
-        border-radius:12px;
-        background:#211a33;
-        color:white;
-        border:1px solid #302743;
-      ">
-        ${ratings}
-      </select>
-
-      <p style="
-        color:#a78bfa;
-        font-size:12px;
-        margin-top:15px;
-      ">
-        ${cvText(
-          "✅ التغييرات كتتحفظ تلقائياً",
-          "✅ Changes are saved automatically"
-        )}
-      </p>
-
-    </div>
-  `;
-
-  document.getElementById("cvStatus")
-    .addEventListener("change", function() {
-      cvUpdateEntry("status", this.value);
-    });
-
-  document.getElementById("cvRating")
-    .addEventListener("change", function() {
-      cvUpdateEntry(
-        "rating",
-        this.value ? Number(this.value) : ""
-      );
-    });
-}
-
-function cvRenderSmartLibrary() {
-  const container = document.getElementById(
-    "cvSmartLibrary"
-  );
-
-  if (!container) return;
-
-  const entries = Object.values(smartLibrary);
-
-  let html = `
-    <h2 style="padding:15px">
-      ${cvText(
-        "📚 مكتبة المشاهدة",
-        "📚 Watch Library"
-      )}
-    </h2>
-  `;
-
-  let hasItems = false;
-
-  for (const [status, label] of Object.entries(
-    libraryStatuses
-  )) {
-    const items = entries.filter(
-      x => x.status === status
-    );
-
-    if (!items.length) continue;
-
-    hasItems = true;
-
-    html += `
-      <div class="section">
-        <h2>
-          ${cvText(label.ar, label.en)}
-          (${items.length})
-        </h2>
-
-        <div class="row">
-          ${items.map(x =>
-            card(x, x.media_type)
-          ).join("")}
-        </div>
-      </div>
-    `;
-  }
-
-  const rated = entries.filter(
-    x => Number(x.rating) > 0
-  );
-
-  if (rated.length) {
-    hasItems = true;
-
-    rated.sort(
-      (a, b) => b.rating - a.rating
-    );
-
-    html += `
-      <div class="section">
-        <h2>
-          ${cvText(
-            "⭐ تقييماتي الشخصية",
-            "⭐ My Ratings"
-          )}
-        </h2>
-
-        <div class="row">
-          ${rated.map(x =>
-            card(x, x.media_type)
-          ).join("")}
-        </div>
-      </div>
-    `;
-  }
-
-  if (!hasItems) {
-    html += `
-      <div class="empty">
-        ${cvText(
-          "مازال ما سجلتي حتى عمل. دخل لأي فيلم أو مسلسل وحدد حالة المشاهدة ديالو.",
-          "Your library is empty. Open a title and select its watch status."
-        )}
-      </div>
-    `;
-  }
-
-  container.innerHTML = html;
-}
-
-function cvInitializeLibrary() {
-  const detailContent = document.querySelector(
-    ".detail-content"
-  );
-
-  if (
-    detailContent &&
-    !document.getElementById("cvLibraryControls")
-  ) {
-    const controls = document.createElement("div");
-
-    controls.id = "cvLibraryControls";
-
-    const favoriteButton = document.getElementById(
-      "favButton"
-    );
-
-    favoriteButton.insertAdjacentElement(
-      "afterend",
-      controls
-    );
-  }
-
-  const libraryView = document.getElementById(
-    "library"
-  );
-
-  if (
-    libraryView &&
-    !document.getElementById("cvSmartLibrary")
-  ) {
-    const smartSection = document.createElement("div");
-
-    smartSection.id = "cvSmartLibrary";
-
-    libraryView.appendChild(smartSection);
-  }
-}
-
-/* Connect to existing CINEVERSE functions */
-
-const cvOriginalOpenDetail = openDetail;
-
-openDetail = async function(type, id) {
-  await cvOriginalOpenDetail(type, id);
-
-  if (
-    current &&
-    current.id === id &&
-    current.media_type === type
-  ) {
-    cvRenderControls();
-  }
-};
-
-const cvOriginalShowView = showView;
-
-showView = function(id, el) {
-  cvOriginalShowView(id, el);
-
-  if (id === "library") {
-    cvRenderSmartLibrary();
-  }
-};
-
-const cvOriginalToggleLang = toggleLang;
-
-toggleLang = function() {
-  cvOriginalToggleLang();
-
-  cvRenderSmartLibrary();
-
-  if (current) {
-    cvRenderControls();
-  }
-};
-
-cvInitializeLibrary();
-cvRenderSmartLibrary();
-
-</script>  
-<script>
-/*
- CINEVERSE Backup 2.0
- Complete Personal Data Backup
-*/
-
-function cvBackupV2() {
-
-  const keys = [
-    "cv_lang",
-    "cv_favorites",
-    "cv_watched",
-    "cv_smart_library",
-    "cineverse_favs",
-    "cineverse_lang"
-  ];
-
-  const backup = {
-    app: "CINEVERSE",
-    version: 2,
-    created: new Date().toISOString(),
-    data: {}
-  };
-
-  keys.forEach(key => {
-    const value = localStorage.getItem(key);
-
-    if (value !== null) {
-      backup.data[key] = value;
-    }
-  });
-
-  const blob = new Blob(
-    [JSON.stringify(backup, null, 2)],
-    { type: "application/json" }
-  );
-
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-
-  link.href = url;
-
-  link.download =
-    "cineverse-backup-" +
-    new Date().toISOString().slice(0, 10) +
-    ".json";
-
-  document.body.appendChild(link);
-
-  link.click();
-
-  link.remove();
-
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-  }, 1000);
-}
-
-function cvRestoreV2(file) {
-
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function(event) {
-
-    try {
-
-      const backup = JSON.parse(
-        event.target.result
-      );
-
-      if (
-        backup.app !== "CINEVERSE" ||
-        backup.version !== 2 ||
-        !backup.data ||
-        typeof backup.data !== "object" ||
-        Array.isArray(backup.data)
-      ) {
-        throw new Error("Invalid backup");
-      }
-
-      const allowed = [
-        "cv_lang",
-        "cv_favorites",
-        "cv_watched",
-        "cv_smart_library",
-        "cineverse_favs",
-        "cineverse_lang"
-      ];
-
-      const updates = {};
-
-      for (const key of allowed) {
-
-        if (!Object.hasOwn(backup.data, key)) {
-          continue;
-        }
-
-        const value = backup.data[key];
-
-        if (typeof value !== "string") {
-          throw new Error("Invalid value");
-        }
-
-        if (key === "cv_lang") {
-          if (!["ar-MA", "en-US"].includes(value)) {
-            throw new Error("Invalid language");
-          }
-        } else if (key === "cineverse_lang") {
-          if (!["ar-MA", "en-US"].includes(value)) {
-            throw new Error("Invalid language");
-          }
-        } else {
-          const parsed = JSON.parse(value);
-
-          if (key === "cv_favorites" ||
-              key === "cineverse_favs") {
-            if (!Array.isArray(parsed)) {
-              throw new Error("Invalid favorites");
-            }
-          } else if (
-            !parsed ||
-            typeof parsed !== "object" ||
-            Array.isArray(parsed)
-          ) {
-            throw new Error("Invalid library data");
-          }
-        }
-
-        updates[key] = value;
-      }
-
-      if (!Object.keys(updates).length) {
-        throw new Error("Empty backup");
-      }
-
-      const confirmed = confirm(
-        "⚠️ استرجاع النسخة غادي يعوض البيانات الحالية. واش متأكد؟"
-      );
-
-      if (!confirmed) return;
-
-      // Keep a recovery copy of current data.
-      const previous = {};
-
-      for (const key of allowed) {
-        previous[key] = localStorage.getItem(key);
-      }
-
-      try {
-        for (const [key, value] of Object.entries(updates)) {
-          localStorage.setItem(key, value);
-        }
-      } catch (error) {
-        for (const [key, value] of Object.entries(previous)) {
-          if (value === null) {
-            localStorage.removeItem(key);
-          } else {
-            localStorage.setItem(key, value);
-          }
-        }
-        throw error;
-      }
-
-      alert("✅ تم استرجاع البيانات!");
-
-      location.reload();
-
-    } catch (error) {
-
-      alert(
-        "❌ تعذر استرجاع الملف. تأكد أنه نسخة احتياطية صالحة من CINEVERSE 2.0."
-      );
-
-    }
-
-  };
-
-  reader.onerror = function() {
-    alert("❌ تعذر قراءة الملف.");
-  };
-
-  reader.readAsText(file);
-}
-</script>
-
-<section style="
-margin:20px 15px;
-padding:20px;
-background:#171423;
-border:1px solid #302743;
-border-radius:20px;
-text-align:center;
-">
-
-<h3>💾 CINEVERSE Backup 2.0</h3>
-
-<p style="
-color:#aaa;
-font-size:13px;
-line-height:1.8;
-">
-حافظ على مكتبتك الشخصية وتقييماتك
-وتقدم مشاهدة المسلسلات.
-</p>
-
-<button
-class="btn"
-onclick="cvBackupV2()">
-📤 تحميل نسخة احتياطية كاملة
-</button>
-
-<br><br>
-
-<label
-class="btn ghost"
-style="display:inline-block;cursor:pointer">
-
-📥 استرجاع نسخة احتياطية
-
-<input
-type="file"
-accept=".json,application/json"
-style="display:none"
-onchange="
-cvRestoreV2(this.files[0]);
-this.value='';
-">
-
-</label>
-
-<p style="
-font-size:11px;
-color:#888;
-margin-top:15px;
-">
-CINEVERSE • Backup Version 2.0
-</p>
-
-</section>
-<script>
-/*
- CINEVERSE 2.2
- Personal Recommendations Engine
-*/
-
-let cvRecommendationsVersion = 0;
-
-function cvRecommendationText(ar, en) {
-  return lang === "ar-MA" ? ar : en;
-}
-
-function cvCreateRecommendationsUI() {
-  if (document.getElementById("cvRecommendations")) {
-    return;
-  }
-
-  const home = document.getElementById("home");
-
-  if (!home) return;
-
-  const section = document.createElement("section");
-
-  section.id = "cvRecommendations";
-  section.className = "section";
-
-  section.innerHTML = `
-    <h2 id="cvRecTitle">
-      🧠 مختارة خصيصاً لك
-    </h2>
-
-    <p id="cvRecDescription"
-       style="
-         color:#aaa;
-         font-size:13px;
-         padding:0 16px;
-         line-height:1.8;
-       ">
-      اقتراحات مبنية على تقييماتك الشخصية.
-    </p>
-
-    <div style="padding:0 16px 15px">
-      <button
-        class="btn ghost"
-        onclick="cvLoadRecommendations()">
-        🔄 Refresh
-      </button>
-    </div>
-
-    <div class="row" id="cvRecommendationsRow">
-      <div class="loading">
-        جاري تحضير الاقتراحات...
-      </div>
-    </div>
-
-    <h2 id="cvHiddenTitle">
-      💎 Hidden Gems
-    </h2>
-
-    <div class="row" id="cvHiddenGemsRow"></div>
-  `;
-
-  const firstSection = home.querySelector(".section");
-
-  if (firstSection) {
-    firstSection.before(section);
-  } else {
-    home.appendChild(section);
-  }
-}
-
-function cvRecommendationLanguage() {
-  const title = document.getElementById("cvRecTitle");
-  const desc = document.getElementById("cvRecDescription");
-  const hidden = document.getElementById("cvHiddenTitle");
-
-  if (title) {
-    title.textContent = cvRecommendationText(
-      "🧠 مختارة خصيصاً لك",
-      "🧠 Recommended For You"
-    );
-  }
-
-  if (desc) {
-    desc.textContent = cvRecommendationText(
-      "اقتراحات مبنية على تقييماتك الشخصية.",
-      "Recommendations based on your personal ratings."
-    );
-  }
-
-  if (hidden) {
-    hidden.textContent = "💎 Hidden Gems";
-  }
-}
-
-function cvGetRatedTitles() {
-  const entries = Object.values(smartLibrary || {});
-
-  return entries
-    .filter(x =>
-      Number(x.rating) >= 7 &&
-      ["movie", "tv"].includes(x.media_type) &&
-      Number.isInteger(Number(x.id)) &&
-      Number(x.id) > 0
-    )
-    .sort((a, b) =>
-      Number(b.rating) - Number(a.rating)
-    )
-    .slice(0, 5);
-}
-
-function cvExcludedTitles() {
-  const excluded = new Set();
-
-  for (const entry of Object.values(smartLibrary || {})) {
-    if (
-      entry.status === "completed" ||
-      entry.status === "dropped"
-    ) {
-      excluded.add(
-        `${entry.media_type}_${entry.id}`
-      );
-    }
-  }
-
-  return excluded;
-}
-
-function cvRankRecommendations(items, sources) {
-  const excluded = cvExcludedTitles();
-
-  const sourceIds = new Set(
-    sources.map(x => `${x.media_type}_${x.id}`)
-  );
-
-  const unique = new Map();
-
-  for (const item of items) {
-    const type = item.media_type;
-
-    if (!["movie", "tv"].includes(type)) continue;
-
-    const key = `${type}_${item.id}`;
-
-    if (excluded.has(key)) continue;
-    if (sourceIds.has(key)) continue;
-    if (!item.poster_path) continue;
-
-    const rating = Number(item.vote_average || 0);
-    const votes = Number(item.vote_count || 0);
-
-    const score =
-      rating * 2 +
-      Math.log10(votes + 1) +
-      Math.min(Number(item.popularity || 0), 100) / 100;
-
-    const previous = unique.get(key);
-
-    if (!previous || score > previous.score) {
-      unique.set(key, {
-        ...item,
-        score
-      });
-    }
-  }
-
-  return [...unique.values()]
-    .sort((a, b) => b.score - a.score);
-}
-
-async function cvLoadRecommendations() {
-  const version = ++cvRecommendationsVersion;
-
-  cvRecommendationLanguage();
-
-  const row = document.getElementById(
-    "cvRecommendationsRow"
-  );
-
-  const hiddenRow = document.getElementById(
-    "cvHiddenGemsRow"
-  );
-
-  if (!row || !hiddenRow) return;
-
-  row.innerHTML = `
-    <div class="loading">
-      ${cvRecommendationText(
-        "🧠 جاري تحضير اقتراحاتك...",
-        "🧠 Finding recommendations..."
-      )}
-    </div>
-  `;
-
-  hiddenRow.innerHTML = "";
-
-  const sources = cvGetRatedTitles();
-
-  if (!sources.length) {
-    row.innerHTML = `
-      <div class="empty">
-        ${cvRecommendationText(
-          "⭐ قيّم بعض الأفلام والمسلسلات بـ 7/10 أو أكثر باش نبداو نقترحو عليك أعمال حسب ذوقك.",
-          "⭐ Rate some movies or shows 7/10 or higher to unlock personal recommendations."
-        )}
-      </div>
-    `;
-
-    try {
-      const data = await api("top_movies");
-
-      if (version !== cvRecommendationsVersion) return;
-
-      const gems = (data.results || []).filter(x =>
-        Number(x.vote_average) >= 7 &&
-        Number(x.vote_count) >= 100 &&
-        Number(x.vote_count) <= 3000
-      );
-
-      renderCards(
-        "cvHiddenGemsRow",
-        gems.slice(0, 15),
-        "movie"
-      );
-    } catch {
-      if (version !== cvRecommendationsVersion) return;
-
-      hiddenRow.textContent = cvRecommendationText(
-        "تعذر تحميل الاقتراحات.",
-        "Unable to load suggestions."
-      );
-    }
-
-    return;
-  }
-
-  const requests = sources.flatMap(source => [
-    api("recommendations", {
-      type: source.media_type,
-      id: source.id
-    }).then(data => ({
-      source,
-      items: data.results || []
-    })),
-
-    api("similar", {
-      type: source.media_type,
-      id: source.id
-    }).then(data => ({
-      source,
-      items: data.results || []
-    }))
-  ]);
-
-  const results = await Promise.allSettled(requests);
-
-  if (version !== cvRecommendationsVersion) return;
-
-  const candidates = [];
-
-  for (const result of results) {
-    if (result.status !== "fulfilled") continue;
-
-    const { source, items } = result.value;
-
-    for (const item of items) {
-      candidates.push({
-        ...item,
-        media_type: source.media_type
-      });
-    }
-  }
-
-  const ranked = cvRankRecommendations(
-    candidates,
-    sources
-  );
-
-  if (!ranked.length) {
-    row.innerHTML = `
-      <div class="empty">
-        ${cvRecommendationText(
-          "ما لقيناش اقتراحات حالياً. جرب تحدث الصفحة.",
-          "No recommendations available right now."
-        )}
-      </div>
-    `;
-
-    return;
-  }
-
-  renderCards(
-    "cvRecommendationsRow",
-    ranked.slice(0, 20)
-  );
-
-  const hiddenGems = ranked.filter(x =>
-    Number(x.vote_average) >= 7 &&
-    Number(x.vote_count) >= 100 &&
-    Number(x.vote_count) <= 3000
-  );
-
-  renderCards(
-    "cvHiddenGemsRow",
-    hiddenGems.slice(0, 15)
-  );
-}
-
-cvCreateRecommendationsUI();
-
-cvLoadRecommendations();
-
-</script>
-<script>
-/*
- CINEVERSE 2.3
- Stability Patch 1
- Automatic Recommendations Refresh
-*/
-
-(function () {
-  if (
-    typeof cvUpdateEntry !== "function" ||
-    typeof cvLoadRecommendations !== "function"
-  ) {
-    console.warn(
-      "CINEVERSE: Recommendations module unavailable"
-    );
-    return;
-  }
-
-  const originalUpdateEntry = cvUpdateEntry;
-
-  let refreshTimer = null;
-
-  cvUpdateEntry = function(field, value) {
-
-    originalUpdateEntry(field, value);
-
-    if (
-      field === "rating" ||
-      field === "status"
-    ) {
-
-      clearTimeout(refreshTimer);
-
-      refreshTimer = setTimeout(() => {
-
-        cvLoadRecommendations().catch(error => {
-          console.error(
-            "Recommendations refresh failed:",
-            error
-          );
-        });
-
-      }, 600);
-
-    }
-
-  };
-
-  console.log(
-    "CINEVERSE 2.3: Auto-refresh enabled"
-  );
-
-})();
-  </script>
-<!-- CINEVERSE 2.4 STATS PAGE -->
-
-<section id="cv24-stats" class="view">
-
-  <h2 class="cv24-title">
-    📊 My Cinema Stats
-  </h2>
-
-  <p class="cv24-subtitle">
-    Your personal cinema journey
-  </p>
-
-  <button
-    class="cv24-refresh"
-    onclick="CV24Stats.refresh()">
-    🔄 Refresh Stats
-  </button>
-
-  <div class="cv24-grid">
-
-    <div class="cv24-card">
-      <div class="cv24-icon">🎬</div>
-      <div class="cv24-number" id="cv24-movies">0</div>
-      <div class="cv24-label">Movies Watched</div>
-    </div>
-
-    <div class="cv24-card">
-      <div class="cv24-icon">📺</div>
-      <div class="cv24-number" id="cv24-shows">0</div>
-      <div class="cv24-label">TV Shows</div>
-    </div>
-
-    <div class="cv24-card">
-      <div class="cv24-icon">✅</div>
-      <div class="cv24-number" id="cv24-episodes">0</div>
-      <div class="cv24-label">Episodes Watched</div>
-    </div>
-
-    <div class="cv24-card">
-      <div class="cv24-icon">⏱️</div>
-      <div class="cv24-number" id="cv24-hours">0</div>
-      <div class="cv24-label">Watch Hours</div>
-    </div>
-
-    <div class="cv24-card">
-      <div class="cv24-icon">⭐</div>
-      <div class="cv24-number" id="cv24-rating">—</div>
-      <div class="cv24-label">Average Rating</div>
-    </div>
-
-    <div class="cv24-card">
-      <div class="cv24-icon">📈</div>
-      <div class="cv24-number" id="cv24-progress">—</div>
-      <div class="cv24-label">Watching Progress</div>
-    </div>
-
-  </div>
-
-  <div class="cv24-section">
-
-    <h3>🏆 Your Top Rated</h3>
-
-    <div
-      class="cv24-top-list"
-      id="cv24-top-rated">
-
-      <div class="cv24-empty">
-        No rated titles yet.
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-<script>
-/* =====================================
-   CINEVERSE 2.4 — MY CINEMA STATS
-===================================== */
-
-const CV24Stats = {
-
-  // Temporary adapter:
-  // Replace with the application's real library.
-  getLibrary() {
-  return Object.values(smartLibrary || {});
-},
-
-  isWatched(item) {
-  return item.status === "completed";
-},
-
-  isTV(item) {
-    return (
-      item.media_type === "tv" ||
-      item.mediaType === "tv" ||
-      item.type === "tv"
-    );
-  },
-
-  getEpisodes(item) {
-
-  if (!this.isTV(item)) return 0;
-
-  const tvId = String(item.id);
-
-  return Object.entries(watched).filter(
-    ([key, value]) => {
-
-      if (value !== true) return false;
-
-      const parts = key.split("_");
-
-      return (
-        parts.length === 3 &&
-        parts[0] === tvId &&
-        Number(parts[1]) >= 0 &&
-        Number(parts[2]) > 0
-      );
-
-    }
-  ).length;
-
-},
-
-  getRating(item) {
-
-  const rating = Number(item.rating);
-
-  return Number.isFinite(rating) &&
-    rating >= 1 &&
-    rating <= 10
-      ? rating
-      : null;
-
-},
-
-  getRuntime(item) {
-    const runtime = Number(
-      item.runtime ?? 0
-    );
-
-    return Number.isFinite(runtime) &&
-      runtime > 0
-        ? runtime
-        : 0;
-  },
-
-  calculate() {
-
-    const library = this.getLibrary();
-
-    const watchedMovies = library.filter(
-      item =>
-        !this.isTV(item) &&
-        this.isWatched(item)
-    );
-
-    const shows = library.filter(
-      item => this.isTV(item)
-    );
-
-    const episodes = shows.reduce(
-      (total, item) =>
-        total + this.getEpisodes(item),
-      0
-    );
-
-    const movieMinutes = watchedMovies.reduce(
-      (total, item) =>
-        total + this.getRuntime(item),
-      0
-    );
-
-    const episodeMinutes = shows.reduce(
-      (total, item) => {
-
-        const episodeRuntime = Number(
-          item.episodeRuntime ??
-          item.episode_run_time ??
-          0
-        );
-
-        return total +
-          this.getEpisodes(item) *
-          (
-            Number.isFinite(episodeRuntime) &&
-            episodeRuntime > 0
-              ? episodeRuntime
-              : 0
-          );
-
-      },
-      0
-    );
-
-    const hours =
-      (movieMinutes + episodeMinutes) / 60;
-
-    const rated = library.filter(
-      item => this.getRating(item) !== null
-    );
-
-    const averageRating = rated.length
-      ? rated.reduce(
-          (total, item) =>
-            total + this.getRating(item),
-          0
-        ) / rated.length
-      : null;
-
-    const topRated = [...rated]
-      .sort(
-        (a, b) =>
-          this.getRating(b) -
-          this.getRating(a)
-      )
-      .slice(0, 5);
-
-    let totalEpisodes = 0;
-
-    shows.forEach(item => {
-
-      const total = Number(
-        item.number_of_episodes ??
-        item.totalEpisodes ??
-        0
-      );
-
-      if (Number.isFinite(total) && total > 0) {
-        totalEpisodes += total;
-      }
-
-    });
-
-    const progress = totalEpisodes > 0
-      ? Math.min(
-          100,
-          Math.round(
-            episodes / totalEpisodes * 100
-          )
-        )
-      : null;
-
-    return {
-      movies: watchedMovies.length,
-      shows: shows.length,
-      episodes,
-      hours,
-      averageRating,
-      progress,
-      topRated
-    };
-
-  },
-
-  renderTopRated(items) {
-
-    const container =
-      document.getElementById("cv24-top-rated");
-
-    container.replaceChildren();
-
-    if (!items.length) {
-      const empty = document.createElement("div");
-      empty.className = "cv24-empty";
-      empty.textContent = "No rated titles yet.";
-      container.appendChild(empty);
-      return;
-    }
-
-    items.forEach(item => {
-
-      const row = document.createElement("div");
-      row.className = "cv24-top-item";
-
-      const poster = document.createElement("img");
-
-      const posterPath =
-        item.poster_path ?? item.poster ?? "";
-
-      if (
-        typeof posterPath === "string" &&
-        posterPath.startsWith("/")
-      ) {
-        poster.src =
-          "https://image.tmdb.org/t/p/w185" +
-          posterPath;
-      } else if (
-        typeof posterPath === "string" &&
-        /^https:\/\//i.test(posterPath)
-      ) {
-        poster.src = posterPath;
-      }
-
-      poster.alt = item.title ?? item.name ?? "Poster";
-      poster.loading = "lazy";
-
-      const info = document.createElement("div");
-      info.className = "cv24-top-info";
-
-      const name = document.createElement("div");
-      name.className = "cv24-top-name";
-      name.textContent =
-        item.title ?? item.name ?? "Unknown";
-
-      const rating = document.createElement("div");
-      rating.className = "cv24-top-rating";
-      rating.textContent =
-        "⭐ " + this.getRating(item) + "/10";
-
-      info.append(name, rating);
-      row.append(poster, info);
-
-      container.appendChild(row);
-
-    });
-
-  },
-
-  refresh() {
-
-    const stats = this.calculate();
-
-    document.getElementById(
-      "cv24-movies"
-    ).textContent = stats.movies;
-
-    document.getElementById(
-      "cv24-shows"
-    ).textContent = stats.shows;
-
-    document.getElementById(
-      "cv24-episodes"
-    ).textContent = stats.episodes;
-
-    document.getElementById(
-      "cv24-hours"
-    ).textContent = stats.hours.toFixed(1);
-
-    document.getElementById(
-      "cv24-rating"
-    ).textContent =
-      stats.averageRating === null
-        ? "—"
-        : stats.averageRating.toFixed(1);
-
-    document.getElementById(
-      "cv24-progress"
-    ).textContent =
-      stats.progress === null
-        ? "—"
-        : stats.progress + "%";
-
-    this.renderTopRated(stats.topRated);
-
-  }
-
-};
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => CV24Stats.refresh()
-);
-</script>
- <script>
-
-/*
- CINEVERSE 2.4
- Stats Navigation
-*/
-
-function cvOpenStats() {
-
-  const stats = document.getElementById("cv24-stats");
-
-  if (!stats) return;
-
-  showView("cv24-stats");
-
-  CV24Stats.refresh();
-
-}
-
- </script>
- <script>
-
-/*
- CINEVERSE 2.4
- Automatic Stats Refresh
-*/
-
-(function() {
-
-  const originalSaveLibrary = cvSaveLibrary;
-
-  cvSaveLibrary = function() {
-
-    originalSaveLibrary();
-
-    CV24Stats.refresh();
-
-  };
-
-  const originalToggleEpisode = toggleEpisode;
-
-  toggleEpisode = function(tv, season, episode) {
-
-    originalToggleEpisode(tv, season, episode);
-
-    CV24Stats.refresh();
-
-  };
-
-})();
-
- </script>
-<script>
-/*
-========================================
- CINEVERSE 2.4 — STATS PRO
- Personal Cinema Analytics
-========================================
-*/
-
-(function(){
-
-const STATS_CACHE_KEY = "cv24_runtime_cache";
-
-function readRuntimeCache(){
-  try {
-    const data = JSON.parse(
-      localStorage.getItem(STATS_CACHE_KEY) || "{}"
-    );
-    return data && typeof data === "object" &&
-      !Array.isArray(data) ? data : {};
-  } catch {
-    return {};
-  }
-}
-
-let runtimeCache = readRuntimeCache();
-
-function saveRuntimeCache(){
-  try {
-    localStorage.setItem(
-      STATS_CACHE_KEY,
-      JSON.stringify(runtimeCache)
-    );
-  } catch(e){
-    console.warn("Runtime cache unavailable",e);
-  }
-}
-
-function text(ar,en){
-  return lang === "ar-MA" ? ar : en;
-}
-
-/* Count ALL watched episodes */
-
-function getAllWatchedEpisodes(){
-
-  const episodes = {};
-
-  for(const [key,value] of Object.entries(watched || {})){
-
-    if(value !== true) continue;
-
-    const match = key.match(/^(\d+)_(\d+)_(\d+)$/);
-
-    if(!match) continue;
-
-    const tvId = match[1];
-    const season = Number(match[2]);
-    const episode = Number(match[3]);
-
-    if(episode <= 0 || season < 0) continue;
-
-    if(!episodes[tvId]){
-      episodes[tvId] = [];
-    }
-
-    episodes[tvId].push({
-      season,
-      episode
-    });
-
-  }
-
-  return episodes;
-}
-
-/* Fetch runtime information from TMDB Worker */
-
-async function getRuntime(type,id){
-
-  const key = type + "_" + id;
-
-  if(runtimeCache[key]){
-    return runtimeCache[key];
-  }
-
-  try {
-
-    const data = await api("details",{
-      type,
-      id
-    });
-
-    const result = {
-      runtime: 0,
-      totalEpisodes: 0
-    };
-
-    if(type === "movie"){
-
-      result.runtime =
-        Number(data.runtime) || 0;
-
-    } else {
-
-      const times = data.episode_run_time || [];
-
-      result.runtime =
-        times.length
-          ? Number(times[0]) || 0
-          : 0;
-
-      result.totalEpisodes =
-        Number(data.number_of_episodes) || 0;
-
-    }
-
-    runtimeCache[key] = result;
-
-    saveRuntimeCache();
-
-    return result;
-
-  } catch(error){
-
-    console.warn(
-      "Runtime unavailable:",
-      type,
-      id
-    );
-
-    return {
-      runtime: 0,
-      totalEpisodes: 0
-    };
-
-  }
-
-}
-
-/* Calculate advanced stats */
-
-async function calculateProStats(){
-
-  const entries = Object.values(
-    smartLibrary || {}
-  );
-
-  const completedMovies = entries.filter(
-    x =>
-      x.media_type === "movie" &&
-      x.status === "completed"
-  );
-
-  const tvEntries = entries.filter(
-    x => x.media_type === "tv"
-  );
-
-  const episodeMap = getAllWatchedEpisodes();
-
-  const allTVIds = new Set([
-    ...tvEntries.map(x => String(x.id)),
-    ...Object.keys(episodeMap)
-  ]);
-
-  const episodeCount = Object.values(
-    episodeMap
-  ).reduce(
-    (total,list) => total + list.length,
-    0
-  );
-
-  let movieMinutes = 0;
-  let tvMinutes = 0;
-
-  let knownEpisodes = 0;
-  let totalEpisodes = 0;
-
-  const requests = [];
-
-  for(const movie of completedMovies){
-
-    requests.push(
-      getRuntime("movie",movie.id).then(data=>{
-        movieMinutes += data.runtime;
-      })
-    );
-
-  }
-
-  for(const tvId of allTVIds){
-
-    requests.push(
-      getRuntime("tv",tvId).then(data=>{
-
-        const watchedCount =
-          episodeMap[tvId]?.length || 0;
-
-        tvMinutes +=
-          watchedCount * data.runtime;
-
-        if(data.totalEpisodes > 0){
-
-          knownEpisodes += Math.min(
-            watchedCount,
-            data.totalEpisodes
-          );
-
-          totalEpisodes +=
-            data.totalEpisodes;
-
-        }
-
-      })
-    );
-
-  }
-
-  await Promise.all(requests);
-
-  const hours =
-    (movieMinutes + tvMinutes) / 60;
-
-  const progress =
-    totalEpisodes > 0
-      ? Math.min(
-          100,
-          Math.round(
-            knownEpisodes /
-            totalEpisodes * 100
-          )
-        )
-      : null;
-
-  return {
-    movies: completedMovies.length,
-    shows: allTVIds.size,
-    episodes: episodeCount,
-    hours,
-    progress
-  };
-
-}
-
-/* Update visual cards */
-
-async function refreshProStats(){
-
-  const moviesEl =
-    document.getElementById("cv24-movies");
-
-  if(!moviesEl) return;
-
-  const ids = [
-    "cv24-movies",
-    "cv24-shows",
-    "cv24-episodes",
-    "cv24-hours",
-    "cv24-progress"
-  ];
-
-  const elements = ids.map(
-    id => document.getElementById(id)
-  );
-
-  elements.forEach(el=>{
-    if(el){
-      el.style.opacity = ".5";
-    }
-  });
-
-  try {
-
-    const stats = await calculateProStats();
-
-    document.getElementById(
-      "cv24-movies"
-    ).textContent = stats.movies;
-
-    document.getElementById(
-      "cv24-shows"
-    ).textContent = stats.shows;
-
-    document.getElementById(
-      "cv24-episodes"
-    ).textContent = stats.episodes;
-
-    document.getElementById(
-      "cv24-hours"
-    ).textContent =
-      stats.hours.toFixed(1);
-
-    document.getElementById(
-      "cv24-progress"
-    ).textContent =
-      stats.progress === null
-        ? "—"
-        : stats.progress + "%";
-
-  } catch(error){
-
-    console.error(
-      "CINEVERSE Stats Pro:",
-      error
-    );
-
-  } finally {
-
-    elements.forEach(el=>{
-      if(el){
-        el.style.opacity = "1";
-      }
-    });
-
-  }
-
-}
-
-/* Connect with existing Stats */
-
-const originalRefresh =
-  CV24Stats.refresh.bind(CV24Stats);
-
-CV24Stats.refresh = function(){
-
-  originalRefresh();
-
-  refreshProStats();
-
-};
-
-/* Refresh on opening Stats */
-
-const originalOpenStats = window.cvOpenStats;
-
-window.cvOpenStats = function(){
-
-  if(typeof originalOpenStats === "function"){
-    originalOpenStats();
-  }
-
-  refreshProStats();
-
-};
-
-/* Language support */
-
-function updateStatsLanguage(){
-
-  const section =
-    document.getElementById("cv24-stats");
-
-  if(!section) return;
-
-  const title =
-    section.querySelector(".cv24-title");
-
-  const subtitle =
-    section.querySelector(".cv24-subtitle");
-
-  if(title){
-    title.textContent = text(
-      "📊 إحصائياتي السينمائية",
-      "📊 My Cinema Stats"
-    );
-  }
-
-  if(subtitle){
-    subtitle.textContent = text(
-      "رحلتك الشخصية في عالم السينما",
-      "Your personal cinema journey"
-    );
-  }
-
-  const labels =
-    section.querySelectorAll(".cv24-label");
-
-  const translations = [
-    ["🎬 أفلام شاهدتها","Movies Watched"],
-    ["📺 مسلسلاتي","TV Shows"],
-    ["✅ حلقات شاهدتها","Episodes Watched"],
-    ["⏱️ ساعات المشاهدة","Watch Hours"],
-    ["⭐ متوسط تقييماتي","Average Rating"],
-    ["📈 تقدم المشاهدة","Watching Progress"]
-  ];
-
-  labels.forEach((el,index)=>{
-
-    if(translations[index]){
-      el.textContent = text(
-        translations[index][0],
-        translations[index][1]
-      );
-    }
-
-  });
-
-  const topTitle =
-    section.querySelector(".cv24-section h3");
-
-  if(topTitle){
-    topTitle.textContent = text(
-      "🏆 أعلى تقييماتي",
-      "🏆 Your Top Rated"
-    );
-  }
-
-  const refreshButton =
-    section.querySelector(".cv24-refresh");
-
-  if(refreshButton){
-    refreshButton.textContent = text(
-      "🔄 تحديث الإحصائيات",
-      "🔄 Refresh Stats"
-    );
-  }
-
-}
-
-/* Connect language switch */
-
-const originalToggleLanguage = toggleLang;
-
-toggleLang = function(){
-
-  originalToggleLanguage();
-
-  updateStatsLanguage();
-
-};
-
-/* Purple Design */
-
-const style = document.createElement("style");
-
-style.textContent = `
-
-#cv24-stats .cv24-card{
-
-  background:
-    linear-gradient(
-      145deg,
-      #231638,
-      #14101f
-    );
-
-  border:1px solid #392653;
-
-}
-
-#cv24-stats .cv24-card:hover{
-
-  border-color:#a78bfa;
-
-}
-
-#cv24-stats .cv24-number{
-
-  color:#c4b5fd;
-
-}
-
-#cv24-stats .cv24-refresh{
-
-  background:
-    linear-gradient(
-      135deg,
-      #7c3aed,
-      #a78bfa
-    );
-
-  color:white;
-
-}
-
-#cv24-stats .cv24-top-item{
-
-  background:#171423;
-
-  border:1px solid #302743;
-
-}
-
-`;
-
-document.head.appendChild(style);
-
-/* Initialize */
-
-updateStatsLanguage();
-
-console.log(
-  "CINEVERSE 2.4 Stats Pro Ready"
-);
-
-})();
-</script>
- <style>
-/* ==================================
-   CINEVERSE 2.4 — MOOD FINDER
-================================== */
-
-#cvMoodFinder {
-  padding: 20px 15px;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.cv-mood-hero {
-  background: linear-gradient(135deg,#432078,#171123);
-  border: 1px solid #513578;
-  border-radius: 22px;
-  padding: 25px 20px;
-  margin-bottom: 25px;
-}
-
-.cv-mood-hero h2 {
-  font-size: 25px;
-  margin: 0 0 10px;
-}
-
-.cv-mood-hero p {
-  color: #c4b5d5;
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.cv-mood-grid {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 12px;
-}
-
-.cv-mood-option {
-  background: #1b1629;
-  border: 1px solid #392653;
-  border-radius: 15px;
-  padding: 18px 10px;
-  text-align: center;
-  color: white;
-  transition: .2s;
-  font-size: 13px;
-}
-
-.cv-mood-option.active {
-  background: linear-gradient(135deg,#7c3aed,#4c1d95);
-  border-color: #c4b5fd;
-  box-shadow: 0 0 15px #7c3aed44;
-}
-
-.cv-mood-option .emoji {
-  display: block;
-  font-size: 29px;
-  margin-bottom: 9px;
-}
-
-.cv-mood-filters {
-  background: #171423;
-  border: 1px solid #302743;
-  padding: 18px;
-  border-radius: 18px;
-  margin-top: 22px;
-}
-
-.cv-mood-filters label {
-  display: block;
-  font-size: 13px;
-  margin: 15px 0 8px;
-  color: #c4b5fd;
-}
-
-.cv-mood-filters select {
-  width: 100%;
-  background: #211a33;
-  color: white;
-  border: 1px solid #392653;
-  padding: 13px;
-  border-radius: 11px;
-}
-
-.cv-mood-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.cv-mood-actions button {
-  flex: 1;
-}
-
-.cv-mood-results-title {
-  font-size: 19px;
-  margin: 30px 0 10px;
-}
-
-.cv-mood-status {
-  color: #aaa;
-  text-align: center;
-  padding: 15px;
-  font-size: 13px;
-}
-
-@media(min-width:700px) {
-  .cv-mood-grid {
-    grid-template-columns: repeat(4,1fr);
-  }
-}
-</style>
-
-<script>
-/*
-========================================
- CINEVERSE 2.4 — MOOD FINDER
-========================================
-*/
-
-(function(){
-
-const moods = [
-  {
-    id:"mystery",
-    emoji:"🧩",
-    ar:"غموض وتشويق",
-    en:"Mystery & Thriller",
-    genres:"9648,53"
-  },
-  {
-    id:"scifi",
-    emoji:"🚀",
-    ar:"خيال علمي",
-    en:"Science Fiction",
-    genres:"878"
-  },
-  {
-    id:"comedy",
-    emoji:"😂",
-    ar:"كوميديا",
-    en:"Comedy",
-    genres:"35"
-  },
-  {
-    id:"horror",
-    emoji:"😱",
-    ar:"رعب",
-    en:"Horror",
-    genres:"27"
-  },
-  {
-    id:"romance",
-    emoji:"❤️",
-    ar:"رومانسية",
-    en:"Romance",
-    genres:"10749"
-  },
-  {
-    id:"action",
-    emoji:"💥",
-    ar:"أكشن",
-    en:"Action",
-    genres:"28"
-  },
-  {
-    id:"crime",
-    emoji:"🕵️",
-    ar:"جريمة وتحقيقات",
-    en:"Crime & Investigation",
-    genres:"80"
-  },
-  {
-    id:"drama",
-    emoji:"🎭",
-    ar:"دراما قوية",
-    en:"Drama",
-    genres:"18"
-  }
-];
-
-let selectedMood = "mystery";
-let moodResults = [];
-let moodRequestVersion = 0;
-
-function t(ar,en){
-  return lang === "ar-MA" ? ar : en;
-}
-
-function createMoodUI(){
-
-  if(document.getElementById("cvMoodFinder"))return;
-
-  const section = document.createElement("section");
-
-  section.id = "cvMoodFinder";
-  section.className = "view";
-
-  section.innerHTML = `
-    <div class="cv-mood-hero">
-      <h2 id="cvMoodTitle"></h2>
-      <p id="cvMoodDescription"></p>
-    </div>
-
-    <div class="cv-mood-grid" id="cvMoodOptions"></div>
-
-    <div class="cv-mood-filters">
-
-      <label id="cvMoodTypeLabel"></label>
-
-      <select id="cvMoodType">
-        <option value="movie"></option>
-        <option value="tv"></option>
-      </select>
-
-      <label id="cvMoodRatingLabel"></label>
-
-      <select id="cvMoodRating">
-        <option value="0">0+</option>
-        <option value="5">5+</option>
-        <option value="6">6+</option>
-        <option value="7" selected>7+</option>
-        <option value="8">8+</option>
-        <option value="9">9+</option>
-      </select>
-
-      <label id="cvMoodSortLabel"></label>
-
-      <select id="cvMoodSort">
-        <option value="popularity.desc"></option>
-        <option value="vote_average.desc"></option>
-        <option value="primary_release_date.desc"></option>
-      </select>
-
-      <div class="cv-mood-actions">
-        <button class="btn" id="cvMoodSearchButton"></button>
-        <button class="btn ghost" id="cvMoodSurpriseButton"></button>
-      </div>
-
-    </div>
-
-    <h3 class="cv-mood-results-title" id="cvMoodResultsTitle"></h3>
-
-    <div class="cv-mood-status" id="cvMoodStatus"></div>
-
-    <div class="grid" id="cvMoodResults"></div>
-  `;
-
-  document.querySelector("main").appendChild(section);
-
-  document.getElementById("cvMoodSearchButton")
-    .addEventListener("click",searchMood);
-
-  document.getElementById("cvMoodSurpriseButton")
-    .addEventListener("click",surpriseMood);
-
-  renderMoodOptions();
-  updateMoodLanguage();
-}
-
-function renderMoodOptions(){
-
-  const container = document.getElementById("cvMoodOptions");
-
-  container.innerHTML = moods.map(m=>`
-    <button class="cv-mood-option ${selectedMood===m.id?"active":""}"
-      data-mood="${m.id}">
-      <span class="emoji">${m.emoji}</span>
-      ${escapeHTML(t(m.ar,m.en))}
-    </button>
-  `).join("");
-
-  container.querySelectorAll("[data-mood]").forEach(button=>{
-    button.addEventListener("click",()=>{
-      selectedMood=button.dataset.mood;
-      renderMoodOptions();
-      searchMood();
-    });
-  });
-}
-
-function updateMoodLanguage(){
-
-  const set=(id,value)=>{
-    const el=document.getElementById(id);
-    if(el)el.textContent=value;
-  };
-
-  set("cvMoodTitle",t(
-    "🎭 شنو باغي تتفرج اليوم؟",
-    "🎭 What Are You In The Mood For?"
-  ));
-
-  set("cvMoodDescription",t(
-    "اختار المزاج ديالك وخلي CINEVERSE يلقى ليك أفلام ومسلسلات مناسبة.",
-    "Choose your mood and discover movies and shows you'll enjoy."
-  ));
-
-  set("cvMoodTypeLabel",t("نوع العمل","Content Type"));
-  set("cvMoodRatingLabel",t("الحد الأدنى للتقييم","Minimum Rating"));
-  set("cvMoodSortLabel",t("ترتيب النتائج","Sort Results"));
-
-  const type=document.getElementById("cvMoodType");
-
-  type.options[0].text=t("🎬 فيلم","🎬 Movie");
-  type.options[1].text=t("📺 مسلسل","📺 TV Show");
-
-  const sort=document.getElementById("cvMoodSort");
-
-  sort.options[0].text=t("🔥 الأكثر شعبية","🔥 Most Popular");
-  sort.options[1].text=t("⭐ الأعلى تقييماً","⭐ Top Rated");
-  sort.options[2].text=t("📅 الأحدث","📅 Newest");
-
-  set("cvMoodSearchButton",t("🔍 اكتشف","🔍 Discover"));
-  set("cvMoodSurpriseButton",t("🎲 فاجئني","🎲 Surprise Me"));
-  set("cvMoodResultsTitle",t("✨ اقتراحات حسب مزاجك","✨ Mood Recommendations"));
-
-  renderMoodOptions();
-}
-
-async function searchMood(){
-
-  const version=++moodRequestVersion;
-
-  const mood=moods.find(m=>m.id===selectedMood);
-
-  const type=document.getElementById("cvMoodType").value;
-  const rating=document.getElementById("cvMoodRating").value;
-  const sort=document.getElementById("cvMoodSort").value;
-
-  const status=document.getElementById("cvMoodStatus");
-  const results=document.getElementById("cvMoodResults");
-
-  moodResults=[];
-  results.innerHTML="";
-
-  status.textContent=t(
-    "🔍 جاري البحث عن أعمال مناسبة...",
-    "🔍 Finding titles for your mood..."
-  );
-
-  try{
-
-    const endpoint=type==="movie"
-      ?"discover_movies"
-      :"discover_tv";
-
-    const params={
-      with_genres:mood.genres,
-      "vote_average.gte":rating,
-      sort_by:sort,
-      "vote_count.gte":100,
-      page:1
-    };
-
-    const data=await api(endpoint,params);
-
-    if(version!==moodRequestVersion)return;
-
-    const items=(data.results||[])
-      .filter(x=>x.poster_path)
-      .map(x=>({...x,media_type:type}));
-
-    moodResults=items;
-
-    status.textContent=items.length
-      ?t(
-        `🎬 لقينا ${items.length} عمل مناسب`,
-        `🎬 Found ${items.length} titles`
-      )
-      :t(
-        "ما لقيناش نتائج. جرب تقييم أقل.",
-        "No results. Try a lower rating."
-      );
-
-    renderCards("cvMoodResults",items,type);
-
-  }catch(error){
-
-    if(version!==moodRequestVersion)return;
-
-    console.error("Mood Finder:",error);
-
-    status.textContent=t(
-      "❌ تعذر تحميل النتائج. حاول مرة أخرى.",
-      "❌ Unable to load results. Please try again."
-    );
-
-  }
-}
-
-function surpriseMood(){
-
-  if(!moodResults.length){
-    searchMood();
-    return;
-  }
-
-  const item=moodResults[
-    Math.floor(Math.random()*moodResults.length)
-  ];
-
-  openDetail(item.media_type,item.id);
-}
-
-function addMoodButton(){
-
-  const hero=document.querySelector("#home .hero");
-
-  if(!hero||document.getElementById("cvMoodOpenButton"))return;
-
-  const button=document.createElement("button");
-
-  button.id="cvMoodOpenButton";
-  button.className="btn ghost";
-  button.style.margin="10px 5px 0";
-
-  button.textContent="🎭 Mood Finder";
-
-  button.onclick=()=>{
-    showView("cvMoodFinder");
-    searchMood();
-  };
-
-  hero.appendChild(button);
-}
-
-/* Language integration */
-
-const originalToggleLang=toggleLang;
-
-toggleLang=function(){
-
-  originalToggleLang();
-
-  updateMoodLanguage();
-
-  if(currentView==="cvMoodFinder"){
-    searchMood();
-  }
-
-};
-
-/* Initialize */
-
-createMoodUI();
-addMoodButton();
-
-console.log("CINEVERSE 2.4 Mood Finder Ready");
-
-})();
- </script>
- <script>
-/*
-========================================
- CINEVERSE 2.4 — SURPRISE ME 3.0
-========================================
-*/
-
-(function(){
-
-function t(ar,en){
-  return lang === "ar-MA" ? ar : en;
-}
-
-/* Get pool of titles to surprise from */
-
-function getSurprisePool(){
-
-  const pool = [];
-
-  /* 1. Personal Recommendations */
-  const recRow = document.getElementById("cvRecommendationsRow");
-  if(recRow){
-    const cards = recRow.querySelectorAll(".card[data-id]");
-    cards.forEach(c=>{
-      pool.push({
-        type: c.dataset.type,
-        id: Number(c.dataset.id)
-      });
-    });
-  }
-
-  /* 2. Mood Finder Results */
-  const moodRow = document.getElementById("cvMoodResults");
-  if(moodRow){
-    const cards = moodRow.querySelectorAll(".card[data-id]");
-    cards.forEach(c=>{
-      pool.push({
-        type: c.dataset.type,
-        id: Number(c.dataset.id)
-      });
-    });
-  }
-
-  /* 3. Trending Cache */
-  if(cache.trending){
-    cache.trending.forEach(item=>{
-      if(item.media_type==="movie"||item.media_type==="tv"){
-        pool.push({
-          type: item.media_type,
-          id: Number(item.id)
-        });
-      }
-    });
-  }
-
-  /* 4. Top Rated */
-  if(cache.top){
-    cache.top.forEach(item=>{
-      pool.push({
-        type: item.media_type || "movie",
-        id: Number(item.id)
-      });
-    });
-  }
-
-  return pool;
-}
-
-/* Filter out watched titles */
-
-function filterWatched(pool){
-
-  const watchedIds = new Set();
-
-  /* Completed in Smart Library */
-  Object.entries(smartLibrary||{}).forEach(([key,entry])=>{
-    if(entry.status==="completed"){
-      watchedIds.add(`${entry.media_type}_${entry.id}`);
-    }
-  });
-
-  /* Watched episodes for TV */
-  Object.entries(watched||{}).forEach(([key])=>{
-    const parts = key.split("_");
-    if(parts.length===3){
-      watchedIds.add(`tv_${parts[0]}`);
-    }
-  });
-
-  return pool.filter(item=>
-    !watchedIds.has(`${item.type}_${item.id}`)
-  );
-}
-
-/* Main Surprise Me function */
-
-function smartSurpriseMe(excludeWatched=true){
-
-  let pool = getSurprisePool();
-
-  /* Remove duplicates */
-  const unique = new Map();
-  pool.forEach(item=>{
-    const key = `${item.type}_${item.id}`;
-    if(!unique.has(key)){
-      unique.set(key,item);
-    }
-  });
-  pool = [...unique.values()];
-
-  /* Filter watched if needed */
-  if(excludeWatched){
-    pool = filterWatched(pool);
-  }
-
-  if(!pool.length){
-    alert(t(
-      "ما كاينش أعمال جديدة للاختيار منها. جرب تحديث الصفحة أو إضافة أعمال جديدة لمكتبتك.",
-      "No unwatched titles available. Try refreshing or adding new titles to your library."
-    ));
-    return;
-  }
-
-  /* Random selection */
-  const selected = pool[Math.floor(Math.random()*pool.length)];
-
-  openDetail(selected.type, selected.id);
-}
-
-/* Replace original surpriseMe */
-
-const originalSurprise = window.surpriseMe;
-
-window.surpriseMe = function(excludeWatched=true){
-  smartSurpriseMe(excludeWatched);
-};
-
-/* Add new button to home hero */
-
-function addSurpriseButton(){
-
-  const hero = document.querySelector("#home .hero");
-
-  if(!hero || document.getElementById("cvSurpriseButton")) return;
-
-  const button = document.createElement("button");
-  button.id = "cvSurpriseButton";
-  button.className = "btn";
-  button.style.margin = "10px 5px 0";
-  button.innerHTML = "🎲 Surprise Me 3.0";
-  button.onclick = () => {
-    if(confirm(t(
-      "استبعد الأعمال المشاهدة؟",
-      "Exclude watched titles?"
-    ))){
-      smartSurpriseMe(true);
-    } else {
-      smartSurpriseMe(false);
-    }
-  };
-
-  hero.appendChild(button);
-}
-
-/* Language support */
-
-const originalToggle = toggleLang;
-toggleLang = function(){
-  originalToggle();
-  if(document.getElementById("cvSurpriseButton")){
-    document.getElementById("cvSurpriseButton").textContent =
-      t("🎲 فاجئني 3.0", "🎲 Surprise Me 3.0");
-  }
-};
-
-/* Initialize */
-addSurpriseButton();
-console.log("CINEVERSE 2.4 Surprise Me 3.0 Ready");
-
-})();
- </script>
- <script>
-/*
-========================================
- CINEVERSE 2.4 — MOOD FINDER FIX
- Correct Genre IDs for TV Shows
-========================================
-*/
-
-(function(){
-
-const moods = window.moods || [];
-
-// Fix genre IDs for TV shows
-const genreFixes = {
-  scifi: { movie: "878", tv: "10765" },
-  action: { movie: "28", tv: "10759" },
-  mystery: { movie: "9648", tv: "9648" },
-  horror: { movie: "27", tv: "27" },
-  romance: { movie: "10749", tv: "10749" },
-  comedy: { movie: "35", tv: "35" },
-  crime: { movie: "80", tv: "80" },
-  drama: { movie: "18", tv: "18" }
-};
-
-if(moods.length){
-  moods.forEach(mood=>{
-    if(genreFixes[mood.id]){
-      mood.genres_movie = genreFixes[mood.id].movie;
-      mood.genres_tv = genreFixes[mood.id].tv;
-    }
-  });
-}
-
-// Override searchMood to use correct genres
-const originalSearchMood = window.searchMood;
-window.searchMood = async function(){
-
-  const mood = moods.find(m=>m.id===selectedMood);
-  const type = document.getElementById("cvMoodType").value;
-  const rating = document.getElementById("cvMoodRating").value;
-  const sort = document.getElementById("cvMoodSort").value;
-
-  const status = document.getElementById("cvMoodStatus");
-  const results = document.getElementById("cvMoodResults");
-
-  moodResults = [];
-  results.innerHTML = "";
-
-  status.textContent = t(
-    "🔍 جاري البحث عن أعمال مناسبة...",
-    "🔍 Finding titles for your mood..."
-  );
-
-  try{
-    const endpoint = type==="movie" ? "discover_movies" : "discover_tv";
-    const genres = type==="movie" ? mood.genres_movie : mood.genres_tv;
-
-    // Fix sort_by for TV shows
-    let sortBy = sort;
-    if(type==="tv" && sort==="primary_release_date.desc"){
-      sortBy = "first_air_date.desc";
-    }
-
-    const params = {
-      with_genres: genres,
-      "vote_average.gte": rating,
-      sort_by: sortBy,
-      "vote_count.gte": 100,
-      page: 1
-    };
-
-    const data = await api(endpoint, params);
-    const version = ++window.moodRequestVersion;
-
-    if(version !== window.moodRequestVersion) return;
-
-    const items = (data.results||[]).filter(x=>x.poster_path)
-      .map(x=>({...x, media_type: type}));
-
-    moodResults = items;
-
-    status.textContent = items.length
-      ? t(`🎬 لقينا ${items.length} عمل مناسب`, `🎬 Found ${items.length} titles`)
-      : t("ما لقيناش نتائج. جرب تقييم أقل.", "No results. Try a lower rating.");
-
-    renderCards("cvMoodResults", items, type);
-
-  } catch(error){
-    if(window.moodRequestVersion !== window.moodRequestVersion) return;
-    console.error("Mood Finder:", error);
-    status.textContent = t(
-      "❌ تعذر تحميل النتائج. حاول مرة أخرى.",
-      "❌ Unable to load results. Please try again."
-    );
-  }
-};
-
-console.log("CINEVERSE 2.4 Mood Finder Fix Applied");
-
-})();
- </script>
-<style>
-/* CINEVERSE 2.5 — QUICK MENU */
-
-#cv25MenuButton {
-  position: fixed;
-  bottom: 92px;
-  inset-inline-end: 18px;
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
-  border: 1px solid #a78bfa;
-  background: linear-gradient(135deg,#7c3aed,#4c1d95);
-  color: white;
-  font-size: 25px;
-  z-index: 45;
-  box-shadow: 0 8px 30px #7c3aed66;
-}
-
-#cv25Menu {
-  position: fixed;
-  bottom: 155px;
-  inset-inline-end: 18px;
-  width: min(290px, calc(100vw - 36px));
-  max-height: calc(100dvh - 180px);
-  overflow-y: auto;
-  padding: 15px;
-  border-radius: 20px;
-  border: 1px solid #49316b;
-  background: #171423;
-  box-shadow: 0 15px 45px #0009;
-  z-index: 44;
-  display: none;
-}
-
-#cv25Menu.open {
-  display: block;
-}
-
-.cv25-menu-title {
-  font-weight: 900;
-  color: #c4b5fd;
-  margin-bottom: 12px;
-}
-
-.cv25-menu-item {
-  display: block;
-  width: 100%;
-  padding: 13px;
-  margin: 7px 0;
-  text-align: start;
-  border: 1px solid #302743;
-  border-radius: 12px;
-  background: #211a33;
-  color: white;
-  font-size: 13px;
-}
-
-.cv25-menu-item:active {
-  background: #392653;
-}
-
-#cv25MenuButton:focus-visible,
-.cv25-menu-item:focus-visible {
-  outline: 2px solid #c4b5fd;
-  outline-offset: 3px;
-}
-</style>
-
-<script>
-/*
- CINEVERSE 2.5
- Quick Navigation Menu
-*/
-
-(function() {
-
-  if (document.getElementById("cv25MenuButton")) {
-    return;
-  }
-
-  const button = document.createElement("button");
-  button.id = "cv25MenuButton";
-  button.type = "button";
-  button.textContent = "☰";
-  button.setAttribute("aria-label", "Open quick menu");
-  button.setAttribute("aria-expanded", "false");
-
-  const menu = document.createElement("div");
-  menu.id = "cv25Menu";
-
-  const options = [
-    {
-      icon: "🏠",
-      ar: "الرئيسية",
-      en: "Home",
-      action: () => showView("home")
-    },
-    {
-      icon: "❤️",
-      ar: "مكتبتي",
-      en: "My Library",
-      action: () => showView("library")
-    },
-    {
-      icon: "📊",
-      ar: "إحصائياتي",
-      en: "My Stats",
-      action: () => {
-        if (typeof cvOpenStats === "function") {
-          cvOpenStats();
-        }
-      }
-    },
-    {
-      icon: "🎭",
-      ar: "اكتشف حسب المزاج",
-      en: "Mood Finder",
-      action: () => {
-        showView("cvMoodFinder");
-      }
-    },
-    {
-      icon: "🎲",
-      ar: "فاجئني",
-      en: "Surprise Me",
-      action: () => {
-        if (typeof surpriseMe === "function") {
-          surpriseMe();
-        }
-      }
-    },
-    {
-      icon: "📅",
-      ar: "الإصدارات القادمة",
-      en: "Upcoming",
-      action: () => showView("upcomingView")
-    }
-  ];
-
-  function currentText(ar, en) {
-    return lang === "ar-MA" ? ar : en;
-  }
-
-  function closeMenu() {
-    menu.classList.remove("open");
-    button.textContent = "☰";
-    button.setAttribute("aria-expanded", "false");
-  }
-
-  function renderMenu() {
-    menu.replaceChildren();
-
-    const title = document.createElement("div");
-    title.className = "cv25-menu-title";
-    title.textContent = currentText(
-      "✦ القائمة السريعة",
-      "✦ Quick Menu"
-    );
-
-    menu.appendChild(title);
-
-    options.forEach(option => {
-      const item = document.createElement("button");
-      item.type = "button";
-      item.className = "cv25-menu-item";
-
-      item.textContent =
-        option.icon + " " +
-        currentText(option.ar, option.en);
-
-      item.addEventListener("click", () => {
-        closeMenu();
-        option.action();
-      });
-
-      menu.appendChild(item);
-    });
-
-    button.setAttribute(
-      "aria-label",
-      currentText("فتح القائمة السريعة", "Open quick menu")
-    );
-  }
-
-  button.addEventListener("click", event => {
-    event.stopPropagation();
-
-    const isOpen = menu.classList.toggle("open");
-
-    button.textContent = isOpen ? "✕" : "☰";
-    button.setAttribute("aria-expanded", String(isOpen));
-  });
-
-  document.addEventListener("click", event => {
-    if (
-      !menu.contains(event.target) &&
-      !button.contains(event.target)
-    ) {
-      closeMenu();
-    }
-  });
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
-  });
-
-  document.body.appendChild(button);
-  document.body.appendChild(menu);
-
-  const originalToggleLang = toggleLang;
-
-  toggleLang = function() {
-    originalToggleLang();
-    renderMenu();
-  };
-
-  renderMenu();
-
-  console.log("CINEVERSE 2.5 Quick Menu Ready");
-
-})();
-   </script>
- <style>
-/* CINEVERSE 2.5 — Navigation UX */
-
-#cv25Menu {
-  transition: opacity .2s ease, transform .2s ease;
-}
-
-#cv25MenuButton {
-  transition: transform .2s ease, opacity .2s ease;
-}
-
-#cv25MenuButton:active {
-  transform: scale(.92);
-}
-
-body.cv-detail-open #cv25MenuButton,
-body.cv-detail-open #cv25Menu {
-  display: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #cv25Menu,
-  #cv25MenuButton {
-    transition: none;
-  }
-}
-</style>
-
-<script>
-/*
-========================================
- CINEVERSE 2.5
- NAVIGATION & UX PATCH
-========================================
-*/
-
-(function(){
-
-  const navIds = [
-    "home",
-    "searchView",
-    "library",
-    "upcomingView"
-  ];
-
-  function updateNav(viewId){
-
-    const items = document.querySelectorAll(
-      "#bottomNav .nav-item"
-    );
-
-    items.forEach((item,index)=>{
-
-      const active = navIds[index] === viewId;
-
-      item.classList.toggle("active",active);
-
-    });
-
-  }
-
-  function updateQuickMenu(viewId){
-
-    const button = document.getElementById(
-      "cv25MenuButton"
-    );
-
-    const menu = document.getElementById(
-      "cv25Menu"
-    );
-
-    const detailOpen = viewId === "detail";
-
-    document.body.classList.toggle(
-      "cv-detail-open",
-      detailOpen
-    );
-
-    if(detailOpen && menu){
-
-      menu.classList.remove("open");
-
-      if(button){
-        button.textContent = "☰";
-        button.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-      }
-
-    }
-
-  }
-
-  /* Improve showView without replacing its logic */
-
-  const previousShowView = showView;
-
-  showView = function(id,el){
-
-    previousShowView(id,el);
-
-    updateNav(id);
-
-    updateQuickMenu(id);
-
-    /* Keep Mood Finder results when returning */
-    if(id === "cvMoodFinder"){
-
-      const results = document.getElementById(
-        "cvMoodResults"
-      );
-
-      const status = document.getElementById(
-        "cvMoodStatus"
-      );
-
-      if(
-        results &&
-        !results.children.length &&
-        status &&
-        !status.textContent.trim()
-      ){
-
-        if(typeof searchMood === "function"){
-          searchMood();
-        }
-
-      }
-
-    }
-
-  };
-
-  /* Better Back Navigation */
-
-  goBack = function(){
-
-    const target = previousView || "home";
-
-    const exists = document.getElementById(target);
-
-    if(!exists || target === "detail"){
-
-      showView("home");
-
-      return;
-
-    }
-
-    showView(target);
-
-  };
-
-  /* Close quick menu when navigating */
-
-  document.addEventListener("click",function(e){
-
-    const menu = document.getElementById(
-      "cv25Menu"
-    );
-
-    const button = document.getElementById(
-      "cv25MenuButton"
-    );
-
-    if(!menu || !button)return;
-
-    if(e.target.closest(".cv25-menu-item")){
-
-      menu.classList.remove("open");
-
-      button.textContent = "☰";
-
-      button.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-
-    }
-
-  });
-
-  /* Initialize */
-
-  updateNav(currentView);
-
-  updateQuickMenu(currentView);
-
-  console.log(
-    "CINEVERSE 2.5 Navigation Patch Ready"
-  );
-
-})();
-     </script>
- <style>
-/* CINEVERSE 2.5 — CINEMA ANALYTICS */
-
-#cv25Analytics {
-  margin-top: 35px;
-  padding-top: 20px;
-  border-top: 1px solid #302743;
-}
-
-.cv25-analytics-title {
-  font-size: 23px;
-  color: #c4b5fd;
-  margin-bottom: 20px;
-}
-
-.cv25-analytics-box {
-  background: linear-gradient(145deg,#20162f,#14101e);
-  border: 1px solid #392653;
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 18px;
-}
-
-.cv25-analytics-box h3 {
-  margin: 0 0 18px;
-  font-size: 17px;
-}
-
-.cv25-donut-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 25px;
-  flex-wrap: wrap;
-}
-
-.cv25-donut {
-  width: 155px;
-  height: 155px;
-  border-radius: 50%;
-  position: relative;
-  background: #302743;
-}
-
-.cv25-donut::after {
-  content: "";
-  position: absolute;
-  inset: 28px;
-  border-radius: 50%;
-  background: #171423;
-}
-
-.cv25-donut-center {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  font-size: 23px;
-  font-weight: 900;
-}
-
-.cv25-donut-center small {
-  font-size: 11px;
-  color: #aaa;
-  font-weight: 400;
-}
-
-.cv25-legend {
-  font-size: 13px;
-  line-height: 2.5;
-}
-
-.cv25-legend span {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-  border-radius: 4px;
-  margin-inline-end: 7px;
-}
-
-.cv25-bars {
-  display: flex;
-  align-items: end;
-  gap: 7px;
-  height: 155px;
-  padding-top: 10px;
-}
-
-.cv25-bar-column {
-  flex: 1;
-  min-width: 0;
-  text-align: center;
-  font-size: 10px;
-  color: #aaa;
-}
-
-.cv25-bar-track {
-  height: 120px;
-  display: flex;
-  align-items: end;
-  background: #241b35;
-  border-radius: 7px;
-  overflow: hidden;
-}
-
-.cv25-bar-fill {
-  width: 100%;
-  background: linear-gradient(0deg,#7c3aed,#c4b5fd);
-  border-radius: 7px 7px 0 0;
-  min-height: 0;
-}
-
-.cv25-genre {
-  margin: 14px 0;
-}
-
-.cv25-genre-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 7px;
-}
-
-.cv25-genre-track {
-  height: 9px;
-  background: #302743;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.cv25-genre-fill {
-  height: 100%;
-  background: linear-gradient(90deg,#7c3aed,#a78bfa);
-  border-radius: 20px;
-}
-
-.cv25-achievements {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 12px;
-}
-
-.cv25-achievement {
-  background: #211a33;
-  border: 1px solid #392653;
-  border-radius: 15px;
-  padding: 17px 10px;
-  text-align: center;
-  opacity: .4;
-}
-
-.cv25-achievement.unlocked {
-  opacity: 1;
-  border-color: #a78bfa;
-}
-
-.cv25-achievement-icon {
-  font-size: 30px;
-  margin-bottom: 8px;
-}
-
-.cv25-achievement-name {
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.cv25-achievement-progress {
-  font-size: 11px;
-  color: #aaa;
-  margin-top: 6px;
-}
-
-.cv25-analytics-empty {
-  color: #aaa;
-  font-size: 13px;
-  text-align: center;
-  padding: 15px;
-}
-</style>
-
-<script>
-/*
-========================================
- CINEVERSE 2.5
- CINEMA ANALYTICS PRO
-========================================
-*/
-
-(function(){
-
-const GENRE_CACHE_KEY = "cv25_genre_cache";
-
-let genreCache = {};
-
-try {
-  genreCache = JSON.parse(
-    localStorage.getItem(GENRE_CACHE_KEY) || "{}"
-  );
-
-  if (
-    !genreCache ||
-    typeof genreCache !== "object" ||
-    Array.isArray(genreCache)
-  ) {
-    genreCache = {};
-  }
-} catch {
-  genreCache = {};
-}
-
-let analyticsVersion = 0;
-
-const genreNames = {
-  28:["أكشن","Action"],
-  12:["مغامرة","Adventure"],
-  16:["أنيميشن","Animation"],
-  35:["كوميديا","Comedy"],
-  80:["جريمة","Crime"],
-  99:["وثائقي","Documentary"],
-  18:["دراما","Drama"],
-  10751:["عائلي","Family"],
-  14:["فانتازيا","Fantasy"],
-  36:["تاريخ","History"],
-  27:["رعب","Horror"],
-  10402:["موسيقى","Music"],
-  9648:["غموض","Mystery"],
-  10749:["رومانسي","Romance"],
-  878:["خيال علمي","Science Fiction"],
-  10770:["فيلم تلفزيوني","TV Movie"],
-  53:["تشويق","Thriller"],
-  10752:["حرب","War"],
-  37:["غربي","Western"],
-  10759:["أكشن ومغامرة","Action & Adventure"],
-  10762:["أطفال","Kids"],
-  10763:["أخبار","News"],
-  10764:["واقعي","Reality"],
-  10765:["خيال علمي وفانتازيا","Sci-Fi & Fantasy"],
-  10766:["مسلسل يومي","Soap"],
-  10767:["حواري","Talk"],
-  10768:["حرب وسياسة","War & Politics"]
-};
-
-function t(ar,en){
-  return lang==="ar-MA"?ar:en;
-}
-
-function createAnalytics(){
-
-  if(document.getElementById("cv25Analytics"))return;
-
-  const stats=document.getElementById("cv24-stats");
-
-  if(!stats)return;
-
-  const section=document.createElement("section");
-
-  section.id="cv25Analytics";
-
-  section.innerHTML=`
-    <h2 class="cv25-analytics-title"></h2>
-
-    <div class="cv25-analytics-box">
-      <h3 id="cv25DistributionTitle"></h3>
-      <div class="cv25-donut-wrap" id="cv25Distribution"></div>
-    </div>
-
-    <div class="cv25-analytics-box">
-      <h3 id="cv25RatingsTitle"></h3>
-      <div id="cv25Ratings"></div>
-    </div>
-
-    <div class="cv25-analytics-box">
-      <h3 id="cv25GenresTitle"></h3>
-      <div id="cv25Genres"></div>
-    </div>
-
-    <div class="cv25-analytics-box">
-      <h3 id="cv25AchievementsTitle"></h3>
-      <div class="cv25-achievements" id="cv25Achievements"></div>
-    </div>
-  `;
-
-  stats.appendChild(section);
-}
-
-function updateAnalyticsLanguage(){
-
-  const labels=[
-    [".cv25-analytics-title","📈 تحليلاتي السينمائية","📈 Cinema Analytics"],
-    ["#cv25DistributionTitle","🎬 الأفلام والمسلسلات","🎬 Movies & TV Shows"],
-    ["#cv25RatingsTitle","⭐ توزيع تقييماتي","⭐ My Rating Distribution"],
-    ["#cv25GenresTitle","🎭 أنواعي السينمائية المفضلة","🎭 My Favorite Genres"],
-    ["#cv25AchievementsTitle","🏆 إنجازاتي السينمائية","🏆 Cinema Achievements"]
-  ];
-
-  labels.forEach(([selector,ar,en])=>{
-    const el=document.querySelector(selector);
-    if(el)el.textContent=t(ar,en);
-  });
-}
-
-function getEntries(){
-
-  return Object.values(smartLibrary||{})
-    .filter(x=>
-      x &&
-      ["movie","tv"].includes(x.media_type)
-    );
-}
-
-function getWatchedEpisodes(){
-
-  return Object.entries(watched||{})
-    .filter(([key,value])=>
-      value===true &&
-      /^\d+_\d+_\d+$/.test(key)
-    ).length;
-}
-
-function renderDistribution(entries){
-
-  const movies=entries.filter(x=>
-    x.media_type==="movie" &&
-    x.status==="completed"
-  ).length;
-
-  const shows=entries.filter(x=>
-    x.media_type==="tv" &&
-    ["watching","completed"].includes(x.status)
-  ).length;
-
-  const total=movies+shows;
-
-  const percent=total?
-    Math.round(movies/total*100):0;
-
-  const container=document.getElementById(
-    "cv25Distribution"
-  );
-
-  const donut=document.createElement("div");
-  donut.className="cv25-donut";
-
-  donut.style.background=total?
-    `conic-gradient(
-      #a78bfa 0 ${percent}%,
-      #7c3aed ${percent}% 100%
-    )`:
-    "#302743";
-
-  const center=document.createElement("div");
-  center.className="cv25-donut-center";
-
-  center.innerHTML=`
-    ${total}
-    <small>${t("عمل","Titles")}</small>
-  `;
-
-  donut.appendChild(center);
-
-  const legend=document.createElement("div");
-  legend.className="cv25-legend";
-
-  legend.innerHTML=`
-    <div>
-      <span style="background:#a78bfa"></span>
-      ${t("أفلام شاهدتها","Movies Watched")}: ${movies}
-    </div>
-    <div>
-      <span style="background:#7c3aed"></span>
-      ${t("مسلسلات أتابعها أو أكملتها","TV Watching / Completed")}: ${shows}
-    </div>
-  `;
-
-  container.replaceChildren(donut,legend);
-}
-
-function renderRatings(entries){
-
-  const counts=Array(10).fill(0);
-
-  entries.forEach(x=>{
-    const rating=Number(x.rating);
-
-    if(Number.isInteger(rating)&&rating>=1&&rating<=10){
-      counts[rating-1]++;
-    }
-  });
-
-  const max=Math.max(...counts,1);
-
-  const container=document.getElementById(
-    "cv25Ratings"
-  );
-
-  container.innerHTML=`
-    <div class="cv25-bars">
-      ${counts.map((count,index)=>`
-        <div class="cv25-bar-column"
-          title="${index+1}/10: ${count}">
-          <div class="cv25-bar-track">
-            <div class="cv25-bar-fill"
-              style="height:${count/max*100}%">
-            </div>
-          </div>
-          <div style="margin-top:7px">${index+1}</div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
-
-async function getGenres(type,id){
-
-  const key=type+"_"+id;
-
-  if(Array.isArray(genreCache[key])){
-    return genreCache[key];
-  }
-
-  try{
-
-    const data=await api("details",{type,id});
-
-    const genres=(data.genres||[])
-      .map(g=>Number(g.id))
-      .filter(Number.isInteger);
-
-    genreCache[key]=genres;
-
-    try{
-      localStorage.setItem(
-        GENRE_CACHE_KEY,
-        JSON.stringify(genreCache)
-      );
-    }catch{}
-
-    return genres;
-
-  }catch{
-    return [];
-  }
-}
-
-async function renderGenres(entries,version){
-
-  const watchedTitles=entries.filter(x=>
-    x.status==="completed" ||
-    (x.media_type==="tv"&&x.status==="watching")
-  );
-
-  const container=document.getElementById(
-    "cv25Genres"
-  );
-
-  if(!watchedTitles.length){
-
-    container.innerHTML=`
-      <div class="cv25-analytics-empty">
-        ${t(
-          "سجل أعمال شاهدتها باش تظهر الأنواع المفضلة.",
-          "Mark titles as watched to discover your favorite genres."
-        )}
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML=`
-    <div class="cv25-analytics-empty">
-      ${t("جاري تحليل الأنواع...","Analyzing genres...")}
-    </div>
-  `;
-
-  const results=await Promise.all(
-    watchedTitles.map(x=>
-      getGenres(x.media_type,x.id)
-    )
-  );
-
-  if(version!==analyticsVersion)return;
-
-  const counts=new Map();
-
-  results.forEach(genres=>{
-    genres.forEach(id=>{
-      counts.set(id,(counts.get(id)||0)+1);
-    });
-  });
-
-  const ranked=[...counts.entries()]
-    .sort((a,b)=>b[1]-a[1])
-    .slice(0,6);
-
-  if(!ranked.length){
-
-    container.innerHTML=`
-      <div class="cv25-analytics-empty">
-        ${t(
-          "معلومات الأنواع غير متوفرة حالياً.",
-          "Genre information is currently unavailable."
-        )}
-      </div>
-    `;
-
-    return;
-  }
-
-  const max=ranked[0][1];
-
-  container.innerHTML=ranked.map(([id,count])=>{
-
-    const name=genreNames[id]||
-      [t("نوع آخر","Other"),"Other"];
-
-    return `
-      <div class="cv25-genre">
-        <div class="cv25-genre-header">
-          <span>${escapeHTML(t(name[0],name[1]))}</span>
-          <span>${count}</span>
-        </div>
-        <div class="cv25-genre-track">
-          <div class="cv25-genre-fill"
-            style="width:${count/max*100}%">
-          </div>
-        </div>
-      </div>
-    `;
-
-  }).join("");
-}
-
-function renderAchievements(entries){
-
-  const movies=entries.filter(x=>
-    x.media_type==="movie" &&
-    x.status==="completed"
-  ).length;
-
-  const episodes=getWatchedEpisodes();
-
-  const rated=entries.filter(x=>
-    Number(x.rating)>=1 &&
-    Number(x.rating)<=10
-  ).length;
-
-  const achievements=[
-    ["🎬","أول فيلم","First Movie",movies,1],
-    ["🍿","عاشق السينما","Movie Lover",movies,10],
-    ["🏆","سينمائي محترف","Cinema Master",movies,50],
-    ["📺","بداية المسلسلات","TV Starter",episodes,1],
-    ["🔥","ماراثون الحلقات","Episode Marathon",episodes,50],
-    ["👑","أسطورة المسلسلات","TV Legend",episodes,200],
-    ["⭐","أول تقييم","First Rating",rated,1],
-    ["💎","ناقد سينمائي","Cinema Critic",rated,25]
-  ];
-
-  const container=document.getElementById(
-    "cv25Achievements"
-  );
-
-  container.innerHTML=achievements.map(
-    ([icon,ar,en,value,target])=>{
-
-      const unlocked=value>=target;
-
-      return `
-        <div class="cv25-achievement ${unlocked?"unlocked":""}">
-          <div class="cv25-achievement-icon">${icon}</div>
-          <div class="cv25-achievement-name">
-            ${escapeHTML(t(ar,en))}
-          </div>
-          <div class="cv25-achievement-progress">
-            ${Math.min(value,target)}/${target}
-            ${unlocked?"✅":"🔒"}
-          </div>
-        </div>
-      `;
-
-    }
-  ).join("");
-}
-
-async function refreshAnalytics(){
-
-  const version=++analyticsVersion;
-
-  updateAnalyticsLanguage();
-
-  const entries=getEntries();
-
-  renderDistribution(entries);
-  renderRatings(entries);
-  renderAchievements(entries);
-
-  await renderGenres(entries,version);
-}
-
-/* Connect to existing Stats */
-
-const previousStatsRefresh=CV24Stats.refresh.bind(CV24Stats);
-
-CV24Stats.refresh=function(){
-
-  previousStatsRefresh();
-
-  if(currentView==="cv24-stats"){
-    refreshAnalytics();
-  }
-
-};
-
-/* Refresh when opening Stats */
-
-const previousOpenStats=window.cvOpenStats;
-
-window.cvOpenStats=function(){
-
-  if(typeof previousOpenStats==="function"){
-    previousOpenStats();
-  }
-
-  refreshAnalytics();
-
-};
-
-/* Connect language switch */
-
-const previousToggleLang=toggleLang;
-
-toggleLang=function(){
-
-  previousToggleLang();
-
-  updateAnalyticsLanguage();
-
-  if(currentView==="cv24-stats"){
-    refreshAnalytics();
-  }
-
-};
-
-/* Initialize */
-
-createAnalytics();
-updateAnalyticsLanguage();
-
-console.log(
-  "CINEVERSE 2.5 Cinema Analytics Pro Ready"
-);
-
-})();
-</script>
-<style>
-/* CINEVERSE 2.6 — WATCH CALENDAR */
-
-#cv26Calendar {
-  margin-top: 30px;
-  padding: 20px;
-  background: #171423;
-  border: 1px solid #392653;
-  border-radius: 20px;
-}
-
-.cv26-title {
-  color: #c4b5fd;
-  font-size: 21px;
-  margin: 0 0 10px;
-}
-
-.cv26-subtitle {
-  color: #a1a1b5;
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-.cv26-summary {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.cv26-summary-card {
-  background: #211a33;
-  border: 1px solid #302743;
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-}
-
-.cv26-summary-number {
-  color: #c4b5fd;
-  font-size: 26px;
-  font-weight: 900;
-}
-
-.cv26-summary-label {
-  color: #aaa;
-  font-size: 11px;
-  margin-top: 7px;
-}
-
-.cv26-calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.cv26-calendar-header button {
-  background: #302743;
-  color: white;
-  border: 1px solid #49316b;
-  border-radius: 10px;
-  padding: 9px 13px;
-}
-
-.cv26-month {
-  color: #fff;
-  font-weight: 800;
-  font-size: 14px;
-}
-
-.cv26-weekdays,
-.cv26-days {
-  display: grid;
-  grid-template-columns: repeat(7,minmax(0,1fr));
-  gap: 5px;
-}
-
-.cv26-weekdays {
-  margin-bottom: 8px;
-}
-
-.cv26-weekdays div {
-  text-align: center;
-  color: #aaa;
-  font-size: 10px;
-}
-
-.cv26-day {
-  aspect-ratio: 1;
-  border-radius: 9px;
-  display: grid;
-  place-items: center;
-  background: #211a33;
-  color: #aaa;
-  font-size: 12px;
-  border: 1px solid transparent;
-}
-
-.cv26-day.active {
-  background: #7c3aed;
-  color: white;
-  border-color: #c4b5fd;
-}
-
-.cv26-day.today {
-  border-color: #a78bfa;
-}
-
-.cv26-day.empty {
-  background: transparent;
-}
-
-.cv26-note {
-  margin-top: 15px;
-  font-size: 11px;
-  color: #888;
-  line-height: 1.8;
-}
-</style>
-
-<script>
-/*
-========================================
- CINEVERSE 2.6
- WATCH CALENDAR & ACTIVITY TRACKER
-========================================
-*/
-
-(function(){
-
-const ACTIVITY_KEY = "cv26_watch_activity";
-
-let activity = {};
-
-try {
-  const saved = JSON.parse(
-    localStorage.getItem(ACTIVITY_KEY) || "{}"
-  );
-
-  if (
-    saved &&
-    typeof saved === "object" &&
-    !Array.isArray(saved)
-  ) {
-    activity = saved;
-  }
-} catch {
-  activity = {};
-}
-
-let displayedMonth = new Date();
-displayedMonth.setDate(1);
-
-function t(ar,en){
-  return lang === "ar-MA" ? ar : en;
-}
-
-function localDate(date = new Date()) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth()+1).padStart(2,"0");
-  const day = String(date.getDate()).padStart(2,"0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function saveActivity(){
-  localStorage.setItem(
-    ACTIVITY_KEY,
-    JSON.stringify(activity)
-  );
-}
-
-function recordActivity(type,id,extra=""){
-
-  const key = `${type}_${id}_${extra}`;
-
-  activity[key] = localDate();
-
-  saveActivity();
-  refreshCalendar();
-}
-
-function removeActivity(type,id,extra=""){
-
-  const key = `${type}_${id}_${extra}`;
-
-  delete activity[key];
-
-  saveActivity();
-  refreshCalendar();
-}
-
-/* Record movies marked completed */
-
-const originalUpdateEntry = cvUpdateEntry;
-
-cvUpdateEntry = function(field,value){
-
-  if(
-    field === "status" &&
-    current &&
-    current.media_type === "movie"
-  ){
-
-    if(value === "completed"){
-      recordActivity("movie",current.id);
-    } else {
-      removeActivity("movie",current.id);
-    }
-
-  }
-
-  originalUpdateEntry(field,value);
-
-};
-
-/* Record watched episodes */
-
-const originalToggleEpisode = toggleEpisode;
-
-toggleEpisode = function(tv,season,episode){
-
-  const key = episodeKey(tv,season,episode);
-
-  const wasWatched = watched[key] === true;
-
-  originalToggleEpisode(tv,season,episode);
-
-  const extra = `${season}_${episode}`;
-
-  if(wasWatched){
-    removeActivity("tv",tv,extra);
-  } else {
-    recordActivity("tv",tv,extra);
-  }
-
-};
-
-/* Calendar UI */
-
-function createCalendar(){
-
-  if(document.getElementById("cv26Calendar"))return;
-
-  const stats = document.getElementById("cv24-stats");
-
-  if(!stats)return;
-
-  const section = document.createElement("section");
-
-  section.id = "cv26Calendar";
-
-  section.innerHTML = `
-    <h2 class="cv26-title"></h2>
-    <p class="cv26-subtitle"></p>
-
-    <div class="cv26-summary">
-      <div class="cv26-summary-card">
-        <div class="cv26-summary-number" id="cv26MonthCount">0</div>
-        <div class="cv26-summary-label" id="cv26MonthLabel"></div>
-      </div>
-
-      <div class="cv26-summary-card">
-        <div class="cv26-summary-number" id="cv26Streak">0</div>
-        <div class="cv26-summary-label" id="cv26StreakLabel"></div>
-      </div>
-    </div>
-
-    <div class="cv26-calendar-header">
-      <button id="cv26PrevMonth">❮</button>
-      <div class="cv26-month" id="cv26MonthTitle"></div>
-      <button id="cv26NextMonth">❯</button>
-    </div>
-
-    <div class="cv26-weekdays" id="cv26Weekdays"></div>
-    <div class="cv26-days" id="cv26Days"></div>
-
-    <p class="cv26-note" id="cv26Note"></p>
-  `;
-
-  stats.appendChild(section);
-
-  document.getElementById("cv26PrevMonth")
-    .addEventListener("click",()=>{
-      displayedMonth.setMonth(displayedMonth.getMonth()-1);
-      refreshCalendar();
-    });
-
-  document.getElementById("cv26NextMonth")
-    .addEventListener("click",()=>{
-      displayedMonth.setMonth(displayedMonth.getMonth()+1);
-      refreshCalendar();
-    });
-}
-
-/* Activity statistics */
-
-function getDailyActivity(){
-
-  const days = {};
-
-  Object.values(activity).forEach(date=>{
-
-    if(typeof date !== "string")return;
-
-    days[date] = (days[date]||0)+1;
-
-  });
-
-  return days;
-}
-
-function calculateStreak(days){
-
-  const today = new Date();
-  today.setHours(12,0,0,0);
-
-  const current = new Date(today);
-
-  if(!days[localDate(current)]){
-    current.setDate(current.getDate()-1);
-  }
-
-  let streak = 0;
-
-  while(days[localDate(current)]){
-
-    streak++;
-
-    current.setDate(current.getDate()-1);
-
-  }
-
-  return streak;
-}
-
-/* Render Calendar */
-
-function refreshCalendar(){
-
-  const container = document.getElementById(
-    "cv26Calendar"
-  );
-
-  if(!container)return;
-
-  const days = getDailyActivity();
-
-  const today = new Date();
-
-  const currentMonth =
-    localDate(today).slice(0,7);
-
-  const monthActivity = Object.entries(days)
-    .filter(([date])=>date.startsWith(currentMonth))
-    .reduce((sum,[,count])=>sum+count,0);
-
-  document.getElementById(
-    "cv26MonthCount"
-  ).textContent = monthActivity;
-
-  document.getElementById(
-    "cv26Streak"
-  ).textContent = calculateStreak(days);
-
-  document.querySelector(".cv26-title").textContent =
-    t("📅 تقويم المشاهدة","📅 Watch Calendar");
-
-  document.querySelector(".cv26-subtitle").textContent =
-    t(
-      "تابع الأيام اللي سجلتي فيها مشاهدة الأفلام والحلقات.",
-      "Track the days when you logged movies and episodes."
-    );
-
-  document.getElementById("cv26MonthLabel").textContent =
-    t("مشاهدات هذا الشهر","Views This Month");
-
-  document.getElementById("cv26StreakLabel").textContent =
-    t("أيام متتالية","Day Streak");
-
-  document.getElementById("cv26Note").textContent =
-    t(
-      "التواريخ كتتسجل من بعد تركيب هاد التحديث. المشاهدات القديمة ما عندهاش تاريخ معروف.",
-      "Dates are recorded after this update. Older viewing dates are unknown."
-    );
-
-  const year = displayedMonth.getFullYear();
-  const month = displayedMonth.getMonth();
-
-  const locale = lang==="ar-MA"?"ar-MA":"en-US";
-
-  document.getElementById("cv26MonthTitle").textContent =
-    displayedMonth.toLocaleDateString(locale,{
-      month:"long",
-      year:"numeric"
-    });
-
-  const weekdayNames = lang==="ar-MA"
-    ? ["ح","ن","ث","ر","خ","ج","س"]
-    : ["S","M","T","W","T","F","S"];
-
-  document.getElementById("cv26Weekdays").innerHTML =
-    weekdayNames.map(x=>`<div>${x}</div>`).join("");
-
-  const firstDay = new Date(year,month,1).getDay();
-
-  const totalDays = new Date(year,month+1,0).getDate();
-
-  let html = "";
-
-  for(let i=0;i<firstDay;i++){
-    html += `<div class="cv26-day empty"></div>`;
-  }
-
-  for(let day=1;day<=totalDays;day++){
-
-    const date = localDate(new Date(year,month,day));
-
-    const active = days[date] ? "active" : "";
-    const isToday = date===localDate(today) ? "today" : "";
-
-    html += `
-      <div class="cv26-day ${active} ${isToday}"
-        title="${date}: ${days[date]||0}">
-        ${day}
-      </div>
-    `;
-
-  }
-
-  document.getElementById("cv26Days").innerHTML = html;
-
-}
-
-/* Refresh when opening Stats */
-
-const previousOpenStats = window.cvOpenStats;
-
-window.cvOpenStats = function(){
-
-  if(typeof previousOpenStats==="function"){
-    previousOpenStats();
-  }
-
-  refreshCalendar();
-
-};
-
-/* Language support */
-
-const previousToggleLang = toggleLang;
-
-toggleLang = function(){
-
-  previousToggleLang();
-
-  refreshCalendar();
-
-};
-
-/* Initialize */
-
-createCalendar();
-refreshCalendar();
-
-console.log(
-  "CINEVERSE 2.6 Watch Calendar Ready"
-);
-
-})();
-</script>
-<style>
-/* CINEVERSE 2.6.1 — BACKUP 3.0 */
-
-#cvBackup3 {
-  margin: 25px 15px;
-  padding: 22px;
-  background: linear-gradient(145deg,#211632,#14101f);
-  border: 1px solid #49316b;
-  border-radius: 20px;
-  text-align: center;
-}
-
-#cvBackup3 h2 {
-  color: #c4b5fd;
-  font-size: 21px;
-}
-
-#cvBackup3 p {
-  color: #aaa;
-  font-size: 12px;
-  line-height: 1.9;
-}
-
-.cv-backup-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.cv-backup-actions .btn {
-  flex: 1;
-  min-width: 130px;
-}
-
-.cv-backup-note {
-  margin-top: 20px;
-  color: #888;
-  font-size: 11px;
-}
-</style>
-
-<section id="cvBackup3">
-
-  <h2>💾 CINEVERSE Backup 3.0</h2>
-
-  <p>
-    حافظ على مكتبتك، تقييماتك، الحلقات المشاهدة
-    وتواريخ المشاهدة فنسخة احتياطية واحدة.
-  </p>
-
-  <div class="cv-backup-actions">
-
-    <button class="btn" onclick="cvBackup3Export()">
-      📤 تصدير البيانات
-    </button>
-
-    <label class="btn ghost" style="cursor:pointer">
-      📥 استرجاع البيانات
-
-      <input
-        type="file"
-        accept=".json,application/json"
-        style="display:none"
-        onchange="
-          cvBackup3Import(this.files[0]);
-          this.value='';
-        "
-      >
-    </label>
-
-  </div>
-
-  <div class="cv-backup-note">
-    🔒 بياناتك محفوظة محلياً على جهازك.
-  </div>
-
-</section>
-
-<script>
-/*
-========================================
- CINEVERSE 2.6.1
- BACKUP SYSTEM 3.0
-========================================
-*/
-
-(function(){
-
-const BACKUP_KEYS = [
-  "cv_lang",
-  "cv_favorites",
-  "cv_watched",
-  "cv_smart_library",
-  "cv26_watch_activity",
-  "cineverse_favs",
-  "cineverse_lang"
-];
-
-/* Export */
-
-window.cvBackup3Export = function(){
-
-  const backup = {
-    app: "CINEVERSE",
-    version: 3,
-    created: new Date().toISOString(),
-    data: {}
-  };
-
-  BACKUP_KEYS.forEach(key=>{
-
-    const value = localStorage.getItem(key);
-
-    if(value!==null){
-      backup.data[key]=value;
-    }
-
-  });
-
-  const blob = new Blob(
-    [JSON.stringify(backup,null,2)],
-    {type:"application/json"}
-  );
-
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-
-  link.href=url;
-
-  link.download=
-    "cineverse-backup-v3-"+
-    new Date().toISOString().slice(0,10)+
-    ".json";
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-
-};
-
-/* Import */
-
-window.cvBackup3Import = function(file){
-
-  if(!file)return;
-
-  const reader = new FileReader();
-
-  reader.onload = function(event){
-
-    try{
-
-      const backup = JSON.parse(event.target.result);
-
-      if(
-        backup.app!=="CINEVERSE" ||
-        ![1,2,3].includes(backup.version) ||
-        !backup.data ||
-        typeof backup.data!=="object" ||
-        Array.isArray(backup.data)
-      ){
-        throw Error("Invalid backup");
-      }
-
-      const updates = {};
-
-      for(const key of BACKUP_KEYS){
-
-        if(!Object.hasOwn(backup.data,key)){
-          continue;
-        }
-
-        const value=backup.data[key];
-
-        if(typeof value!=="string"){
-          throw Error("Invalid value");
-        }
-
-        if(
-          key==="cv_lang" ||
-          key==="cineverse_lang"
-        ){
-
-          if(!["ar-MA","en-US"].includes(value)){
-            throw Error("Invalid language");
-          }
-
-        }else{
-
-          const parsed=JSON.parse(value);
-
-          if(
-            key==="cv_favorites" ||
-            key==="cineverse_favs"
-          ){
-
-            if(!Array.isArray(parsed)){
-              throw Error("Invalid favorites");
-            }
-
-          }else{
-
-            if(
-              !parsed ||
-              typeof parsed!=="object" ||
-              Array.isArray(parsed)
-            ){
-              throw Error("Invalid data");
-            }
-
-          }
-
-        }
-
-        updates[key]=value;
-
-      }
-
-      if(!Object.keys(updates).length){
-        throw Error("Empty backup");
-      }
-
-      const confirmed=confirm(
-        "⚠️ استرجاع النسخة غادي يعوض البيانات الحالية. واش متأكد؟"
-      );
-
-      if(!confirmed)return;
-
-      /* Save current data temporarily */
-
-      const previous={};
-
-      BACKUP_KEYS.forEach(key=>{
-        previous[key]=localStorage.getItem(key);
-      });
-
-      try{
-
-        Object.entries(updates).forEach(([key,value])=>{
-          localStorage.setItem(key,value);
-        });
-
-      }catch(error){
-
-        Object.entries(previous).forEach(([key,value])=>{
-
-          if(value===null){
-            localStorage.removeItem(key);
-          }else{
-            localStorage.setItem(key,value);
-          }
-
-        });
-
-        throw error;
-
-      }
-
-      alert("✅ تم استرجاع البيانات بنجاح!");
-
-      location.reload();
-
-    }catch(error){
-
-      console.error("Backup import:",error);
-
-      alert(
-        "❌ تعذر استرجاع الملف. تأكد أنه نسخة احتياطية صالحة."
-      );
-
-    }
-
-  };
-
-  reader.onerror=function(){
-    alert("❌ تعذر قراءة الملف.");
-  };
-
-  reader.readAsText(file);
-
-};
-
-console.log("CINEVERSE Backup 3.0 Ready");
-
-})();
-</script>
-<style>
-/* CINEVERSE 2.6.2 — MONTHLY ANALYTICS */
-
-#cv262Monthly {
-  margin-top: 25px;
-  padding: 20px;
-  background: linear-gradient(145deg,#211632,#14101f);
-  border: 1px solid #49316b;
-  border-radius: 20px;
-}
-
-.cv262-title {
-  color: #c4b5fd;
-  font-size: 21px;
-  margin-bottom: 8px;
-}
-
-.cv262-description {
-  color: #aaa;
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-.cv262-summary {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.cv262-summary-card {
-  background: #211a33;
-  border: 1px solid #392653;
-  border-radius: 14px;
-  padding: 15px;
-  text-align: center;
-}
-
-.cv262-summary-number {
-  font-size: 25px;
-  font-weight: 900;
-  color: #c4b5fd;
-}
-
-.cv262-summary-label {
-  font-size: 11px;
-  color: #aaa;
-  margin-top: 7px;
-}
-
-.cv262-chart {
-  display: flex;
-  align-items: end;
-  gap: 7px;
-  height: 190px;
-  overflow-x: auto;
-  padding: 10px 0;
-}
-
-.cv262-column {
-  flex: 1;
-  min-width: 23px;
-  text-align: center;
-}
-
-.cv262-bar-container {
-  height: 135px;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  background: #241b35;
-  border-radius: 7px;
-  overflow: hidden;
-}
-
-.cv262-bar-movie {
-  background: #a78bfa;
-}
-
-.cv262-bar-tv {
-  background: #7c3aed;
-}
-
-.cv262-month-label {
-  font-size: 10px;
-  color: #aaa;
-  margin-top: 8px;
-}
-
-.cv262-legend {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 15px;
-}
-
-.cv262-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  margin-inline-end: 5px;
-}
-
-.cv262-note {
-  color: #888;
-  font-size: 11px;
-  line-height: 1.8;
-  margin-top: 20px;
-}
-</style>
-
-<script>
-/*
-========================================
- CINEVERSE 2.6.2
- MONTHLY ACTIVITY ANALYTICS
-========================================
-*/
-
-(function(){
-
-function t(ar,en){
-  return lang==="ar-MA"?ar:en;
-}
-
-function createMonthlyUI(){
-
-  if(document.getElementById("cv262Monthly"))return;
-
-  const stats=document.getElementById("cv24-stats");
-
-  if(!stats)return;
-
-  const section=document.createElement("section");
-
-  section.id="cv262Monthly";
-
-  section.innerHTML=`
-    <h2 class="cv262-title"></h2>
-
-    <p class="cv262-description"></p>
-
-    <div class="cv262-summary">
-
-      <div class="cv262-summary-card">
-        <div class="cv262-summary-number" id="cv262Total">0</div>
-        <div class="cv262-summary-label" id="cv262TotalLabel"></div>
-      </div>
-
-      <div class="cv262-summary-card">
-        <div class="cv262-summary-number" id="cv262Best">—</div>
-        <div class="cv262-summary-label" id="cv262BestLabel"></div>
-      </div>
-
-    </div>
-
-    <div class="cv262-chart" id="cv262Chart"></div>
-
-    <div class="cv262-legend">
-      <div>
-        <span class="cv262-dot" style="background:#a78bfa"></span>
-        <span id="cv262MoviesLabel"></span>
-      </div>
-
-      <div>
-        <span class="cv262-dot" style="background:#7c3aed"></span>
-        <span id="cv262TVLabel"></span>
-      </div>
-    </div>
-
-    <p class="cv262-note" id="cv262Note"></p>
-  `;
-
-  stats.appendChild(section);
-}
-
-function readActivity(){
-
-  try{
-
-    const data=JSON.parse(
-      localStorage.getItem("cv26_watch_activity")||"{}"
-    );
-
-    return data&&typeof data==="object"&&!Array.isArray(data)
-      ?data:{};
-
-  }catch{
-    return {};
-  }
-}
-
-function getMonths(){
-
-  const months=[];
-
-  const now=new Date();
-
-  for(let i=11;i>=0;i--){
-
-    const date=new Date(
-      now.getFullYear(),
-      now.getMonth()-i,
-      1
-    );
-
-    const key=
-      date.getFullYear()+"-"+
-      String(date.getMonth()+1).padStart(2,"0");
-
-    months.push({
-      key,
-      date,
-      movies:0,
-      tv:0
-    });
-
-  }
-
-  return months;
-}
-
-function calculateMonthly(){
-
-  const activity=readActivity();
-
-  const months=getMonths();
-
-  const map=new Map(
-    months.map(m=>[m.key,m])
-  );
-
-  for(const [key,date] of Object.entries(activity)){
-
-    if(typeof date!=="string")continue;
-
-    const month=map.get(date.slice(0,7));
-
-    if(!month)continue;
-
-    if(/^movie_\d+_$/.test(key)){
-      month.movies++;
-    }
-
-    if(/^tv_\d+_\d+_\d+$/.test(key)){
-      month.tv++;
-    }
-
-  }
-
-  return months;
-}
-
-function refreshMonthly(){
-
-  const section=document.getElementById(
-    "cv262Monthly"
-  );
-
-  if(!section)return;
-
-  const months=calculateMonthly();
-
-  const total=months.reduce(
-    (sum,m)=>sum+m.movies+m.tv,
-    0
-  );
-
-  const best=months.reduce(
-    (a,b)=>
-      a.movies+a.tv>=b.movies+b.tv?a:b
-  );
-
-  const maximum=Math.max(
-    1,
-    ...months.map(m=>m.movies+m.tv)
-  );
-
-  const locale=lang==="ar-MA"?"ar-MA":"en-US";
-
-  section.querySelector(".cv262-title").textContent=
-    t("📊 نشاط المشاهدة الشهري","📊 Monthly Watching Activity");
-
-  section.querySelector(".cv262-description").textContent=
-    t(
-      "اكتشف نشاطك السينمائي خلال آخر 12 شهر.",
-      "Explore your watching activity over the last 12 months."
-    );
-
-  document.getElementById("cv262Total").textContent=
-    total;
-
-  document.getElementById("cv262TotalLabel").textContent=
-    t("مجموع المشاهدات المسجلة","Total Logged Views");
-
-  document.getElementById("cv262Best").textContent=
-    total?
-      best.date.toLocaleDateString(locale,{
-        month:"short",
-        year:"numeric"
-      }):"—";
-
-  document.getElementById("cv262BestLabel").textContent=
-    t("الشهر الأكثر نشاطاً","Most Active Month");
-
-  document.getElementById("cv262MoviesLabel").textContent=
-    t("الأفلام","Movies");
-
-  document.getElementById("cv262TVLabel").textContent=
-    t("الحلقات","Episodes");
-
-  document.getElementById("cv262Note").textContent=
-    t(
-      "الإحصائيات كتبدأ من نهار تفعيل Watch Calendar. المشاهدات القديمة ما عندهاش تواريخ معروفة.",
-      "Activity tracking starts after Watch Calendar was enabled. Older viewing dates are unknown."
-    );
-
-  document.getElementById("cv262Chart").innerHTML=
-    months.map(m=>{
-
-      const movieHeight=m.movies/maximum*100;
-      const tvHeight=m.tv/maximum*100;
-
-      const label=m.date.toLocaleDateString(locale,{
-        month:"short"
-      });
-
-      return `
-        <div class="cv262-column"
-          title="${m.key}: ${m.movies+m.tv}">
-
-          <div class="cv262-bar-container">
-
-            <div class="cv262-bar-tv"
-              style="height:${tvHeight}%"></div>
-
-            <div class="cv262-bar-movie"
-              style="height:${movieHeight}%"></div>
-
-          </div>
-
-          <div class="cv262-month-label">
-            ${escapeHTML(label)}
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
-
-}
-
-/* Integrate with Stats */
-
-const previousOpenStats=window.cvOpenStats;
-
-window.cvOpenStats=function(){
-
-  if(typeof previousOpenStats==="function"){
-    previousOpenStats();
-  }
-
-  refreshMonthly();
-
-};
-
-/* Refresh when activity changes */
-
-const previousToggleEpisode=toggleEpisode;
-
-toggleEpisode=function(tv,season,episode){
-
-  previousToggleEpisode(tv,season,episode);
-
-  refreshMonthly();
-
-};
-
-const previousUpdateEntry=cvUpdateEntry;
-
-cvUpdateEntry=function(field,value){
-
-  previousUpdateEntry(field,value);
-
-  if(field==="status"){
-    refreshMonthly();
-  }
-
-};
-
-/* Language support */
-
-const previousToggleLang=toggleLang;
-
-toggleLang=function(){
-
-  previousToggleLang();
-
-  refreshMonthly();
-
-};
-
-/* Initialize */
-
-createMonthlyUI();
-refreshMonthly();
-
-console.log(
-  "CINEVERSE 2.6.2 Monthly Activity Ready"
-);
-
-})();
-</script>
-<script>
-/*
-========================================
- CINEVERSE 2.7
- SMART API CACHE
-========================================
-*/
-
-(function(){
-
-const CACHE_PREFIX = "cv27_api_";
-
-const CACHE_VERSION = 1;
-
-const TTL = {
-  trending: 30 * 60 * 1000,
-  movies: 60 * 60 * 1000,
-  tv: 60 * 60 * 1000,
-  top_movies: 6 * 60 * 60 * 1000,
-  upcoming: 60 * 60 * 1000,
-  details: 24 * 60 * 60 * 1000,
-  providers: 12 * 60 * 60 * 1000,
-  similar: 6 * 60 * 60 * 1000,
-  recommendations: 6 * 60 * 60 * 1000,
-  discover_movies: 60 * 60 * 1000,
-  discover_tv: 60 * 60 * 1000,
-  season: 6 * 60 * 60 * 1000,
-  search: 15 * 60 * 1000
-};
-
-const memoryCache = new Map();
-const pendingRequests = new Map();
-
-function cacheKey(endpoint,params){
-
-  const sorted = Object.entries(params||{})
-    .sort(([a],[b])=>a.localeCompare(b));
-
-  const raw = JSON.stringify({
-    version:CACHE_VERSION,
-    endpoint,
-    language:lang,
-    params:sorted
-  });
-
-  let hash = 0;
-
-  for(let i=0;i<raw.length;i++){
-    hash = ((hash<<5)-hash)+raw.charCodeAt(i);
-    hash |= 0;
-  }
-
-  return CACHE_PREFIX+
-    endpoint+"_"+Math.abs(hash);
-}
-
-function readCache(key){
-
-  const now = Date.now();
-
-  const memory = memoryCache.get(key);
-
-  if(memory && memory.expires>now){
-    return memory.data;
-  }
-
-  try{
-
-    const raw = sessionStorage.getItem(key);
-
-    if(!raw)return null;
-
-    const entry = JSON.parse(raw);
-
-    if(entry.expires<=now){
-      sessionStorage.removeItem(key);
-      return null;
-    }
-
-    memoryCache.set(key,entry);
-
-    return entry.data;
-
-  }catch{
-    return null;
-  }
-}
-
-function writeCache(key,data,ttl){
-
-  const entry = {
-    expires:Date.now()+ttl,
-    data
-  };
-
-  memoryCache.set(key,entry);
-
-  try{
-
-    sessionStorage.setItem(
-      key,
-      JSON.stringify(entry)
-    );
-
-  }catch{
-    // Storage might be full or unavailable.
-  }
-}
-
-/* Preserve original API function */
-
-const originalAPI = api;
-
-/* Replace API wrapper */
-
-api = async function(endpoint,params={}){
-
-  const ttl = TTL[endpoint];
-
-  if(!ttl){
-    return originalAPI(endpoint,params);
-  }
-
-  const key = cacheKey(endpoint,params);
-
-  const cached = readCache(key);
-
-  if(cached!==null){
-    return cached;
-  }
-
-  if(pendingRequests.has(key)){
-    return pendingRequests.get(key);
-  }
-
-  const request = originalAPI(endpoint,params)
-    .then(data=>{
-
-      writeCache(key,data,ttl);
-
-      return data;
-
-    })
-    .finally(()=>{
-      pendingRequests.delete(key);
-    });
-
-  pendingRequests.set(key,request);
-
-  return request;
-
-};
-
-/* Cache cleanup */
-
-function cleanupCache(){
-
-  const now = Date.now();
-
-  for(const [key,value] of memoryCache){
-
-    if(value.expires<=now){
-      memoryCache.delete(key);
-    }
-
-  }
-
-  try{
-
-    for(let i=sessionStorage.length-1;i>=0;i--){
-
-      const key=sessionStorage.key(i);
-
-      if(!key || !key.startsWith(CACHE_PREFIX)){
-        continue;
-      }
-
-      const raw=sessionStorage.getItem(key);
-
-      try{
-
-        const entry=JSON.parse(raw);
-
-        if(!entry || entry.expires<=now){
-          sessionStorage.removeItem(key);
-        }
-
-      }catch{
-        sessionStorage.removeItem(key);
-      }
-
-    }
-
-  }catch{}
-
-}
-
-cleanupCache();
-
-console.log(
-  "CINEVERSE 2.7 Smart API Cache Ready"
-);
-
-})();
-</script>
-<script>
-/*
-========================================
- CINEVERSE 2.7.1
- STABILITY & COMPATIBILITY PATCH
-========================================
-*/
-
-(function(){
-
-const GENRE_MAP = {
-  mystery: {
-    movie: "9648,53",
-    tv: "9648"
-  },
-  scifi: {
-    movie: "878",
-    tv: "10765"
-  },
-  comedy: {
-    movie: "35",
-    tv: "35"
-  },
-  horror: {
-    movie: "27",
-    tv: "9648,10765"
-  },
-  romance: {
-    movie: "10749",
-    tv: "18"
-  },
-  action: {
-    movie: "28",
-    tv: "10759"
-  },
-  crime: {
-    movie: "80",
-    tv: "80"
-  },
-  drama: {
-    movie: "18",
-    tv: "18"
-  }
-};
-
-let requestVersion = 0;
-
-function t(ar,en){
-  return lang==="ar-MA"?ar:en;
-}
-
-/* FIX MOOD FINDER */
-
-async function fixedMoodSearch(){
-
-  const typeEl = document.getElementById("cvMoodType");
-  const ratingEl = document.getElementById("cvMoodRating");
-  const sortEl = document.getElementById("cvMoodSort");
-
-  if(!typeEl || !ratingEl || !sortEl)return;
-
-  const version = ++requestVersion;
-
-  const selectedButton = document.querySelector(
-    ".cv-mood-option.active"
-  );
-
-  const moodId = selectedButton?.dataset.mood || "mystery";
-
-  const type = typeEl.value;
-
-  const rating = Number(ratingEl.value);
-
-  let sort = sortEl.value;
-
-  if(
-    type==="tv" &&
-    sort==="primary_release_date.desc"
-  ){
-    sort="first_air_date.desc";
-  }
-
-  const endpoint = type==="movie"
-    ?"discover_movies"
-    :"discover_tv";
-
-  const genres = GENRE_MAP[moodId]?.[type] || "18";
-
-  const status = document.getElementById("cvMoodStatus");
-  const results = document.getElementById("cvMoodResults");
-
-  if(!status || !results)return;
-
-  results.replaceChildren();
-
-  status.textContent = t(
-    "🔍 جاري البحث...",
-    "🔍 Searching..."
-  );
-
-  try{
-
-    const data = await api(endpoint,{
-      with_genres:genres,
-      "vote_average.gte":rating,
-      "vote_count.gte":100,
-      sort_by:sort,
-      page:1
-    });
-
-    if(version!==requestVersion)return;
-
-    const items = (data.results||[])
-      .filter(x=>x.poster_path)
-      .map(x=>({
-        ...x,
-        media_type:type
-      }));
-
-    renderCards("cvMoodResults",items,type);
-
-    status.textContent = items.length
-      ?t(
-        `🎬 لقينا ${items.length} عمل`,
-        `🎬 Found ${items.length} titles`
-      )
-      :t(
-        "ما لقيناش نتائج. جرب تبدل الفلاتر.",
-        "No results. Try changing the filters."
-      );
-
-  }catch(error){
-
-    if(version!==requestVersion)return;
-
-    console.error(error);
-
-    status.textContent=t(
-      "❌ وقع مشكل أثناء البحث.",
-      "❌ Search failed."
-    );
-
-  }
-
-}
-
-/* Replace Mood Finder search handler */
-
-const moodSearchButton = document.getElementById(
-  "cvMoodSearchButton"
-);
-
-if(moodSearchButton){
-
-  const replacement = moodSearchButton.cloneNode(true);
-
-  moodSearchButton.replaceWith(replacement);
-
-  replacement.addEventListener(
-    "click",
-    fixedMoodSearch
-  );
-
-}
-
-document.querySelectorAll(".cv-mood-option").forEach(button=>{
-
-  button.addEventListener("click",()=>{
-
-    setTimeout(fixedMoodSearch,0);
-
-  });
-
-});
-
-/* Fix navigation to Mood Finder */
-
-const previousShowView = showView;
-
-showView = function(id,el){
-
-  previousShowView(id,el);
-
-  if(id==="cvMoodFinder"){
-
-    const results=document.getElementById(
-      "cvMoodResults"
-    );
-
-    if(results && !results.children.length){
-      fixedMoodSearch();
-    }
-
-  }
-
-};
-
-/* FIX SURPRISE ME */
-
-window.surpriseMe = function(){
-
-  const pool = [];
-
-  const selectors = [
-    "#cvRecommendationsRow .card[data-id]",
-    "#cvMoodResults .card[data-id]",
-    "#trending .card[data-id]"
-  ];
-
-  selectors.forEach(selector=>{
-
-    document.querySelectorAll(selector).forEach(card=>{
-
-      const type = card.dataset.type;
-      const id = Number(card.dataset.id);
-
-      if(
-        ["movie","tv"].includes(type) &&
-        Number.isInteger(id) &&
-        id>0
-      ){
-        pool.push({type,id});
-      }
-
-    });
-
-  });
-
-  const unique = new Map();
-
-  pool.forEach(item=>{
-
-    const key=item.type+"_"+item.id;
-
-    if(!unique.has(key)){
-      unique.set(key,item);
-    }
-
-  });
-
-  const excluded = new Set();
-
-  Object.values(smartLibrary||{}).forEach(entry=>{
-
-    if(entry.status==="completed"){
-      excluded.add(
-        entry.media_type+"_"+entry.id
-      );
-    }
-
-  });
-
-  const available=[...unique.values()].filter(item=>
-    !excluded.has(item.type+"_"+item.id)
-  );
-
-  if(!available.length){
-
-    alert(t(
-      "ما كايناش اقتراحات جديدة حالياً.",
-      "No new suggestions available."
-    ));
-
-    return;
-
-  }
-
-  const selected=available[
-    Math.floor(Math.random()*available.length)
-  ];
-
-  openDetail(selected.type,selected.id);
-
-};
-
-/* Quick Menu visibility */
-
-function updateMenuVisibility(){
-
-  const button=document.getElementById(
-    "cv25MenuButton"
-  );
-
-  if(!button)return;
-
-  button.style.display=
-    currentView==="detail"?"none":"block";
-
-}
-
-const originalShowView=showView;
-
-showView=function(id,el){
-
-  originalShowView(id,el);
-
-  updateMenuVisibility();
-
-};
-
-/* Language refresh */
-
-const originalToggleLang=toggleLang;
-
-toggleLang=function(){
-
-  originalToggleLang();
-
-  if(currentView==="cvMoodFinder"){
-    fixedMoodSearch();
-  }
-
-};
-
-/* Initialize */
-
-updateMenuVisibility();
-
-console.log(
-  "CINEVERSE 2.7.1 Stability Fix Ready"
-);
-
-})();
-</script>
 </body>
 </html>
