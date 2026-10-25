@@ -6490,5 +6490,329 @@ console.log(
 
 })();
 </script>
+<script>
+/*
+========================================
+ CINEVERSE 2.7.1
+ STABILITY & COMPATIBILITY PATCH
+========================================
+*/
+
+(function(){
+
+const GENRE_MAP = {
+  mystery: {
+    movie: "9648,53",
+    tv: "9648"
+  },
+  scifi: {
+    movie: "878",
+    tv: "10765"
+  },
+  comedy: {
+    movie: "35",
+    tv: "35"
+  },
+  horror: {
+    movie: "27",
+    tv: "9648,10765"
+  },
+  romance: {
+    movie: "10749",
+    tv: "18"
+  },
+  action: {
+    movie: "28",
+    tv: "10759"
+  },
+  crime: {
+    movie: "80",
+    tv: "80"
+  },
+  drama: {
+    movie: "18",
+    tv: "18"
+  }
+};
+
+let requestVersion = 0;
+
+function t(ar,en){
+  return lang==="ar-MA"?ar:en;
+}
+
+/* FIX MOOD FINDER */
+
+async function fixedMoodSearch(){
+
+  const typeEl = document.getElementById("cvMoodType");
+  const ratingEl = document.getElementById("cvMoodRating");
+  const sortEl = document.getElementById("cvMoodSort");
+
+  if(!typeEl || !ratingEl || !sortEl)return;
+
+  const version = ++requestVersion;
+
+  const selectedButton = document.querySelector(
+    ".cv-mood-option.active"
+  );
+
+  const moodId = selectedButton?.dataset.mood || "mystery";
+
+  const type = typeEl.value;
+
+  const rating = Number(ratingEl.value);
+
+  let sort = sortEl.value;
+
+  if(
+    type==="tv" &&
+    sort==="primary_release_date.desc"
+  ){
+    sort="first_air_date.desc";
+  }
+
+  const endpoint = type==="movie"
+    ?"discover_movies"
+    :"discover_tv";
+
+  const genres = GENRE_MAP[moodId]?.[type] || "18";
+
+  const status = document.getElementById("cvMoodStatus");
+  const results = document.getElementById("cvMoodResults");
+
+  if(!status || !results)return;
+
+  results.replaceChildren();
+
+  status.textContent = t(
+    "🔍 جاري البحث...",
+    "🔍 Searching..."
+  );
+
+  try{
+
+    const data = await api(endpoint,{
+      with_genres:genres,
+      "vote_average.gte":rating,
+      "vote_count.gte":100,
+      sort_by:sort,
+      page:1
+    });
+
+    if(version!==requestVersion)return;
+
+    const items = (data.results||[])
+      .filter(x=>x.poster_path)
+      .map(x=>({
+        ...x,
+        media_type:type
+      }));
+
+    renderCards("cvMoodResults",items,type);
+
+    status.textContent = items.length
+      ?t(
+        `🎬 لقينا ${items.length} عمل`,
+        `🎬 Found ${items.length} titles`
+      )
+      :t(
+        "ما لقيناش نتائج. جرب تبدل الفلاتر.",
+        "No results. Try changing the filters."
+      );
+
+  }catch(error){
+
+    if(version!==requestVersion)return;
+
+    console.error(error);
+
+    status.textContent=t(
+      "❌ وقع مشكل أثناء البحث.",
+      "❌ Search failed."
+    );
+
+  }
+
+}
+
+/* Replace Mood Finder search handler */
+
+const moodSearchButton = document.getElementById(
+  "cvMoodSearchButton"
+);
+
+if(moodSearchButton){
+
+  const replacement = moodSearchButton.cloneNode(true);
+
+  moodSearchButton.replaceWith(replacement);
+
+  replacement.addEventListener(
+    "click",
+    fixedMoodSearch
+  );
+
+}
+
+document.querySelectorAll(".cv-mood-option").forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+    setTimeout(fixedMoodSearch,0);
+
+  });
+
+});
+
+/* Fix navigation to Mood Finder */
+
+const previousShowView = showView;
+
+showView = function(id,el){
+
+  previousShowView(id,el);
+
+  if(id==="cvMoodFinder"){
+
+    const results=document.getElementById(
+      "cvMoodResults"
+    );
+
+    if(results && !results.children.length){
+      fixedMoodSearch();
+    }
+
+  }
+
+};
+
+/* FIX SURPRISE ME */
+
+window.surpriseMe = function(){
+
+  const pool = [];
+
+  const selectors = [
+    "#cvRecommendationsRow .card[data-id]",
+    "#cvMoodResults .card[data-id]",
+    "#trending .card[data-id]"
+  ];
+
+  selectors.forEach(selector=>{
+
+    document.querySelectorAll(selector).forEach(card=>{
+
+      const type = card.dataset.type;
+      const id = Number(card.dataset.id);
+
+      if(
+        ["movie","tv"].includes(type) &&
+        Number.isInteger(id) &&
+        id>0
+      ){
+        pool.push({type,id});
+      }
+
+    });
+
+  });
+
+  const unique = new Map();
+
+  pool.forEach(item=>{
+
+    const key=item.type+"_"+item.id;
+
+    if(!unique.has(key)){
+      unique.set(key,item);
+    }
+
+  });
+
+  const excluded = new Set();
+
+  Object.values(smartLibrary||{}).forEach(entry=>{
+
+    if(entry.status==="completed"){
+      excluded.add(
+        entry.media_type+"_"+entry.id
+      );
+    }
+
+  });
+
+  const available=[...unique.values()].filter(item=>
+    !excluded.has(item.type+"_"+item.id)
+  );
+
+  if(!available.length){
+
+    alert(t(
+      "ما كايناش اقتراحات جديدة حالياً.",
+      "No new suggestions available."
+    ));
+
+    return;
+
+  }
+
+  const selected=available[
+    Math.floor(Math.random()*available.length)
+  ];
+
+  openDetail(selected.type,selected.id);
+
+};
+
+/* Quick Menu visibility */
+
+function updateMenuVisibility(){
+
+  const button=document.getElementById(
+    "cv25MenuButton"
+  );
+
+  if(!button)return;
+
+  button.style.display=
+    currentView==="detail"?"none":"block";
+
+}
+
+const originalShowView=showView;
+
+showView=function(id,el){
+
+  originalShowView(id,el);
+
+  updateMenuVisibility();
+
+};
+
+/* Language refresh */
+
+const originalToggleLang=toggleLang;
+
+toggleLang=function(){
+
+  originalToggleLang();
+
+  if(currentView==="cvMoodFinder"){
+    fixedMoodSearch();
+  }
+
+};
+
+/* Initialize */
+
+updateMenuVisibility();
+
+console.log(
+  "CINEVERSE 2.7.1 Stability Fix Ready"
+);
+
+})();
+</script>
 </body>
 </html>
