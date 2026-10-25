@@ -2801,5 +2801,501 @@ function cvOpenStats() {
 })();
 
  </script>
+<script>
+/*
+========================================
+ CINEVERSE 2.4 — STATS PRO
+ Personal Cinema Analytics
+========================================
+*/
+
+(function(){
+
+const STATS_CACHE_KEY = "cv24_runtime_cache";
+
+function readRuntimeCache(){
+  try {
+    const data = JSON.parse(
+      localStorage.getItem(STATS_CACHE_KEY) || "{}"
+    );
+    return data && typeof data === "object" &&
+      !Array.isArray(data) ? data : {};
+  } catch {
+    return {};
+  }
+}
+
+let runtimeCache = readRuntimeCache();
+
+function saveRuntimeCache(){
+  try {
+    localStorage.setItem(
+      STATS_CACHE_KEY,
+      JSON.stringify(runtimeCache)
+    );
+  } catch(e){
+    console.warn("Runtime cache unavailable",e);
+  }
+}
+
+function text(ar,en){
+  return lang === "ar-MA" ? ar : en;
+}
+
+/* Count ALL watched episodes */
+
+function getAllWatchedEpisodes(){
+
+  const episodes = {};
+
+  for(const [key,value] of Object.entries(watched || {})){
+
+    if(value !== true) continue;
+
+    const match = key.match(/^(\d+)_(\d+)_(\d+)$/);
+
+    if(!match) continue;
+
+    const tvId = match[1];
+    const season = Number(match[2]);
+    const episode = Number(match[3]);
+
+    if(episode <= 0 || season < 0) continue;
+
+    if(!episodes[tvId]){
+      episodes[tvId] = [];
+    }
+
+    episodes[tvId].push({
+      season,
+      episode
+    });
+
+  }
+
+  return episodes;
+}
+
+/* Fetch runtime information from TMDB Worker */
+
+async function getRuntime(type,id){
+
+  const key = type + "_" + id;
+
+  if(runtimeCache[key]){
+    return runtimeCache[key];
+  }
+
+  try {
+
+    const data = await api("details",{
+      type,
+      id
+    });
+
+    const result = {
+      runtime: 0,
+      totalEpisodes: 0
+    };
+
+    if(type === "movie"){
+
+      result.runtime =
+        Number(data.runtime) || 0;
+
+    } else {
+
+      const times = data.episode_run_time || [];
+
+      result.runtime =
+        times.length
+          ? Number(times[0]) || 0
+          : 0;
+
+      result.totalEpisodes =
+        Number(data.number_of_episodes) || 0;
+
+    }
+
+    runtimeCache[key] = result;
+
+    saveRuntimeCache();
+
+    return result;
+
+  } catch(error){
+
+    console.warn(
+      "Runtime unavailable:",
+      type,
+      id
+    );
+
+    return {
+      runtime: 0,
+      totalEpisodes: 0
+    };
+
+  }
+
+}
+
+/* Calculate advanced stats */
+
+async function calculateProStats(){
+
+  const entries = Object.values(
+    smartLibrary || {}
+  );
+
+  const completedMovies = entries.filter(
+    x =>
+      x.media_type === "movie" &&
+      x.status === "completed"
+  );
+
+  const tvEntries = entries.filter(
+    x => x.media_type === "tv"
+  );
+
+  const episodeMap = getAllWatchedEpisodes();
+
+  const allTVIds = new Set([
+    ...tvEntries.map(x => String(x.id)),
+    ...Object.keys(episodeMap)
+  ]);
+
+  const episodeCount = Object.values(
+    episodeMap
+  ).reduce(
+    (total,list) => total + list.length,
+    0
+  );
+
+  let movieMinutes = 0;
+  let tvMinutes = 0;
+
+  let knownEpisodes = 0;
+  let totalEpisodes = 0;
+
+  const requests = [];
+
+  for(const movie of completedMovies){
+
+    requests.push(
+      getRuntime("movie",movie.id).then(data=>{
+        movieMinutes += data.runtime;
+      })
+    );
+
+  }
+
+  for(const tvId of allTVIds){
+
+    requests.push(
+      getRuntime("tv",tvId).then(data=>{
+
+        const watchedCount =
+          episodeMap[tvId]?.length || 0;
+
+        tvMinutes +=
+          watchedCount * data.runtime;
+
+        if(data.totalEpisodes > 0){
+
+          knownEpisodes += Math.min(
+            watchedCount,
+            data.totalEpisodes
+          );
+
+          totalEpisodes +=
+            data.totalEpisodes;
+
+        }
+
+      })
+    );
+
+  }
+
+  await Promise.all(requests);
+
+  const hours =
+    (movieMinutes + tvMinutes) / 60;
+
+  const progress =
+    totalEpisodes > 0
+      ? Math.min(
+          100,
+          Math.round(
+            knownEpisodes /
+            totalEpisodes * 100
+          )
+        )
+      : null;
+
+  return {
+    movies: completedMovies.length,
+    shows: allTVIds.size,
+    episodes: episodeCount,
+    hours,
+    progress
+  };
+
+}
+
+/* Update visual cards */
+
+async function refreshProStats(){
+
+  const moviesEl =
+    document.getElementById("cv24-movies");
+
+  if(!moviesEl) return;
+
+  const ids = [
+    "cv24-movies",
+    "cv24-shows",
+    "cv24-episodes",
+    "cv24-hours",
+    "cv24-progress"
+  ];
+
+  const elements = ids.map(
+    id => document.getElementById(id)
+  );
+
+  elements.forEach(el=>{
+    if(el){
+      el.style.opacity = ".5";
+    }
+  });
+
+  try {
+
+    const stats = await calculateProStats();
+
+    document.getElementById(
+      "cv24-movies"
+    ).textContent = stats.movies;
+
+    document.getElementById(
+      "cv24-shows"
+    ).textContent = stats.shows;
+
+    document.getElementById(
+      "cv24-episodes"
+    ).textContent = stats.episodes;
+
+    document.getElementById(
+      "cv24-hours"
+    ).textContent =
+      stats.hours.toFixed(1);
+
+    document.getElementById(
+      "cv24-progress"
+    ).textContent =
+      stats.progress === null
+        ? "—"
+        : stats.progress + "%";
+
+  } catch(error){
+
+    console.error(
+      "CINEVERSE Stats Pro:",
+      error
+    );
+
+  } finally {
+
+    elements.forEach(el=>{
+      if(el){
+        el.style.opacity = "1";
+      }
+    });
+
+  }
+
+}
+
+/* Connect with existing Stats */
+
+const originalRefresh =
+  CV24Stats.refresh.bind(CV24Stats);
+
+CV24Stats.refresh = function(){
+
+  originalRefresh();
+
+  refreshProStats();
+
+};
+
+/* Refresh on opening Stats */
+
+const originalOpenStats = window.cvOpenStats;
+
+window.cvOpenStats = function(){
+
+  if(typeof originalOpenStats === "function"){
+    originalOpenStats();
+  }
+
+  refreshProStats();
+
+};
+
+/* Language support */
+
+function updateStatsLanguage(){
+
+  const section =
+    document.getElementById("cv24-stats");
+
+  if(!section) return;
+
+  const title =
+    section.querySelector(".cv24-title");
+
+  const subtitle =
+    section.querySelector(".cv24-subtitle");
+
+  if(title){
+    title.textContent = text(
+      "📊 إحصائياتي السينمائية",
+      "📊 My Cinema Stats"
+    );
+  }
+
+  if(subtitle){
+    subtitle.textContent = text(
+      "رحلتك الشخصية في عالم السينما",
+      "Your personal cinema journey"
+    );
+  }
+
+  const labels =
+    section.querySelectorAll(".cv24-label");
+
+  const translations = [
+    ["🎬 أفلام شاهدتها","Movies Watched"],
+    ["📺 مسلسلاتي","TV Shows"],
+    ["✅ حلقات شاهدتها","Episodes Watched"],
+    ["⏱️ ساعات المشاهدة","Watch Hours"],
+    ["⭐ متوسط تقييماتي","Average Rating"],
+    ["📈 تقدم المشاهدة","Watching Progress"]
+  ];
+
+  labels.forEach((el,index)=>{
+
+    if(translations[index]){
+      el.textContent = text(
+        translations[index][0],
+        translations[index][1]
+      );
+    }
+
+  });
+
+  const topTitle =
+    section.querySelector(".cv24-section h3");
+
+  if(topTitle){
+    topTitle.textContent = text(
+      "🏆 أعلى تقييماتي",
+      "🏆 Your Top Rated"
+    );
+  }
+
+  const refreshButton =
+    section.querySelector(".cv24-refresh");
+
+  if(refreshButton){
+    refreshButton.textContent = text(
+      "🔄 تحديث الإحصائيات",
+      "🔄 Refresh Stats"
+    );
+  }
+
+}
+
+/* Connect language switch */
+
+const originalToggleLanguage = toggleLang;
+
+toggleLang = function(){
+
+  originalToggleLanguage();
+
+  updateStatsLanguage();
+
+};
+
+/* Purple Design */
+
+const style = document.createElement("style");
+
+style.textContent = `
+
+#cv24-stats .cv24-card{
+
+  background:
+    linear-gradient(
+      145deg,
+      #231638,
+      #14101f
+    );
+
+  border:1px solid #392653;
+
+}
+
+#cv24-stats .cv24-card:hover{
+
+  border-color:#a78bfa;
+
+}
+
+#cv24-stats .cv24-number{
+
+  color:#c4b5fd;
+
+}
+
+#cv24-stats .cv24-refresh{
+
+  background:
+    linear-gradient(
+      135deg,
+      #7c3aed,
+      #a78bfa
+    );
+
+  color:white;
+
+}
+
+#cv24-stats .cv24-top-item{
+
+  background:#171423;
+
+  border:1px solid #302743;
+
+}
+
+`;
+
+document.head.appendChild(style);
+
+/* Initialize */
+
+updateStatsLanguage();
+
+console.log(
+  "CINEVERSE 2.4 Stats Pro Ready"
+);
+
+})();
+</script>
 </body>
 </html>
