@@ -1873,5 +1873,318 @@ CINEVERSE • Backup Version 2.0
 </p>
 
 </section>
+<script>
+/*
+ CINEVERSE 2.2
+ Personal Recommendations Engine
+*/
+
+let cvRecommendationsVersion = 0;
+
+function cvRecommendationText(ar, en) {
+  return lang === "ar-MA" ? ar : en;
+}
+
+function cvCreateRecommendationsUI() {
+  if (document.getElementById("cvRecommendations")) {
+    return;
+  }
+
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  const section = document.createElement("section");
+
+  section.id = "cvRecommendations";
+  section.className = "section";
+
+  section.innerHTML = `
+    <h2 id="cvRecTitle">
+      🧠 مختارة خصيصاً لك
+    </h2>
+
+    <p id="cvRecDescription"
+       style="
+         color:#aaa;
+         font-size:13px;
+         padding:0 16px;
+         line-height:1.8;
+       ">
+      اقتراحات مبنية على تقييماتك الشخصية.
+    </p>
+
+    <div style="padding:0 16px 15px">
+      <button
+        class="btn ghost"
+        onclick="cvLoadRecommendations()">
+        🔄 Refresh
+      </button>
+    </div>
+
+    <div class="row" id="cvRecommendationsRow">
+      <div class="loading">
+        جاري تحضير الاقتراحات...
+      </div>
+    </div>
+
+    <h2 id="cvHiddenTitle">
+      💎 Hidden Gems
+    </h2>
+
+    <div class="row" id="cvHiddenGemsRow"></div>
+  `;
+
+  const firstSection = home.querySelector(".section");
+
+  if (firstSection) {
+    firstSection.before(section);
+  } else {
+    home.appendChild(section);
+  }
+}
+
+function cvRecommendationLanguage() {
+  const title = document.getElementById("cvRecTitle");
+  const desc = document.getElementById("cvRecDescription");
+  const hidden = document.getElementById("cvHiddenTitle");
+
+  if (title) {
+    title.textContent = cvRecommendationText(
+      "🧠 مختارة خصيصاً لك",
+      "🧠 Recommended For You"
+    );
+  }
+
+  if (desc) {
+    desc.textContent = cvRecommendationText(
+      "اقتراحات مبنية على تقييماتك الشخصية.",
+      "Recommendations based on your personal ratings."
+    );
+  }
+
+  if (hidden) {
+    hidden.textContent = "💎 Hidden Gems";
+  }
+}
+
+function cvGetRatedTitles() {
+  const entries = Object.values(smartLibrary || {});
+
+  return entries
+    .filter(x =>
+      Number(x.rating) >= 7 &&
+      ["movie", "tv"].includes(x.media_type) &&
+      Number.isInteger(Number(x.id)) &&
+      Number(x.id) > 0
+    )
+    .sort((a, b) =>
+      Number(b.rating) - Number(a.rating)
+    )
+    .slice(0, 5);
+}
+
+function cvExcludedTitles() {
+  const excluded = new Set();
+
+  for (const entry of Object.values(smartLibrary || {})) {
+    if (
+      entry.status === "completed" ||
+      entry.status === "dropped"
+    ) {
+      excluded.add(
+        `${entry.media_type}_${entry.id}`
+      );
+    }
+  }
+
+  return excluded;
+}
+
+function cvRankRecommendations(items, sources) {
+  const excluded = cvExcludedTitles();
+
+  const sourceIds = new Set(
+    sources.map(x => `${x.media_type}_${x.id}`)
+  );
+
+  const unique = new Map();
+
+  for (const item of items) {
+    const type = item.media_type;
+
+    if (!["movie", "tv"].includes(type)) continue;
+
+    const key = `${type}_${item.id}`;
+
+    if (excluded.has(key)) continue;
+    if (sourceIds.has(key)) continue;
+    if (!item.poster_path) continue;
+
+    const rating = Number(item.vote_average || 0);
+    const votes = Number(item.vote_count || 0);
+
+    const score =
+      rating * 2 +
+      Math.log10(votes + 1) +
+      Math.min(Number(item.popularity || 0), 100) / 100;
+
+    const previous = unique.get(key);
+
+    if (!previous || score > previous.score) {
+      unique.set(key, {
+        ...item,
+        score
+      });
+    }
+  }
+
+  return [...unique.values()]
+    .sort((a, b) => b.score - a.score);
+}
+
+async function cvLoadRecommendations() {
+  const version = ++cvRecommendationsVersion;
+
+  cvRecommendationLanguage();
+
+  const row = document.getElementById(
+    "cvRecommendationsRow"
+  );
+
+  const hiddenRow = document.getElementById(
+    "cvHiddenGemsRow"
+  );
+
+  if (!row || !hiddenRow) return;
+
+  row.innerHTML = `
+    <div class="loading">
+      ${cvRecommendationText(
+        "🧠 جاري تحضير اقتراحاتك...",
+        "🧠 Finding recommendations..."
+      )}
+    </div>
+  `;
+
+  hiddenRow.innerHTML = "";
+
+  const sources = cvGetRatedTitles();
+
+  if (!sources.length) {
+    row.innerHTML = `
+      <div class="empty">
+        ${cvRecommendationText(
+          "⭐ قيّم بعض الأفلام والمسلسلات بـ 7/10 أو أكثر باش نبداو نقترحو عليك أعمال حسب ذوقك.",
+          "⭐ Rate some movies or shows 7/10 or higher to unlock personal recommendations."
+        )}
+      </div>
+    `;
+
+    try {
+      const data = await api("top_movies");
+
+      if (version !== cvRecommendationsVersion) return;
+
+      const gems = (data.results || []).filter(x =>
+        Number(x.vote_average) >= 7 &&
+        Number(x.vote_count) >= 100 &&
+        Number(x.vote_count) <= 3000
+      );
+
+      renderCards(
+        "cvHiddenGemsRow",
+        gems.slice(0, 15),
+        "movie"
+      );
+    } catch {
+      if (version !== cvRecommendationsVersion) return;
+
+      hiddenRow.textContent = cvRecommendationText(
+        "تعذر تحميل الاقتراحات.",
+        "Unable to load suggestions."
+      );
+    }
+
+    return;
+  }
+
+  const requests = sources.flatMap(source => [
+    api("recommendations", {
+      type: source.media_type,
+      id: source.id
+    }).then(data => ({
+      source,
+      items: data.results || []
+    })),
+
+    api("similar", {
+      type: source.media_type,
+      id: source.id
+    }).then(data => ({
+      source,
+      items: data.results || []
+    }))
+  ]);
+
+  const results = await Promise.allSettled(requests);
+
+  if (version !== cvRecommendationsVersion) return;
+
+  const candidates = [];
+
+  for (const result of results) {
+    if (result.status !== "fulfilled") continue;
+
+    const { source, items } = result.value;
+
+    for (const item of items) {
+      candidates.push({
+        ...item,
+        media_type: source.media_type
+      });
+    }
+  }
+
+  const ranked = cvRankRecommendations(
+    candidates,
+    sources
+  );
+
+  if (!ranked.length) {
+    row.innerHTML = `
+      <div class="empty">
+        ${cvRecommendationText(
+          "ما لقيناش اقتراحات حالياً. جرب تحدث الصفحة.",
+          "No recommendations available right now."
+        )}
+      </div>
+    `;
+
+    return;
+  }
+
+  renderCards(
+    "cvRecommendationsRow",
+    ranked.slice(0, 20)
+  );
+
+  const hiddenGems = ranked.filter(x =>
+    Number(x.vote_average) >= 7 &&
+    Number(x.vote_count) >= 100 &&
+    Number(x.vote_count) <= 3000
+  );
+
+  renderCards(
+    "cvHiddenGemsRow",
+    hiddenGems.slice(0, 15)
+  );
+}
+
+cvCreateRecommendationsUI();
+
+cvLoadRecommendations();
+
+</script>
 </body>
 </html>
