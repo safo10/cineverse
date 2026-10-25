@@ -3297,5 +3297,456 @@ console.log(
 
 })();
 </script>
+ <style>
+/* ==================================
+   CINEVERSE 2.4 — MOOD FINDER
+================================== */
+
+#cvMoodFinder {
+  padding: 20px 15px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.cv-mood-hero {
+  background: linear-gradient(135deg,#432078,#171123);
+  border: 1px solid #513578;
+  border-radius: 22px;
+  padding: 25px 20px;
+  margin-bottom: 25px;
+}
+
+.cv-mood-hero h2 {
+  font-size: 25px;
+  margin: 0 0 10px;
+}
+
+.cv-mood-hero p {
+  color: #c4b5d5;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.cv-mood-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+
+.cv-mood-option {
+  background: #1b1629;
+  border: 1px solid #392653;
+  border-radius: 15px;
+  padding: 18px 10px;
+  text-align: center;
+  color: white;
+  transition: .2s;
+  font-size: 13px;
+}
+
+.cv-mood-option.active {
+  background: linear-gradient(135deg,#7c3aed,#4c1d95);
+  border-color: #c4b5fd;
+  box-shadow: 0 0 15px #7c3aed44;
+}
+
+.cv-mood-option .emoji {
+  display: block;
+  font-size: 29px;
+  margin-bottom: 9px;
+}
+
+.cv-mood-filters {
+  background: #171423;
+  border: 1px solid #302743;
+  padding: 18px;
+  border-radius: 18px;
+  margin-top: 22px;
+}
+
+.cv-mood-filters label {
+  display: block;
+  font-size: 13px;
+  margin: 15px 0 8px;
+  color: #c4b5fd;
+}
+
+.cv-mood-filters select {
+  width: 100%;
+  background: #211a33;
+  color: white;
+  border: 1px solid #392653;
+  padding: 13px;
+  border-radius: 11px;
+}
+
+.cv-mood-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cv-mood-actions button {
+  flex: 1;
+}
+
+.cv-mood-results-title {
+  font-size: 19px;
+  margin: 30px 0 10px;
+}
+
+.cv-mood-status {
+  color: #aaa;
+  text-align: center;
+  padding: 15px;
+  font-size: 13px;
+}
+
+@media(min-width:700px) {
+  .cv-mood-grid {
+    grid-template-columns: repeat(4,1fr);
+  }
+}
+</style>
+
+<script>
+/*
+========================================
+ CINEVERSE 2.4 — MOOD FINDER
+========================================
+*/
+
+(function(){
+
+const moods = [
+  {
+    id:"mystery",
+    emoji:"🧩",
+    ar:"غموض وتشويق",
+    en:"Mystery & Thriller",
+    genres:"9648,53"
+  },
+  {
+    id:"scifi",
+    emoji:"🚀",
+    ar:"خيال علمي",
+    en:"Science Fiction",
+    genres:"878"
+  },
+  {
+    id:"comedy",
+    emoji:"😂",
+    ar:"كوميديا",
+    en:"Comedy",
+    genres:"35"
+  },
+  {
+    id:"horror",
+    emoji:"😱",
+    ar:"رعب",
+    en:"Horror",
+    genres:"27"
+  },
+  {
+    id:"romance",
+    emoji:"❤️",
+    ar:"رومانسية",
+    en:"Romance",
+    genres:"10749"
+  },
+  {
+    id:"action",
+    emoji:"💥",
+    ar:"أكشن",
+    en:"Action",
+    genres:"28"
+  },
+  {
+    id:"crime",
+    emoji:"🕵️",
+    ar:"جريمة وتحقيقات",
+    en:"Crime & Investigation",
+    genres:"80"
+  },
+  {
+    id:"drama",
+    emoji:"🎭",
+    ar:"دراما قوية",
+    en:"Drama",
+    genres:"18"
+  }
+];
+
+let selectedMood = "mystery";
+let moodResults = [];
+let moodRequestVersion = 0;
+
+function t(ar,en){
+  return lang === "ar-MA" ? ar : en;
+}
+
+function createMoodUI(){
+
+  if(document.getElementById("cvMoodFinder"))return;
+
+  const section = document.createElement("section");
+
+  section.id = "cvMoodFinder";
+  section.className = "view";
+
+  section.innerHTML = `
+    <div class="cv-mood-hero">
+      <h2 id="cvMoodTitle"></h2>
+      <p id="cvMoodDescription"></p>
+    </div>
+
+    <div class="cv-mood-grid" id="cvMoodOptions"></div>
+
+    <div class="cv-mood-filters">
+
+      <label id="cvMoodTypeLabel"></label>
+
+      <select id="cvMoodType">
+        <option value="movie"></option>
+        <option value="tv"></option>
+      </select>
+
+      <label id="cvMoodRatingLabel"></label>
+
+      <select id="cvMoodRating">
+        <option value="0">0+</option>
+        <option value="5">5+</option>
+        <option value="6">6+</option>
+        <option value="7" selected>7+</option>
+        <option value="8">8+</option>
+        <option value="9">9+</option>
+      </select>
+
+      <label id="cvMoodSortLabel"></label>
+
+      <select id="cvMoodSort">
+        <option value="popularity.desc"></option>
+        <option value="vote_average.desc"></option>
+        <option value="primary_release_date.desc"></option>
+      </select>
+
+      <div class="cv-mood-actions">
+        <button class="btn" id="cvMoodSearchButton"></button>
+        <button class="btn ghost" id="cvMoodSurpriseButton"></button>
+      </div>
+
+    </div>
+
+    <h3 class="cv-mood-results-title" id="cvMoodResultsTitle"></h3>
+
+    <div class="cv-mood-status" id="cvMoodStatus"></div>
+
+    <div class="grid" id="cvMoodResults"></div>
+  `;
+
+  document.querySelector("main").appendChild(section);
+
+  document.getElementById("cvMoodSearchButton")
+    .addEventListener("click",searchMood);
+
+  document.getElementById("cvMoodSurpriseButton")
+    .addEventListener("click",surpriseMood);
+
+  renderMoodOptions();
+  updateMoodLanguage();
+}
+
+function renderMoodOptions(){
+
+  const container = document.getElementById("cvMoodOptions");
+
+  container.innerHTML = moods.map(m=>`
+    <button class="cv-mood-option ${selectedMood===m.id?"active":""}"
+      data-mood="${m.id}">
+      <span class="emoji">${m.emoji}</span>
+      ${escapeHTML(t(m.ar,m.en))}
+    </button>
+  `).join("");
+
+  container.querySelectorAll("[data-mood]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      selectedMood=button.dataset.mood;
+      renderMoodOptions();
+      searchMood();
+    });
+  });
+}
+
+function updateMoodLanguage(){
+
+  const set=(id,value)=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=value;
+  };
+
+  set("cvMoodTitle",t(
+    "🎭 شنو باغي تتفرج اليوم؟",
+    "🎭 What Are You In The Mood For?"
+  ));
+
+  set("cvMoodDescription",t(
+    "اختار المزاج ديالك وخلي CINEVERSE يلقى ليك أفلام ومسلسلات مناسبة.",
+    "Choose your mood and discover movies and shows you'll enjoy."
+  ));
+
+  set("cvMoodTypeLabel",t("نوع العمل","Content Type"));
+  set("cvMoodRatingLabel",t("الحد الأدنى للتقييم","Minimum Rating"));
+  set("cvMoodSortLabel",t("ترتيب النتائج","Sort Results"));
+
+  const type=document.getElementById("cvMoodType");
+
+  type.options[0].text=t("🎬 فيلم","🎬 Movie");
+  type.options[1].text=t("📺 مسلسل","📺 TV Show");
+
+  const sort=document.getElementById("cvMoodSort");
+
+  sort.options[0].text=t("🔥 الأكثر شعبية","🔥 Most Popular");
+  sort.options[1].text=t("⭐ الأعلى تقييماً","⭐ Top Rated");
+  sort.options[2].text=t("📅 الأحدث","📅 Newest");
+
+  set("cvMoodSearchButton",t("🔍 اكتشف","🔍 Discover"));
+  set("cvMoodSurpriseButton",t("🎲 فاجئني","🎲 Surprise Me"));
+  set("cvMoodResultsTitle",t("✨ اقتراحات حسب مزاجك","✨ Mood Recommendations"));
+
+  renderMoodOptions();
+}
+
+async function searchMood(){
+
+  const version=++moodRequestVersion;
+
+  const mood=moods.find(m=>m.id===selectedMood);
+
+  const type=document.getElementById("cvMoodType").value;
+  const rating=document.getElementById("cvMoodRating").value;
+  const sort=document.getElementById("cvMoodSort").value;
+
+  const status=document.getElementById("cvMoodStatus");
+  const results=document.getElementById("cvMoodResults");
+
+  moodResults=[];
+  results.innerHTML="";
+
+  status.textContent=t(
+    "🔍 جاري البحث عن أعمال مناسبة...",
+    "🔍 Finding titles for your mood..."
+  );
+
+  try{
+
+    const endpoint=type==="movie"
+      ?"discover_movies"
+      :"discover_tv";
+
+    const params={
+      with_genres:mood.genres,
+      "vote_average.gte":rating,
+      sort_by:sort,
+      "vote_count.gte":100,
+      page:1
+    };
+
+    const data=await api(endpoint,params);
+
+    if(version!==moodRequestVersion)return;
+
+    const items=(data.results||[])
+      .filter(x=>x.poster_path)
+      .map(x=>({...x,media_type:type}));
+
+    moodResults=items;
+
+    status.textContent=items.length
+      ?t(
+        `🎬 لقينا ${items.length} عمل مناسب`,
+        `🎬 Found ${items.length} titles`
+      )
+      :t(
+        "ما لقيناش نتائج. جرب تقييم أقل.",
+        "No results. Try a lower rating."
+      );
+
+    renderCards("cvMoodResults",items,type);
+
+  }catch(error){
+
+    if(version!==moodRequestVersion)return;
+
+    console.error("Mood Finder:",error);
+
+    status.textContent=t(
+      "❌ تعذر تحميل النتائج. حاول مرة أخرى.",
+      "❌ Unable to load results. Please try again."
+    );
+
+  }
+}
+
+function surpriseMood(){
+
+  if(!moodResults.length){
+    searchMood();
+    return;
+  }
+
+  const item=moodResults[
+    Math.floor(Math.random()*moodResults.length)
+  ];
+
+  openDetail(item.media_type,item.id);
+}
+
+function addMoodButton(){
+
+  const hero=document.querySelector("#home .hero");
+
+  if(!hero||document.getElementById("cvMoodOpenButton"))return;
+
+  const button=document.createElement("button");
+
+  button.id="cvMoodOpenButton";
+  button.className="btn ghost";
+  button.style.margin="10px 5px 0";
+
+  button.textContent="🎭 Mood Finder";
+
+  button.onclick=()=>{
+    showView("cvMoodFinder");
+    searchMood();
+  };
+
+  hero.appendChild(button);
+}
+
+/* Language integration */
+
+const originalToggleLang=toggleLang;
+
+toggleLang=function(){
+
+  originalToggleLang();
+
+  updateMoodLanguage();
+
+  if(currentView==="cvMoodFinder"){
+    searchMood();
+  }
+
+};
+
+/* Initialize */
+
+createMoodUI();
+addMoodButton();
+
+console.log("CINEVERSE 2.4 Mood Finder Ready");
+
+})();
+ </script>
 </body>
 </html>
